@@ -120,7 +120,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje" aria-current="page">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="03_extraccion_informacion.html">‹ Tema 3 · Extracción de información</a><a class="sig" href="05_modelado_neuronal.html">Tema 5 · Modelado neuronal (I) ›</a></nav>
   <h1><span class="num-tema">TEMA 4</span>Modelado del lenguaje</h1>
-  <p>Contar para representar y para predecir: bolsa de palabras, TF-IDF, n-gramas, suavizado, perplejidad y generación con el Quijote. <span class="cuando">Clases 5 y 6 · semana 4</span></p>
+  <p>Contar para representar y para predecir: bolsa de palabras, TF-IDF, n-gramas, suavizado, perplejidad y generación con el Quijote.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="2" y="18" width="12" height="11" rx="3"/><rect x="16" y="18" width="12" height="11" rx="3"/></g><path d="M29.5 23.5h4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><rect x="36" y="11" width="10" height="5" rx="1.5"/><rect x="36" y="21" width="7" height="5" rx="1.5" fill-opacity=".7"/><rect x="36" y="31" width="4" height="5" rx="1.5" fill-opacity=".45"/></g></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -139,14 +139,14 @@
   <div class="card">
     <h2>Contar para predecir o contar para describir</h2>
     <div class="meta"><span class="tag real">Bolsas calculadas en el navegador</span><span class="tag pre">Perplejidades precalculadas en Python</span></div>
-    <p>Un <strong>modelo del lenguaje</strong> (apartados 4.2-4.4) cuenta palabras para predecir la siguiente: necesita el orden y conserva las palabras vacías. Una <strong>bolsa de palabras</strong> (apartado 4.5) cuenta palabras para describir un documento: el orden se pierde. Escribe dos frases y comprueba si tienen la misma bolsa.</p>
+    <p>Un <strong>modelo del lenguaje</strong> cuenta palabras para predecir la siguiente: necesita el orden y conserva las palabras vacías. Una <strong>bolsa de palabras</strong> cuenta palabras para describir un documento: el orden se pierde. Escribe dos frases y comprueba si tienen la misma bolsa.</p>
     <div class="grid2">
       <div><label for="uso-a" class="small">Frase A</label><input type="text" id="uso-a" value="dijo don quijote a sancho" style="width:100%"></div>
       <div><label for="uso-b" class="small">Frase B</label><input type="text" id="uso-b" value="quijote don sancho a dijo" style="width:100%"></div>
     </div>
     <div id="uso-res"></div>
     <h3>Lo que dice un modelo del lenguaje del Quijote</h3>
-    <p class="small">Trigrama interpolado entrenado con 101 capítulos (Clase 6). Menor perplejidad = frase más esperable.</p>
+    <p class="small">Trigrama interpolado entrenado con 101 capítulos. Menor perplejidad = frase más esperable.</p>
     <table id="uso-pp"><thead><tr><th>frase</th><th class="num">log<sub>10</sub> P</th><th class="num">perplejidad</th><th class="barcell"></th></tr></thead><tbody></tbody></table>
   </div>
   <div class="card">
@@ -156,7 +156,7 @@
   </div>
   <div class="card">
     <h3 style="margin-top:0">¿Modelo del lenguaje o bolsa de palabras?</h3>
-    <div class="meta"><span class="tag illus">Casos escritos para la clase</span></div>
+    <div class="meta"><span class="tag illus">Casos ilustrativos</span></div>
     <p>Si el orden importa (puntuar o predecir secuencias), modelo del lenguaje; si basta con describir o comparar documentos, bolsa de palabras.</p>
     <div class="row" id="uso-ctrl"></div>
     <div class="bandeja2" id="uso-bandeja" hidden></div>
@@ -179,7 +179,7 @@
       <button class="seg" data-modo="binaria" aria-pressed="false">Binaria</button>
       <button class="seg" data-modo="tf" aria-pressed="true">TF</button>
       <button class="seg" data-modo="wtf" aria-pressed="false">WTF</button>
-      <button class="seg" data-modo="tfidf" aria-pressed="false">TF-IDF (tema, p. 24)</button>
+      <button class="seg" data-modo="tfidf" aria-pressed="false">TF-IDF</button>
       <button class="seg" data-modo="sklearn" aria-pressed="false">TF-IDF de scikit-learn por defecto</button>
     </div>
     <div class="grid2">
@@ -204,7 +204,7 @@
     <p class="small" id="q-titulo"></p>
     <div class="grid3">
       <div class="box"><h3>TF (más frecuentes)</h3><table id="q-tf"></table></div>
-      <div class="box"><h3>TF-IDF (fórmula del tema)</h3><table id="q-tfidf"></table></div>
+      <div class="box"><h3>TF-IDF</h3><table id="q-tfidf"></table></div>
       <div class="box"><h3>TF-IDF de scikit-learn por defecto</h3><table id="q-sk"></table></div>
     </div>
     <p class="small">Sin palabras vacías de NLTK. En scikit-learn el orden dentro de un capítulo no depende de la normalización, solo del idf suavizado (ln((1+N)/(1+df)) + 1).</p>
@@ -284,7 +284,7 @@
   </div>
   <div class="card">
     <h3 style="margin-top:0">El suavizado quita probabilidad a lo visto y se la da a lo no visto</h3>
-    <div class="meta"><span class="tag">Apartado 4.4 · Figuras 2 y 3 del tema</span><span class="tag real">Calculado en el navegador con el corpus de la pestaña 4</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador con el corpus de la pestaña 4</span></div>
     <div class="row"><label for="sv-h" class="small">Historia h</label><select id="sv-h"></select> <span class="small">(técnica: la elegida arriba)</span></div>
     <svg id="sv-masa" class="masa" role="img" aria-label="Probabilidad de cada palabra tras la historia, sin suavizar y suavizada"></svg>
     <div class="info" id="sv-masa-msg"></div>
@@ -351,7 +351,7 @@
     <table id="ev-kn"></table>
   </div>
   <div class="card">
-    <h3 style="margin-top:0">Generar texto con n-gramas (como la Figura 1 del tema)</h3>
+    <h3 style="margin-top:0">Generar texto con n-gramas</h3>
     <div class="meta"><span class="tag pre">Frases generadas en Python con semillas fijas; aquí solo se muestran</span></div>
     <div class="seggroup" role="group" aria-label="Orden" id="ev-gen-orden">
       <button class="seg" data-k="1" aria-pressed="false">Unigramas</button>
@@ -426,7 +426,7 @@ const CASOS1 = [
   ["Un buscador que ordena los capítulos según una consulta", "bow", "Compara vectores de documentos (TF-IDF)."],
   ["Un teclado que sugiere «merced» tras «vuestra»", "lm", "Predice la palabra siguiente."],
   ["Encontrar las palabras que caracterizan un capítulo", "bow", "Describe un documento (TF-IDF)."],
-  ["Decidir cuál de dos transcripciones de voz es más natural", "lm", "El ejemplo «depilar / de Pilar» del tema (p. 6)."],
+  ["Decidir cuál de dos transcripciones de voz es más natural", "lm", "El contexto ayuda a distinguir «depilar» de «de Pilar»."],
 ];
 let usoOculto = false;
 const usoColocados = new Set(CASOS1.map((_, i) => i));
@@ -460,10 +460,10 @@ function bowDocs() {
   return { lineas, docs: lineas.map((l) => L.tokens(l).filter((w) => !(quitar && VACIAS.has(w)))) };
 }
 const FORMULAS = {
-  binaria: "Binaria: 1 si la palabra aparece en el documento y 0 si no (tema, p. 23).",
-  tf: "TF: número de veces que aparece la palabra en el documento (tema, p. 23).",
-  wtf: "WTF: frecuencia dividida entre el número de palabras del documento (tema, p. 23).",
-  tfidf: "TF-IDF del tema (p. 24): f × ln(N / df). Logaritmo natural; una palabra presente en todos los documentos pesa 0.",
+  binaria: "Binaria: 1 si la palabra aparece en el documento y 0 si no.",
+  tf: "TF: número de veces que aparece la palabra en el documento.",
+  wtf: "WTF: frecuencia dividida entre el número de palabras del documento.",
+  tfidf: "TF-IDF: f × ln(N / df). Logaritmo natural; una palabra presente en todos los documentos pesa 0.",
   sklearn: "TfidfVectorizer de scikit-learn 1.9.1 por defecto: f × (ln((1+N)/(1+df)) + 1) y después cada fila se divide por su norma euclídea.",
 };
 function pintarBow() {

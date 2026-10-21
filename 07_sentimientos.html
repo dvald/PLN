@@ -171,7 +171,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos" aria-current="page">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="06_topicos.html">‹ Tema 6 · Tópicos</a><a class="sig" href="08_modelado_neuronal_ii.html">Tema 8 · Modelado neuronal (II) ›</a></nav>
   <h1><span class="num-tema">TEMA 7</span>Análisis de sentimientos y minería de opiniones</h1>
-  <p>Qué opina un texto y sobre qué: niveles, léxico con negación, Naive Bayes frente a BETO, aspectos, PMI, spam y emociones. <span class="cuando">Clases 12 y 13 · semana 9</span></p>
+  <p>Qué opina un texto y sobre qué: niveles, léxico con negación, Naive Bayes frente a BETO, aspectos, PMI, spam y emociones.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M7 34a17 17 0 0 1 34 0" fill="none" stroke="currentColor" stroke-width="6" stroke-opacity=".22" stroke-linecap="round"/><path d="M28.5 17.6A17 17 0 0 1 41 34" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M24 34 33 22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/><circle cx="24" cy="34" r="4" fill="currentColor"/><path d="M8 42h8M32 42h8M36 38v8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -193,7 +193,7 @@
 <section class="panel active" id="p-niv" role="tabpanel" aria-labelledby="t-niv">
   <div class="card">
     <h2>Una reseña, tres niveles</h2>
-    <div class="meta"><span class="tag illus">Anotación del corpus: no ejecuta ningún modelo</span><span class="tag">Clase 12 · apartados 7.1-7.2</span></div>
+    <div class="meta"><span class="tag illus">Anotación del corpus: no ejecuta ningún modelo</span></div>
     <p>Elige una reseña del corpus (180 reseñas <strong>ficticias</strong> escritas para la asignatura). Compara la polaridad del documento, la de cada frase y la de cada aspecto, y las estrellas que puso el cliente.</p>
     <div class="row">
       <label class="inline">Dominio <select id="niv-dom"><option value="">todos</option><option>restaurante</option><option>alojamiento</option><option>tecnologia</option><option>compras</option></select></label>
@@ -218,8 +218,8 @@
 <section class="panel" id="p-est" role="tabpanel" aria-labelledby="t-est">
   <div class="card">
     <h2>Las estrellas no son la etiqueta</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 12 · apartado 7.3 (p. 23)</span></div>
-    <p>El tema propone convertir estrellas en clases: positiva con 4 o más, negativa con 2 o menos y neutra en medio. Mueve los umbrales y mira cuántas reseñas coinciden con la polaridad anotada <strong>leyendo el texto</strong> (las mixtas cuentan como coincidencia si caen en «neutra»).</p>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
+    <p>Una regla para convertir estrellas en clases es: positiva con 4 o más, negativa con 2 o menos y neutra en medio. Mueve los umbrales y mira cuántas reseñas coinciden con la polaridad anotada <strong>leyendo el texto</strong> (las mixtas cuentan como coincidencia si caen en «neutra»).</p>
     <div class="row">
       <label class="inline">Positiva si estrellas ≥ <select id="est-pos"><option>3</option><option selected>4</option><option>5</option></select></label>
       <label class="inline">Negativa si estrellas ≤ <select id="est-neg"><option>1</option><option selected>2</option><option>3</option></select></label>
@@ -236,7 +236,7 @@
 <section class="panel" id="p-lex" role="tabpanel" aria-labelledby="t-lex">
   <div class="card">
     <h2>Léxico paso a paso</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (igual que el código de Python)</span><span class="tag">Clase 12 · apartado 7.3</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador (igual que el código de Python)</span></div>
     <p>El léxico de la asignatura (<span id="lex-n"></span> formas, de -3 a +3), congelado antes de escribir el corpus, más cuatro reglas que puedes activar o desactivar. Escribe una frase o elige un ejemplo.</p>
     <textarea id="lex-txt" aria-label="Texto para puntuar">El servicio no fue muy atento, pero la comida estaba deliciosa.</textarea>
     <div class="row" id="lex-ejemplos"></div>
@@ -257,7 +257,7 @@
 <section class="panel" id="p-neg" role="tabpanel" aria-labelledby="t-neg">
   <div class="card">
     <h2>Negación como rasgo: dos reglas</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 12</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Para un clasificador, la negación se marca en las palabras que quedan bajo su alcance (Das y Chen, 2001; Pang et al., 2002). Compara la regla escrita para el español con <code>mark_negation</code> de NLTK 3.10, que usa una lista inglesa de negadores y distingue mayúsculas.</p>
     <textarea id="neg-txt" aria-label="Texto para marcar">No me ha gustado nada el servicio. Nunca había comido un sushi tan fresco. La comida no está a la altura.</textarea>
     <h3>Regla española (prefijo NO_ hasta la coma, el punto o un adversativo)</h3>
@@ -272,7 +272,7 @@
 <section class="panel" id="p-com" role="tabpanel" aria-labelledby="t-com">
   <div class="card">
     <h2>Comparar métodos en la misma prueba</h2>
-    <div class="meta"><span class="tag pre">Predicciones precalculadas con scikit-learn 1.9.1 y BETO (Clase 12)</span><span class="tag real">Aciertos y léxico calculados en el navegador</span></div>
+    <div class="meta"><span class="tag pre">Predicciones precalculadas con scikit-learn 1.9.1 y BETO</span><span class="tag real">Aciertos y léxico calculados en el navegador</span></div>
     <p>Las 40 reseñas de prueba (20 positivas y 20 negativas), las mismas para todos los métodos. Filtra por fenómeno o por dominio y mira cuántas acierta cada uno. Pulsa una reseña para ver qué dijo cada método.</p>
     <div class="row">
       <label class="inline">Fenómeno <select id="com-fen"><option value="">todos</option><option value="neg">negación</option><option value="impl">implícita</option><option value="con">contraste</option><option value="int">intensidad</option><option value="comp">comparación</option><option value="cond">condicional</option><option value="iro">ironía</option><option value="preg">pregunta</option></select></label>
@@ -290,7 +290,7 @@
 <section class="panel" id="p-fra" role="tabpanel" aria-labelledby="t-fra">
   <div class="card">
     <h2>De las frases a la reseña</h2>
-    <div class="meta"><span class="tag pre">P(positiva) por frase precalculada con BETO + regresión logística (Clase 13)</span><span class="tag real">Reglas calculadas en el navegador</span></div>
+    <div class="meta"><span class="tag pre">P(positiva) por frase precalculada con BETO + regresión logística</span><span class="tag real">Reglas calculadas en el navegador</span></div>
     <p>Elige una reseña de prueba. Cada frase tiene la probabilidad de ser positiva que da el modelo de frases y su subjetividad predicha. Cuatro reglas deciden la reseña.</p>
     <div class="row"><label class="inline">Reseña <select id="fra-sel"></select></label><label class="inline"><input type="checkbox" id="fra-disc" checked> solo las 11 en las que las reglas discrepan</label></div>
     <div id="fra-tabla"></div>
@@ -344,7 +344,7 @@
 <section class="panel" id="p-spm" role="tabpanel" aria-labelledby="t-spm">
   <div class="card">
     <h2>Spam de reseñas: rasgos, no etiquetas</h2>
-    <div class="meta"><span class="tag illus">Diez ejemplos ficticios; no se entrena nada</span><span class="tag">Clase 13 · apartado 7.6</span></div>
+    <div class="meta"><span class="tag illus">Diez ejemplos ficticios; no se entrena nada</span></div>
     <p>Activa reglas sencillas y mira qué textos marcan. Los tipos 2 (solo la marca) y 3 (no es reseña) se reconocen fácilmente; el tipo 1 (reseña falsa) no se puede etiquetar con seguridad leyendo el texto (Jindal y Liu, 2008).</p>
     <div class="row">
       <label class="inline"><input type="checkbox" class="spm-r" value="enlace" checked> enlace o teléfono</label>
@@ -362,13 +362,13 @@
 <section class="panel" id="p-emo" role="tabpanel" aria-labelledby="t-emo">
   <div class="card">
     <h2>Seis emociones primarias (Parrott, 2001)</h2>
-    <div class="meta"><span class="tag">Apartado 7.2 · Figura 2</span><span class="tag illus">Frases de ejemplo escritas para la clase</span></div>
-    <p>No hay acuerdo sobre un conjunto básico de emociones; el tema usa las seis primarias de Parrott, que se dividen en secundarias y terciarias.</p>
+    <div class="meta"><span class="tag illus">Frases de ejemplo</span></div>
+    <p>No hay acuerdo sobre un conjunto básico de emociones; la clasificación de Parrott parte de seis emociones primarias, que se dividen en secundarias y terciarias.</p>
     <div class="emociones" id="emo-cards"></div>
   </div>
   <div class="card">
     <h2>Racional o emocional: cinco niveles de sentimiento</h2>
-    <div class="meta"><span class="tag">Apartado 7.2</span><span class="tag illus">Ejemplos del tema y escritos para la clase</span></div>
+    <div class="meta"><span class="tag illus">Ejemplos de opiniones</span></div>
     <p>Una opinión puede ser racional (se apoya en hechos o en la utilidad) o emocional (expresa un estado de ánimo). Pulsa una frase para ver por qué está en su nivel.</p>
     <div class="row" id="esc-ctrl"></div>
     <div class="bandeja5" id="esc-bandeja" hidden></div>
@@ -377,7 +377,7 @@
   </div>
   <div class="card">
     <h2>Valencia y excitación</h2>
-    <div class="meta"><span class="tag">Apartado 7.2</span><span class="tag illus">Ilustración: posiciones aproximadas, no medidas</span></div>
+    <div class="meta"><span class="tag illus">Ilustración: posiciones aproximadas, no medidas</span></div>
     <p>La <b>valencia</b> es el tono (positivo, negativo o cercano a cero); la <b>excitación</b>, la intensidad o energía de la emoción. Dos frases positivas pueden diferir mucho en excitación.</p>
     <svg id="emo-plano" class="plano-ve" viewBox="0 0 900 470" role="img" aria-label="Frases situadas por valencia y excitación"></svg>
   </div>
@@ -588,7 +588,7 @@ function pintarFrases() {
 function pintarFrasesGlobal() {
   const PB = D.frases_prueba_beto;
   const filas = REGLAS.map(([k, n]) => [n, PRU.filter((r) => L.agregar(k, FD[r.id], PB) === r.polaridad).length]);
-  filas.unshift(["clasificador de documento (Clase 12)", D.agregacion_documento]);
+  filas.unshift(["clasificador de documento", D.agregacion_documento]);
   $("#fra-global").innerHTML = `<table><tr><th>regla</th><th class="num">aciertos (de ${PRU.length})</th><th style="width:45%"></th></tr>` + filas.map(([n, a], i) => `<tr><td>${n}</td><td class="num"><b>${a}</b></td><td><span style="display:inline-block;height:1rem;border-radius:3px;width:${100 * a / PRU.length}%;background:${i === 0 ? "#8E24AA" : "#00897B"}"></span></td></tr>`).join("") + "</table>";
 }
 $("#fra-disc").addEventListener("change", pintarSelectorFrases);
@@ -668,9 +668,9 @@ const EMOCIONES = [["Amor", "#AD1457", "«Me encanta cómo nos trataron.»"], ["
   ["Tristeza", "#52606D", "«Una pena, el sitio ya no es lo que era.»"], ["Miedo", "#6A1B9A", "«Me da miedo que vuelva a fallar la batería.»"]];
 const ESCALA = [[-2, "Negativo emocional", "#C62828"], [-1, "Negativo racional", "#EF9A9A"], [0, "Neutral", "#9AA5B1"], [1, "Positivo racional", "#A5D6A7"], [2, "Positivo emocional", "#2E7D32"]];
 const FRASES5 = [
-  ["«Este ordenador merece este precio.»", 1, "Valoración apoyada en la relación calidad-precio: racional (ejemplo del tema)."],
-  ["«La conexión 5G del teléfono funciona bien.»", 1, "Opinión racional sin emoción (ejemplo del tema)."],
-  ["«Adoro este móvil.»", 2, "Expresa un sentimiento hacia la entidad: emocional (como «Adoro los móviles Android» del tema)."],
+  ["«Este ordenador merece este precio.»", 1, "Valoración apoyada en la relación calidad-precio: racional."],
+  ["«La conexión 5G del teléfono funciona bien.»", 1, "Opinión racional sin emoción."],
+  ["«Adoro este móvil.»", 2, "Expresa un sentimiento hacia la entidad: emocional."],
   ["«La batería dura menos de lo anunciado.»", -1, "Crítica basada en un hecho comprobable: negativo racional."],
   ["«Odio este servicio, me pone de los nervios.»", -2, "Rechazo con carga emocional: negativo emocional."],
   ["«El hotel está a diez minutos del centro.»", 0, "Información sin opinión: neutral."],

@@ -112,11 +112,11 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización" aria-current="page">10</a></span><a class="ant" href="09_aplicaciones.html">‹ Tema 9 · Aplicaciones</a></nav>
   <h1><span class="num-tema">TEMA 10</span>Visualización de textos</h1>
-  <p>Ver los textos: mapas de documentos, tópicos, nubes de palabras, coocurrencias, árboles de palabras, gramática y huellas de estilo. <span class="cuando">Clases 17, 19 y 20 · semanas 13 a 15</span></p>
+  <p>Ver los textos: mapas de documentos, tópicos, nubes de palabras, coocurrencias, árboles de palabras, gramática y huellas de estilo.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><rect x="4" y="8" width="21" height="9" rx="2.5"/><rect x="28" y="10" width="15" height="6" rx="2" fill-opacity=".6"/><rect x="8" y="21" width="34" height="11" rx="2.5"/><rect x="4" y="36" width="11" height="5" rx="2" fill-opacity=".45"/><rect x="18" y="35" width="20" height="7" rx="2" fill-opacity=".75"/></g></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
-  <button class="tab" role="tab" id="t-mapa" aria-controls="p-mapa" aria-selected="true"><span class="tab-n">1</span> El tema</button>
+  <button class="tab" role="tab" id="t-mapa" aria-controls="p-mapa" aria-selected="true"><span class="tab-n">1</span> Mapa de conceptos</button>
   <button class="tab" role="tab" id="t-cerca" aria-controls="p-cerca" aria-selected="false"><span class="tab-n">2</span> ¿Cerca = parecido?</button>
   <button class="tab" role="tab" id="t-proy" aria-controls="p-proy" aria-selected="false"><span class="tab-n">3</span> Proyecciones</button>
   <button class="tab" role="tab" id="t-pca" aria-controls="p-pca" aria-selected="false"><span class="tab-n">4</span> PCA a mano</button>
@@ -134,13 +134,13 @@
 <section class="panel active" id="p-mapa" role="tabpanel" aria-labelledby="t-mapa">
   <div class="card">
     <h2>Qué se visualiza de un texto y en qué nivel</h2>
-    <div class="meta"><span class="tag">Apartados 10.2-10.9</span><span class="tag real">Hallazgos calculados con los datos de esta demo</span><span class="tag illus">Miniaturas: ilustración, no datos</span></div>
-    <p>El tema distingue la <b>similitud entre documentos</b> (10.3-10.5) y el <b>contenido de un documento</b> en tres niveles: palabras (10.7), estructura (10.8) y sustancia (10.9). Cada tarjeta lleva a su pestaña y resume lo que se ve en ella.</p>
-    <div class="mt-sup"><div>Similitud · 10.3-10.5</div><div style="grid-column: 2 / span 3">Contenido de un documento · 10.6-10.9</div></div>
+    <div class="meta"><span class="tag real">Hallazgos calculados con los datos de esta demo</span><span class="tag illus">Miniaturas: ilustración, no datos</span></div>
+    <p>Podemos visualizar la <b>similitud entre documentos</b> o el <b>contenido de un documento</b> en tres niveles: palabras, estructura y sustancia. Cada tarjeta lleva a su pestaña y resume lo que se ve en ella.</p>
+    <div class="mt-sup"><div>Similitud</div><div style="grid-column: 2 / span 3">Contenido de un documento</div></div>
     <div class="mt-cols" id="mapa-tema"></div>
   </div>
   <div class="card">
-    <h3>Cinco preguntas antes de concluir (Clase 20)</h3>
+    <h3>Cinco preguntas antes de concluir</h3>
     <ol style="margin-left:1.2rem">
       <li><b>Representación</b>: ¿qué cuenta como palabra? ¿qué vacías? ¿TF-IDF, vectores o tópicos?</li>
       <li><b>Medida</b>: coseno, frecuencia, PMI, disimilitud CNG… ¿qué mide exactamente?</li>
@@ -155,7 +155,7 @@
 <section class="panel" id="p-cerca" role="tabpanel" aria-labelledby="t-cerca">
   <div class="card">
     <h2>¿Dos noticias cercanas en el mapa se parecen?</h2>
-    <div class="meta"><span class="tag pre">Mapa t-SNE precalculado con scikit-learn 1.9.1</span><span class="tag real">Coseno y vecinos calculados en el navegador</span><span class="tag">Clase 17 · 10.3-10.4</span></div>
+    <div class="meta"><span class="tag pre">Mapa t-SNE precalculado con scikit-learn 1.9.1</span><span class="tag real">Coseno y vecinos calculados en el navegador</span></div>
     <p>92 noticias ficticias del Tema 6 con TF-IDF de lemas de contenido (311 lemas). Elige una noticia o pulsa un punto: se marcan sus <b>5 vecinos en el mapa</b> (círculo naranja) y sus <b>5 vecinos reales</b> por coseno (cuadrado azul).</p>
     <div class="row">
       <label class="inline">Mapa <select id="cerca-mapa"></select></label>
@@ -174,7 +174,7 @@
 <section class="panel" id="p-proy" role="tabpanel" aria-labelledby="t-proy">
   <div class="card">
     <h2>Proyecciones de las mismas 92 noticias</h2>
-    <div class="meta"><span class="tag pre">Coordenadas y medidas precalculadas con scikit-learn 1.9.1</span><span class="tag">Clase 17 · 10.4</span></div>
+    <div class="meta"><span class="tag pre">Coordenadas y medidas precalculadas con scikit-learn 1.9.1</span></div>
     <p>Cambia la técnica y sus parámetros. Las medidas comparan los 5 vecinos de cada noticia en el mapa con los del espacio original: <b>confianza</b> (trustworthiness), <b>comunes</b> y <b>misma sección</b> (en el espacio original es del <span id="proy-orig"></span>).</p>
     <div class="seggroup" id="proy-metodo" role="group" aria-label="Técnica"></div>
     <div class="row" id="proy-params"></div>
@@ -196,7 +196,7 @@
 <section class="panel" id="p-pca" role="tabpanel" aria-labelledby="t-pca">
   <div class="card">
     <h2>PCA a mano: seis documentos, seis términos</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (= scikit-learn)</span><span class="tag">Clase 17 · 10.4</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador (= scikit-learn)</span></div>
     <p>Edita los recuentos. El PCA se calcula con los autovectores de la covarianza; el signo de cada componente sigue la convención de scikit-learn (la mayor carga, positiva).</p>
     <div class="grid2">
       <div><div class="scroll" style="max-height:none"><table id="pca-tabla"></table></div>
@@ -211,14 +211,14 @@
 <section class="panel" id="p-top" role="tabpanel" aria-labelledby="t-top">
   <div class="card">
     <h2>Las noticias situadas por sus tópicos (10.5)</h2>
-    <div class="meta"><span class="tag pre">Mezclas θ del NMF de 4 tópicos precalculadas (Clases 11 y 17)</span><span class="tag real">RadViz calculado en el navegador</span></div>
+    <div class="meta"><span class="tag pre">Mezclas θ del NMF de 4 tópicos precalculadas</span><span class="tag real">RadViz calculado en el navegador</span></div>
     <p>Cada tópico es un ancla del círculo y cada noticia se coloca en la media de las anclas ponderada por su mezcla. Cambia el orden de las anclas: las posiciones cambian, las mezclas no. Pulsa un punto para ver su θ.</p>
     <div class="seggroup" id="rv-orden" role="group" aria-label="Orden de las anclas"></div>
     <div class="grid2"><svg id="rv-svg" viewBox="0 0 640 470" role="img" aria-label="RadViz"></svg><div id="rv-info"></div></div>
   </div>
   <div class="card">
     <h3>Matriz término-tópico y relevancia (10.9, Termite y LDAvis)</h3>
-    <div class="meta"><span class="tag real">Relevancia calculada en el navegador</span><span class="tag">Clase 20</span></div>
+    <div class="meta"><span class="tag real">Relevancia calculada en el navegador</span></div>
     <p>r(w, k | λ) = λ log φ<sub>kw</sub> + (1 − λ) log(φ<sub>kw</sub> / p<sub>w</sub>). Con λ = 1 se ordena por probabilidad; con λ = 0, por especificidad. Sievert y Shirley (2014) encontraron un valor útil hacia 0,6.</p>
     <div class="row"><label class="inline">λ <input type="range" id="rel-lam" min="0" max="1" step="0.1" value="0.6"> <b id="rel-lam-v">0,6</b></label>
       <label class="inline">Términos por tópico <input type="number" id="rel-k" min="3" max="10" value="6"></label></div>
@@ -230,7 +230,7 @@
 <section class="panel" id="p-nube" role="tabpanel" aria-labelledby="t-nube">
   <div class="card">
     <h2>Nube de palabras: cada decisión cambia lo que se ve</h2>
-    <div class="meta"><span class="tag real">Frecuencias calculadas en el navegador</span><span class="tag illus">Disposición con un algoritmo propio del mismo principio que WordCloud (no es la biblioteca)</span><span class="tag">Clase 19 · 10.7</span></div>
+    <div class="meta"><span class="tag real">Frecuencias calculadas en el navegador</span><span class="tag illus">Disposición con un algoritmo propio del mismo principio que WordCloud (no es la biblioteca)</span></div>
     <div class="row">
       <label class="inline">Texto <select id="nube-corpus"></select></label>
       <label class="inline">Palabras vacías <select id="nube-vac">
@@ -253,7 +253,7 @@
 <section class="panel" id="p-tend" role="tabpanel" aria-labelledby="t-tend">
   <div class="card">
     <h2>Dos nubes: Parte I (1605) frente a Parte II (1615) del Quijote</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 19 · 10.7 (RadCloud)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Cada palabra se coloca según el log<sub>2</sub> de su frecuencia relativa (con suavizado de Laplace) en la Parte II frente a la I; el tamaño indica sus apariciones totales. Palabras vacías de spaCy.</p>
     <div class="row"><label class="inline">Más frecuentes de cada parte <input type="number" id="dos-n" min="20" max="300" value="100"></label> <span class="small" id="dos-comunes"></span></div>
     <svg id="dos-svg" viewBox="0 0 1060 360" role="img" aria-label="Comparación de las dos partes"></svg>
@@ -272,9 +272,9 @@
 <!-- ============================================================ 8 -->
 <section class="panel" id="p-cooc" role="tabpanel" aria-labelledby="t-cooc">
   <div class="card">
-    <h2>Coocurrencias: el ejercicio 8 del tema («cielo»)</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 19 · 10.8</span></div>
-    <p>Las 15 frases del ejercicio. Compara el procedimiento del tema (bigramas convertidos en conjunto, minúsculas después) con recuentos de verdad.</p>
+    <h2>Coocurrencias de palabras: «cielo»</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
+    <p>Compara distintas formas de medir la coocurrencia en 15 frases: bigramas únicos, pares adyacentes con frecuencia, palabras de una misma frase y ventanas de contexto.</p>
     <div class="seggroup" id="cooc-metodo" role="group" aria-label="Método"></div>
     <div class="row"><label class="inline">Objetivo <input type="text" id="cooc-obj" value="cielo"></label>
       <label class="inline">Ventana ± <input type="number" id="cooc-k" min="1" max="6" value="2"></label></div>
@@ -293,7 +293,7 @@
 <section class="panel" id="p-arbol" role="tabpanel" aria-labelledby="t-arbol">
   <div class="card">
     <h2>Concordancia y árbol de palabras (Word Tree)</h2>
-    <div class="meta"><span class="tag real">Árbol calculado en el navegador</span><span class="tag">Clase 19 · 10.8 · sin Graphviz</span></div>
+    <div class="meta"><span class="tag real">Árbol calculado en el navegador</span></div>
     <div class="row">
       <label class="inline">Corpus <select id="arb-corpus"><option value="q">Quijote (raíces precalculadas)</option><option value="r">Reseñas del Tema 7 (cualquier raíz)</option></select></label>
       <label class="inline">Raíz <select id="arb-raiz-q"></select><input type="text" id="arb-raiz-r" value="calidad" style="display:none"></label>
@@ -310,7 +310,7 @@
 <section class="panel" id="p-gram" role="tabpanel" aria-labelledby="t-gram">
   <div class="card">
     <h2>Árboles de dependencias</h2>
-    <div class="meta"><span class="tag pre">Análisis precalculados con spaCy 3.8.16 (es_core_news_sm 3.8.0)</span><span class="tag">Clase 19 · 10.8 · ejercicio 7</span></div>
+    <div class="meta"><span class="tag pre">Análisis precalculados con spaCy 3.8.16 (es_core_news_sm 3.8.0)</span></div>
     <div class="row"><label class="inline">Frase <select id="dep-frase"></select></label></div>
     <svg id="dep-svg" viewBox="0 0 1060 300" role="img" aria-label="Arcos de dependencias"></svg>
     <div id="dep-tabla"></div>
@@ -328,7 +328,7 @@
 <section class="panel" id="p-huella" role="tabpanel" aria-labelledby="t-huella">
   <div class="card">
     <h2>Huella literaria del Quijote: un cuadrado por capítulo</h2>
-    <div class="meta"><span class="tag pre">Rasgos por capítulo precalculados</span><span class="tag">Clase 20 · 10.9 (Keim y Oelke, 2007)</span></div>
+    <div class="meta"><span class="tag pre">Rasgos por capítulo precalculados</span><span class="tag">Keim y Oelke, 2007</span></div>
     <div class="seggroup" id="hu-rasgo" role="group" aria-label="Rasgo"></div>
     <div class="grid2"><div id="hu-grid"></div><div id="hu-info"></div></div>
   </div>
@@ -469,7 +469,7 @@
     ];
     $("mapa-tema").innerHTML = COLS.map(([t, c, cards]) => `<div class="mt-col"><h3 style="background:${c}">${t}</h3>` +
       cards.map(([id, n, gl, tit, ap, hall]) => `<button type="button" class="mt-card" style="border-left-color:${c}" data-ir="${id}"><svg viewBox="0 0 100 56" aria-hidden="true">${g[gl](c)}</svg>` +
-        `<b>${tit}</b><span class="small">Apartado ${ap}</span><span class="hall">${hall}</span><span class="ir" style="color:${c === "#F57C00" ? "#B45309" : c}">Pestaña ${n} →</span></button>`).join("") + "</div>").join("");
+        `<b>${tit}</b><span class="hall">${hall}</span><span class="ir" style="color:${c === "#F57C00" ? "#B45309" : c}">Pestaña ${n} →</span></button>`).join("") + "</div>").join("");
     $("mapa-tema").addEventListener("click", (e) => { const b = e.target.closest(".mt-card"); if (b) Clase.irAPestana(b.dataset.ir); });
   };
 
@@ -635,7 +635,7 @@
   // ================================================================ 5 · tópicos
   INIT["p-top"] = function () {
     const N = D.noticias, th = D.theta, pal = D.topicos_palabras;
-    const ordenes = [[[90, 0, -90, 180], "orden del tema: 1 arriba, 2 derecha, 3 abajo, 4 izquierda"], [[90, -90, 0, 180], "1 y 2 opuestos"], [[90, 0, 180, -90], "1 y 3 opuestos"]];
+    const ordenes = [[[90, 0, -90, 180], "1 arriba, 2 derecha, 3 abajo, 4 izquierda"], [[90, -90, 0, 180], "1 y 2 opuestos"], [[90, 0, 180, -90], "1 y 3 opuestos"]];
     let ord = 0, sel = N.ids.indexOf("e11");
     function pinta() {
       const g = ordenes[ord][0], Y = L.radviz(th, g), svg = $("rv-svg"); limpiar(svg);
@@ -660,7 +660,7 @@
       const fila = (j) => `<tr><td>${N.ids[j]} · ${esc(N.seccion[j])}</td>${th[j].map((x, k) => `<td class="num" style="background:${x > 0.25 ? "#FFF3E0" : "transparent"}">${dec(x)}</td>`).join("")}</tr>`;
       $("rv-info").innerHTML = `<p><b>${N.ids[sel]}</b>: «${esc(N.titular[sel])}»</p><table><tr><th>Mezcla θ</th>${pal.map((p, k) => `<th class="num">t${k + 1}</th>`).join("")}</tr>${fila(sel)}${fila(cerca[0])}</table>` +
         `<p class="small">La noticia más cercana en el RadViz es ${N.ids[cerca[0]]}, a ${dec(cerca[1])}: compara sus mezclas, no sus posiciones.</p>` +
-        `<div class="warnbox">e11 (salud y economía) y d10 (deportes y tecnología) caen casi en el centro con el orden del tema: mezclas opuestas, misma posición.</div>`;
+        `<div class="warnbox">e11 (salud y economía) y d10 (deportes y tecnología) caen casi en el centro con este orden de los ejes: mezclas opuestas, misma posición.</div>`;
     }
     segs($("rv-orden"), ordenes.map((o, i) => [i, o[1]]), 0, (v) => { ord = v; pinta(); });
     pinta();
@@ -702,7 +702,7 @@
     const EJ4 = "Este es un ejemplo de documento de texto. Este documento contiene palabras repetidas.";
     const corpus = { todo: ["Quijote completo", Q.frecuencias.todo], I: ["Quijote, Parte I", Q.frecuencias.I], II: ["Quijote, Parte II", Q.frecuencias.II],
       pos: ["Reseñas positivas (Tema 7)", pol.positiva], neg: ["Reseñas negativas (Tema 7)", pol.negativa],
-      ej4: ["Frase del ejercicio 4 del tema", L.masComunes(L.contar(L.tokens(EJ4)))] };
+      ej4: ["Frase de ejemplo", L.masComunes(L.contar(L.tokens(EJ4)))] };
     opciones($("nube-corpus"), Object.entries(corpus).map(([k, v]) => [k, v[0]]), "todo");
     const PAL = ["#1E88E5", "#00897B", "#8E24AA", "#F57C00", "#1F2933"];
     function frecs() {
@@ -860,7 +860,7 @@
       $("cooc-tabla").innerHTML = `<div class="info">${nota}</div><table><tr><th>Palabra</th><th class="num">Recuento</th></tr>${res.map(([w, c]) => `<tr><td>${esc(w)}</td><td class="num">${metodo === "tema" ? "—" : c}</td></tr>`).join("")}</table>` +
         (res.length ? "" : `<p class="small">«${esc(obj)}» no aparece en las frases del ejercicio.</p>`);
     }
-    segs($("cooc-metodo"), [["tema", "Como el tema"], ["adyacentes", "Adyacentes con recuento"], ["frase", "Misma frase"], ["ventana", "Ventana"]], metodo, (v) => { metodo = v; pinta(); });
+    segs($("cooc-metodo"), [["tema", "Bigramas únicos"], ["adyacentes", "Adyacentes con recuento"], ["frase", "Misma frase"], ["ventana", "Ventana"]], metodo, (v) => { metodo = v; pinta(); });
     $("cooc-obj").addEventListener("change", pinta);
     $("cooc-k").addEventListener("change", pinta);
     pinta();

@@ -185,7 +185,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción" aria-current="page">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="sig" href="02_texto_como_dato.html">Tema 2 · El texto como dato ›</a></nav>
   <h1><span class="num-tema">TEMA 1</span>Introducción al PLN y la minería de textos</h1>
-  <p>Qué es el PLN y en qué se diferencia de la minería de textos, su historia, sus aplicaciones y por qué el lenguaje es difícil para una máquina. <span class="cuando">Clases 1 y 2 · semana 1</span></p>
+  <p>Qué es el PLN y en qué se diferencia de la minería de textos, su historia, sus aplicaciones y por qué el lenguaje es difícil para una máquina.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M9 8h30a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H21l-9 8v-8H9a5 5 0 0 1-5-5V13a5 5 0 0 1 5-5z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M12 16h24M12 24h15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
 </header>
 
@@ -205,7 +205,7 @@
 <section class="panel active" id="p-pron" role="tabpanel" aria-labelledby="t-pron">
   <div class="card">
     <h2>Contar palabras no es PLN; contar pronombres, sí</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Ilustración: no ejecuta ningún modelo</span></div>
+    <div class="meta"><span class="tag illus">Ilustración: no ejecuta ningún modelo</span></div>
     <p>La misma frase pasa por tres programas. Solo el tercero necesita saber qué es cada palabra: ese es el que hace PLN.</p>
     <div class="row" id="pronChips" aria-label="Elegir frase"></div>
     <textarea id="pronText" aria-label="Frase propia" hidden></textarea>
@@ -232,7 +232,7 @@
       <span><i class="sw" style="background:var(--ok-l);border:2px dashed var(--aplic)"></i>pronombre que la lista no ve</span>
     </div>
     <div class="msg" id="pronMsg" hidden></div>
-    <p class="small" style="margin-top:.8rem">El etiquetado gramatical que haría el trabajo del programa C se estudia en el Tema 3; cómo separar «dímelo» en sus piezas, en el Tema 2.</p>
+    <p class="small" style="margin-top:.8rem">El etiquetado gramatical distingue pronombres de otras palabras. La tokenización permite separar formas como «dímelo» en sus componentes.</p>
   </div>
 </section>
 
@@ -240,7 +240,7 @@
 <section class="panel" id="p-mineria" role="tabpanel" aria-labelledby="t-mineria" hidden>
   <div class="card">
     <h2>¿PLN, minería de textos o las dos cosas?</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartados 1.2 y 1.3 · Tabla 1 y Figura 1</span><span class="tag illus">Casos escritos para la clase</span></div>
+    <div class="meta"><span class="tag illus">Casos ilustrativos</span></div>
     <p>Cada caso está colocado según su <b>objetivo principal</b>: comprender o generar lenguaje (PLN) o sacar conocimiento de muchos textos (minería de textos). Pulsa un caso para ver por qué está ahí.</p>
     <div class="row" id="vennCtrl"></div>
     <div class="venn-wrap">
@@ -256,7 +256,7 @@
         <dt>Casos de uso</dt><dd>Decisiones basadas en datos; sentimiento y opiniones de clientes.</dd>
         <dt>Mecanismos</dt><dd>Análisis semántico, clasificación de documentos, resúmenes, detección de temas.</dd></dl></div>
     </div>
-    <p class="small" style="margin-top:.6rem">La minería de textos usa técnicas de PLN junto con las de la minería de datos (Figura 1 del tema, Türegün, 2019); por eso hay casos en la intersección.</p>
+    <p class="small" style="margin-top:.6rem">La minería de textos usa técnicas de PLN junto con las de la minería de datos (Türegün, 2019); por eso hay casos en la intersección.</p>
   </div>
 </section>
 
@@ -264,8 +264,7 @@
 <section class="panel" id="p-hist" role="tabpanel" aria-labelledby="t-hist" hidden>
   <div class="card hist">
     <h2>Historia del PLN: del autómata a los LLM</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.4 · Figuras 2-6</span></div>
-    <p>Cada carril es un enfoque. Se ve el péndulo: reglas y lógica al principio, estadística desde los ochenta, redes neuronales desde 2013. Avanza hito a hito con las flechas (la escala de tiempo se amplía desde 1990, donde hay más hitos).</p>
+        <p>Cada carril es un enfoque. Se ve el péndulo: reglas y lógica al principio, estadística desde los ochenta, redes neuronales desde 2013. Avanza hito a hito con las flechas (la escala de tiempo se amplía desde 1990, donde hay más hitos).</p>
     <div class="row" id="histFilters" aria-label="Enfoques visibles"></div>
     <svg id="histSvg" viewBox="0 0 1200 300" role="img" aria-label="Línea de tiempo de los hitos del PLN por enfoque"></svg>
     <div id="histPasos"></div>
@@ -277,12 +276,10 @@
 <section class="panel" id="p-apl" role="tabpanel" aria-labelledby="t-apl" hidden>
   <div class="card">
     <h2>Dónde está el PLN: una aplicación, un ejemplo</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.5 · Figura 8</span><span class="tag illus">Ejemplos escritos para la clase; no son salidas de un producto concreto</span></div>
+    <div class="meta"><span class="tag illus">Ejemplos ficticios; no son salidas de un producto concreto</span></div>
     <div class="apps-nav" id="appsNav"></div>
     <div id="appsPasos"></div>
     <div class="escena" id="appEscena"></div>
-    <div class="row" style="margin-top:1rem"><span>Se estudia en:</span><span class="tema-chip" id="appTema"></span></div>
-    <div id="appNota"></div>
   </div>
 </section>
 
@@ -290,7 +287,7 @@
 <section class="panel" id="p-niv" role="tabpanel" aria-labelledby="t-niv" hidden>
   <div class="card">
     <h2>Una frase, seis niveles de conocimiento</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.6 · Figura 9</span><span class="tag illus">Ilustración construida a mano</span></div>
+    <div class="meta"><span class="tag illus">Ilustración construida a mano</span></div>
     <p>Lo que una persona dice a su asistente de voz. Cada nivel resuelve una parte distinta de la frase.</p>
     <p class="utter" id="utter"></p>
     <div class="levels" id="levels"></div>
@@ -299,7 +296,7 @@
   </div>
   <div class="card">
     <h2>Cada fallo, en el nivel que falla</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Fallos escritos para la clase</span></div>
+    <div class="meta"><span class="tag illus">Errores ilustrativos</span></div>
     <div class="row" id="tableroCtrl"></div>
     <div class="bandeja" id="bandeja" hidden></div>
     <div class="tablero" id="tablero"></div>
@@ -311,7 +308,7 @@
 <section class="panel" id="p-amb" role="tabpanel" aria-labelledby="t-amb" hidden>
   <div class="card">
     <h2>La ambigüedad aparece en todos los niveles</h2>
-    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Ejemplos construidos a mano</span></div>
+    <div class="meta"><span class="tag illus">Ejemplos construidos a mano</span></div>
     <div class="row" id="ambNav"></div>
     <div class="row"><span id="ambPasos"></span><span id="ambCtrl"></span></div>
     <div class="amb-frase" id="ambFrase"></div>
@@ -325,7 +322,7 @@
 <section class="panel" id="p-retos" role="tabpanel" aria-labelledby="t-retos" hidden>
   <div class="card">
     <h2>Seis fallos y el reto que hay detrás</h2>
-    <div class="meta"><span class="tag">Clase 2 · problema de identificación de retos actuales</span><span class="tag illus">Casos ilustrativos, no salidas de un producto concreto</span></div>
+    <div class="meta"><span class="tag illus">Casos ilustrativos, no salidas de un producto concreto</span></div>
     <p><span class="marca p" style="vertical-align:middle"></span> reto principal &nbsp; <span class="marca a" style="vertical-align:middle"></span> también defendible. Muchos retos actuales son retos clásicos del lenguaje a mayor escala. Pulsa una fila para ver la explicación.</p>
     <div class="row" id="retosCtrl"></div>
     <div style="overflow-x:auto"><table class="matriz" id="matriz"></table></div>
@@ -439,7 +436,7 @@ function pintarPron(k) {
     $('#cntC').innerHTML = cuenta(nC, 'pronombres');
     $('#pronMsg').textContent = ex.m;
   } else {
-    $('#toksC').innerHTML = '<span class="small">Para una frase nueva haría falta un etiquetador gramatical (Tema 3). Comprobad juntos las palabras naranjas de la fila B: artículos, el adverbio «sí» y pronombres pegados al verbo («dímelo») son las trampas habituales.</span>';
+    $('#toksC').innerHTML = '<span class="small">Para una frase nueva haría falta un etiquetador gramatical (Tema 3). Comprueba las palabras naranjas de la fila B: artículos, el adverbio «sí» y pronombres pegados al verbo («dímelo») son las trampas habituales.</span>';
     $('#cntC').innerHTML = cuenta('?', 'pronombres');
     $('#pronMsg').textContent = 'En naranja, lo que la lista toma por pronombre.';
   }
@@ -454,8 +451,8 @@ const CASOS_VENN = [
   [3, 'Asistente de voz', 'PLN', 95, 290, 'Un asistente de voz entiende «pon una alarma a las siete» y contesta.', 'Reconoce el habla, interpreta la intención y genera la respuesta: es PLN.'],
   [6, 'Corrector', 'PLN', 95, 350, 'Un corrector propone «a ver» en lugar de «haber» en «Vamos haber qué pasa».', 'Necesita conocimiento de la lengua para corregir una frase concreta: es PLN.'],
   [8, 'Chatbot', 'PLN', 95, 410, 'Un chatbot redacta la respuesta a la reclamación de un cliente.', 'Genera lenguaje dentro de un diálogo: es PLN.'],
-  [5, 'Filtro de spam', 'Las dos', 400, 255, 'Un filtro decide si cada correo entrante es spam.', 'Es una aplicación clásica de PLN (apartado 1.5) que se resuelve clasificando documentos, técnica central de la minería de textos. Por eso cae en la intersección.'],
-  [7, 'Informes clínicos', 'Las dos', 400, 375, 'Un hospital extrae de 50.000 informes qué fármacos se mencionan con cada diagnóstico.', 'El objetivo es conocimiento sobre la colección (minería de textos), pero lo consigue con reconocimiento de entidades, una técnica de PLN que veremos en el Tema 3.'],
+  [5, 'Filtro de spam', 'Las dos', 400, 255, 'Un filtro decide si cada correo entrante es spam.', 'Es una aplicación clásica de PLN que se resuelve clasificando documentos, técnica central de la minería de textos. Por eso cae en la intersección.'],
+  [7, 'Informes clínicos', 'Las dos', 400, 375, 'Un hospital extrae de 50.000 informes qué fármacos se mencionan con cada diagnóstico.', 'El objetivo es conocimiento sobre la colección (minería de textos), pero lo consigue con reconocimiento de entidades, una técnica de PLN.'],
   [2, 'Encuesta', 'Minería de textos', 575, 255, 'Un panel muestra los temas más repetidos en 20.000 respuestas abiertas de una encuesta.', 'Saca conocimiento de una colección (detección de temas, análisis de encuestas): es minería de textos.'],
   [4, 'Reseñas', 'Minería de textos', 575, 375, 'Una cadena detecta en sus reseñas que las quejas por retrasos han crecido este mes.', 'Busca patrones y tendencias accionables en muchos textos de clientes: es minería de textos.'],
 ];
@@ -542,7 +539,7 @@ const HITOS = [
   [1996, 'estad', 'T', 'Las probabilidades se vuelven estándar', 'Análisis, etiquetado y discurso incorporan probabilidades; la web dispara la necesidad de recuperar y extraer información.', 'Tema 1, apartado 1.4', '1994-1999'],
   [2000, 'estad', 'T', 'Aprendizaje supervisado en PLN', 'SVM, máxima entropía, regresión logística y modelos bayesianos.', 'Tema 1, apartado 1.4', 'Años 2000'],
   [2005, 'estad', 'T', 'Aprendizaje no supervisado (desde 2005)', 'Aplicaciones sin anotación: traducción, modelado de temas, etiquetado.', 'Tema 1, apartado 1.4'],
-  [2006, 'neuro', 'T', 'Hinton, Osindero y Teh: redes profundas', 'Entrenamiento capa a capa que populariza el término deep learning. Corrección al tema: el término ya lo usaron Dechter (1986) y Aizenberg et al. (2000).', 'Hinton et al. (2006), Neural Computation 18(7)'],
+  [2006, 'neuro', 'T', 'Hinton, Osindero y Teh: redes profundas', 'Entrenamiento capa a capa que populariza el término deep learning. El término ya lo usaron Dechter (1986) y Aizenberg et al. (2000).', 'Hinton et al. (2006), Neural Computation 18(7)'],
   [2013, 'neuro', 'A', 'word2vec', 'Embeddings de palabras aprendidos de grandes corpus (Tema 5).', 'Mikolov et al. (2013)'],
   [2014, 'neuro', 'A', 'Seq2seq y atención', 'Redes que transforman secuencias y aprenden a «atender» (Temas 5 y 9).', 'Sutskever et al. (2014); Bahdanau et al. (2014)'],
   [2016, 'neuro', 'A', 'Traducción neuronal en producción', 'Google sustituye la traducción estadística basada en frases: un 60 % menos de errores de media.', 'Wu et al. (2016)'],
@@ -634,8 +631,7 @@ const APLIC = [
   {n: 'Búsqueda de respuestas', tema: 'Temas 4 y 9', c: 'var(--aplic)',
    in: '<div class="burb u">¿En qué año se publicó la primera parte del Quijote?</div>',
    out: '<div class="burb a"><b>En 1605.</b></div><div class="small">Fragmento del que sale la respuesta:</div><div class="burb">«…la primera parte de <i>El ingenioso hidalgo don Quijote de la Mancha</i> se publicó en Madrid en <mark>1605</mark>…»</div>',
-   nec: ['Entender la pregunta completa', 'Extraer el fragmento que responde', 'Desambiguar y resumir varias fuentes'],
-   nota: 'El tema dice que los buscadores responden fechas y lugares «sin necesidad de aplicar PLN». Hoy sí lo aplican: Google incorporó BERT a la búsqueda el 25/10/2019.'},
+   nec: ['Entender la pregunta completa', 'Extraer el fragmento que responde', 'Desambiguar y resumir varias fuentes']},
   {n: 'Autocompletado', tema: 'Temas 4 y 9', c: 'var(--aplic)',
    in: '<div class="burb u">Nos vemos el lunes por la…</div>',
    out: '<div class="small">Sugerencias, de más a menos probable:</div><div class="burb a">mañana</div><div class="burb a" style="opacity:.75">tarde</div><div class="burb a" style="opacity:.5">noche</div>',
@@ -647,15 +643,14 @@ const APLIC = [
   {n: 'Traducción automática', tema: 'Tema 9', c: 'var(--aplic)',
    in: '<div class="burb u">Me estás tomando el pelo.</div>',
    out: '<div class="burb a">You\'re pulling my leg.</div><div class="small">Palabra a palabra saldría «You are taking my hair»: hay que traducir la expresión, no las palabras.</div>',
-   nec: ['Contexto de la frase o del documento', 'Expresiones hechas y ambigüedad'],
-   nota: 'El tema dice que los mejores resultados son de métodos estadísticos basados en frases. Desde 2016 domina la traducción neuronal (Wu et al., 2016: un 60 % menos de errores de media); hoy, con Transformers.'},
+   nec: ['Contexto de la frase o del documento', 'Expresiones hechas y ambigüedad']},
   {n: 'Agentes conversacionales', tema: 'Temas 8 y 9', c: 'var(--neuronal)',
    in: '<div class="burb u">Quiero reservar una tutoría el jueves.</div><div class="burb u">A las cinco.</div>',
    out: '<div class="burb a">¿A qué hora te viene bien?</div><div class="burb a">Hecho: tutoría el <mark>jueves</mark> a las <mark>17:00</mark>.</div>',
    nec: ['Entender cada turno', 'Mantener el estado (el jueves viene del turno anterior)', 'Generar la respuesta']},
   {n: 'Análisis de redes sociales', tema: 'Tema 7', c: 'var(--estad)',
    in: '<div class="burb">«Me encanta la batería nueva»</div><div class="burb">«Llegó roto, no lo recomiendo»</div><div class="burb">«Lo compré el martes»</div><div class="burb">«Buena pantalla, pero caro»</div>',
-   out: '<div class="small">Opinión sobre el producto en estos cuatro mensajes:</div><div class="barra"><span style="width:25%;background:var(--ok)">1 +</span><span style="width:25%;background:var(--gris)">1 =</span><span style="width:25%;background:var(--bad)">1 −</span><span style="width:25%;background:var(--warn)">1 mixta</span></div><div class="small">«Buena pantalla, pero caro» opina de dos aspectos distintos: lo veremos en el Tema 7.</div>',
+   out: '<div class="small">Opinión sobre el producto en estos cuatro mensajes:</div><div class="barra"><span style="width:25%;background:var(--ok)">1 +</span><span style="width:25%;background:var(--gris)">1 =</span><span style="width:25%;background:var(--bad)">1 −</span><span style="width:25%;background:var(--warn)">1 mixta</span></div><div class="small">«Buena pantalla, pero caro» expresa opiniones sobre dos aspectos distintos.</div>',
    nec: ['Extraer lo relevante de cada mensaje', 'Clasificarlo: positivo, negativo o neutro']},
   {n: 'Correctores', tema: 'Temas 2 y 4', c: 'var(--texto)',
    in: '<div class="burb u">Vamos haber qué pasa.</div><div class="burb u">Haber si vienes.</div>',
@@ -678,8 +673,6 @@ function pintarApl(k) {
   $('#appEscena').innerHTML = `<div class="esc-in"><div class="esc-lbl">Entrada</div>${a.in}</div>` +
     `<div class="esc-sis"><b>${esc(a.n)}</b><ul>${a.nec.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` +
     `<div class="esc-out"><div class="esc-lbl">Salida</div>${a.out}</div>`;
-  $('#appTema').textContent = a.tema;
-  $('#appNota').innerHTML = a.nota ? `<div class="warnbox"><b>Actualización del tema:</b> ${esc(a.nota)}</div>` : '';
 }
 const pasosApl = Clase.pasos($('#appsPasos'), {total: APLIC.length, pintar: pintarApl, etiqueta: k => APLIC[k].n});
 
@@ -715,7 +708,7 @@ const pasosNiv = Clase.pasos($('#nivPasos'), {total: LEVELS.length, pintar: pint
 const FALLOS = [
   {q: 'El asistente transcribe «Pon la maleta en la vaca».', a: 0, e: '«baca» y «vaca» suenan igual: falta usar el contexto al pasar del sonido a la escritura.'},
   {q: 'No relaciona «cantábamos» con el verbo «cantar».', a: 1, e: 'Reconocer variaciones de una palabra (raíz y terminaciones) es conocimiento morfológico.'},
-  {q: 'Genera «Las puerta están abiertas».', a: 1, b: 2, e: 'Falla la concordancia de número: se apoya en la morfología (el plural «-s») y en la sintaxis (qué palabras deben concordar). El test del Tema 1 acepta ambas.'},
+  {q: 'Genera «Las puerta están abiertas».', a: 1, b: 2, e: 'Falla la concordancia de número: se apoya en la morfología (el plural «-s») y en la sintaxis (qué palabras deben concordar).'},
   {q: 'Entiende que en «Al niño lo muerde el perro» el que muerde es el niño.', a: 2, e: 'La «a» marca al niño como complemento directo aunque vaya delante: es una relación estructural.'},
   {q: 'Traduce «Me senté en el banco del parque» como «I sat on the park bank».', a: 3, e: 'Ha elegido el sentido equivocado de «banco» (semántica léxica): aquí es un asiento, «bench».'},
   {q: 'Clasifica «No está nada mal» como una opinión negativa.', a: 3, e: 'El significado de la combinación (semántica composicional) es positivo aunque aparezcan «no» y «mal».'},
@@ -747,7 +740,7 @@ function dibujarTablero(sel) {
     const f = FALLOS[sel];
     $('#falloMsg').innerHTML = `<b style="color:${LEVELS[f.a].c}">${esc(LEVELS[f.a].n)}${f.b !== undefined ? ' y ' + esc(LEVELS[f.b].n) : ''}:</b> ${esc(f.e)}`;
   } else if (sel === undefined) {
-    $('#falloMsg').textContent = tableroOculto ? 'Pregunta a la clase qué nivel falla y pulsa el fallo.' : 'Pulsa un fallo para ver la explicación.';
+    $('#falloMsg').textContent = tableroOculto ? 'Identifica qué nivel falla y pulsa el ejemplo para comprobarlo.' : 'Pulsa un fallo para ver la explicación.';
   }
 }
 Clase.botonPregunta($('#tableroCtrl'), oculto => {
@@ -800,7 +793,7 @@ const AMB = [
   {s: '«Genial: dos horas esperando la cena.»', t: 'Ironía', et: 'Lenguaje figurado: ironía', c: '#F57C00',
    l: [['Elogio sincero', h => h.innerHTML = '<p style="text-align:center"><span class="pol" style="background:var(--ok-l);color:var(--ok)">Genial<sup>+</sup></span> dos horas esperando la cena</p><p class="small" style="text-align:center">Un método que suma palabras positivas y negativas ve «genial» y concluye: positiva.</p>'],
        ['Queja irónica', h => h.innerHTML = '<p style="text-align:center"><span class="pol" style="background:var(--ok-l);color:var(--ok)">Genial<sup>+</sup></span> <span class="pol" style="background:var(--bad-l);color:var(--bad)">dos horas esperando<sup>−</sup></span> la cena</p><p class="small" style="text-align:center">Lo que se dice es positivo; lo que se quiere decir, negativo.</p>']],
-   x: 'Las palabras positivas engañan a un clasificador que solo cuenta palabras. Lo veremos en análisis de sentimientos (Tema 7).'},
+   x: 'Las palabras positivas engañan a un clasificador que solo cuenta palabras.'},
   {s: '«Todos los alumnos no aprobaron.»', t: 'Alcance de la negación', et: 'Ambigüedad del alcance de la negación', c: '#00897B',
    l: [['Ninguno aprobó', h => h.innerHTML = alumnos(0, 10) + '<p class="small" style="text-align:center">La negación va con el verbo: para cada alumno, «no aprobó».</p>'],
        ['No aprobaron todos', h => h.innerHTML = alumnos(6, 10) + '<p class="small" style="text-align:center">La negación va con «todos»: no es cierto que todos aprobaran (por ejemplo, 6 de 10).</p>']],
@@ -836,7 +829,7 @@ function pintarAmb(k) {
   $('#ambRes').innerHTML = '<b>Qué la resuelve:</b> ' + esc(a.x);
 }
 const pasosAmb = Clase.pasos($('#ambPasos'), {total: AMB.length, pintar: k => { ambVisto = false; pintarAmb(k); }, etiqueta: k => AMB[k].t});
-Clase.botonPregunta($('#ambCtrl'), oculto => { ambOculto = oculto; ambVisto = false; pintarAmb(pasosAmb.k); }, {ver: 'Ocultar las lecturas para preguntar', ocultas: 'Mostrar siempre las lecturas'});
+Clase.botonPregunta($('#ambCtrl'), oculto => { ambOculto = oculto; ambVisto = false; pintarAmb(pasosAmb.k); }, {ver: 'Ocultar las lecturas', ocultas: 'Mostrar siempre las lecturas'});
 alMostrar['p-amb'] = () => pintarAmb(pasosAmb.k);
 window.addEventListener('resize', () => { if (!$('#p-amb').hidden) pintarAmb(pasosAmb.k); });
 

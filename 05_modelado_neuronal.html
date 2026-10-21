@@ -136,7 +136,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)" aria-current="page">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="04_modelado_lenguaje.html">‹ Tema 4 · Modelado del lenguaje</a><a class="sig" href="06_topicos.html">Tema 6 · Tópicos ›</a></nav>
   <h1><span class="num-tema">TEMA 5</span>Modelado de lenguaje neuronal (I)</h1>
-  <p>De contar a aprender vectores: skip-gram y CBOW, FastText, redes recurrentes, atención, el bloque Transformer y BERT. <span class="cuando">Clases 7 y 8 · semanas 5 y 6</span></p>
+  <p>De contar a aprender vectores: skip-gram y CBOW, FastText, redes recurrentes, atención, el bloque Transformer y BERT.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 42V6M6 42h36" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity=".45" stroke-linecap="round"/><path d="M6 42 35 14M6 42 40 23M6 42 15 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><circle cx="35" cy="14" r="4"/><circle cx="40" cy="23" r="4"/><circle cx="15" cy="9" r="4" fill-opacity=".55"/></g></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -157,7 +157,7 @@
   <div class="card">
     <h2>Del texto a los pares de entrenamiento</h2>
     <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
-    <p>Word2Vec aprende de las <strong>ventanas</strong> que rodean a cada palabra (tema, apartado 5.2, Figuras 2 y 3). <strong>Skip-gram</strong> usa la palabra central para predecir cada palabra de su ventana; <strong>CBOW</strong> usa la ventana para predecir la palabra central. Los pares salen del propio texto: es aprendizaje autosupervisado. Pulsa una palabra para hacerla central.</p>
+    <p>Word2Vec aprende de las <strong>ventanas</strong> que rodean a cada palabra. <strong>Skip-gram</strong> usa la palabra central para predecir cada palabra de su ventana; <strong>CBOW</strong> usa la ventana para predecir la palabra central. Los pares salen del propio texto: es aprendizaje autosupervisado. Pulsa una palabra para hacerla central.</p>
     <div class="row">
       <input type="text" id="ven-frase" value="El cliente ha comprado un coche rojo." aria-label="Frase" style="flex:1">
       <label class="inline small" for="ven-v">Ventana <input type="range" id="ven-v" min="1" max="5" value="2"> <b id="ven-vv">2</b></label>
@@ -176,7 +176,7 @@
 <section class="panel" id="p-vec" role="tabpanel" aria-labelledby="t-vec">
   <div class="card">
     <h2>Palabras parecidas: TF-IDF frente a Word2Vec</h2>
-    <div class="meta"><span class="tag pre">Precalculado en Python con el Quijote completo (gensim 4.4.0; los mismos modelos de la Clase 7)</span></div>
+    <div class="meta"><span class="tag pre">Precalculado en Python con el Quijote completo (gensim 4.4.0)</span></div>
     <p>Con TF-IDF, una palabra es su columna en la matriz capítulos × palabras: se parecen las que <strong>aparecen en los mismos capítulos</strong>. Con skip-gram y CBOW, una palabra es una fila de la matriz de embeddings aprendida de las ventanas: se parecen las que <strong>se usan igual</strong>. Coseno entre paréntesis.</p>
     <div class="row"><label for="vec-w" class="small">Palabra</label><select id="vec-w"></select><span class="small" id="vec-frec"></span></div>
     <div id="vec-aviso"></div>
@@ -187,7 +187,7 @@
     <h3 style="margin-top:0">Analogías con el skip-gram del Quijote</h3>
     <div class="meta"><span class="tag pre">Precalculado</span></div>
     <table id="vec-analog"><thead><tr><th>operación</th><th>5 palabras más cercanas</th><th class="num">puesto de la esperada</th></tr></thead><tbody></tbody></table>
-    <p class="small">El tema (p. 7) escribe la analogía como una igualdad; es una aproximación que depende mucho del corpus. Se excluyen las palabras de entrada.</p>
+    <p class="small">Las analogías vectoriales son aproximaciones que dependen del corpus. Se excluyen las palabras de entrada.</p>
   </div>
   <div class="card">
     <h3 style="margin-top:0">Proyectar 100 dimensiones en 2 (PCA)</h3>
@@ -203,7 +203,7 @@
   <div class="card">
     <h2>Buscar capítulos con descripciones</h2>
     <div class="meta"><span class="tag pre">Puestos y capítulos precalculados en Python</span><span class="tag real">Resumen calculado en el navegador</span></div>
-    <p>Doce descripciones de episodios, redactadas para la clase sin copiar el texto. Para cada una se ordenan los 126 capítulos por coseno y se mira en qué <strong>puesto</strong> sale el correcto. El <strong>MRR</strong> es la media de 1/puesto: vale 1 si el correcto sale siempre primero.</p>
+    <p>Doce descripciones de episodios, redactadas sin copiar el texto. Para cada una se ordenan los 126 capítulos por coseno y se mira en qué <strong>puesto</strong> sale el correcto. El <strong>MRR</strong> es la media de 1/puesto: vale 1 si el correcto sale siempre primero.</p>
     <table id="bus-res"><thead><tr><th>representación</th><th class="num">puesto medio</th><th class="num">MRR</th><th class="num">en el top 3</th></tr></thead><tbody></tbody></table>
     <h3>Puesto del capítulo correcto en cada consulta (cuanto más a la izquierda, mejor)</h3>
     <svg id="bus-puntos" class="rango" viewBox="0 0 1000 250" role="img" aria-label="Puesto del capítulo correcto por consulta y representación"></svg>
@@ -232,11 +232,11 @@
     <h3>¿Qué piezas comparten dos palabras?</h3>
     <div class="row"><input type="text" id="ft-b1" value="dulsinea" aria-label="Primera palabra" style="min-width:10rem"><input type="text" id="ft-b2" value="dulcinea" aria-label="Segunda palabra" style="min-width:10rem"></div>
     <div id="ft-comp"></div>
-    <div class="badbox">La presentación del curso pasado hablaba de «n-gramas de palabras»: son de <b>caracteres</b>. El tema (p. 20) solo usa tamaño 3 en su ejemplo; por defecto son de 3 a 6.</div>
+    <p>FastText representa cada palabra mediante n-gramas de <b>caracteres</b>, de tamaños 3 a 6 por defecto.</p>
   </div>
   <div class="card">
     <h3 style="margin-top:0">Palabras que no están en el Quijote</h3>
-    <div class="meta"><span class="tag pre">Precalculado con el FastText de la Clase 7</span></div>
+    <div class="meta"><span class="tag pre">Precalculado con FastText</span></div>
     <table id="ft-oov"><thead><tr><th>palabra</th><th>¿tiene vector en Word2Vec?</th><th class="num">n-gramas</th><th>vecinos con FastText</th></tr></thead><tbody></tbody></table>
     <p class="small">gensim reparte los n-gramas en 2 millones de cubetas con una función hash; esa parte no se reproduce aquí. Las piezas no son significado: «quijotesco» queda también cerca de «galeote» y «dote» por compartir finales.</p>
   </div>
@@ -246,12 +246,12 @@
 <section class="panel" id="p-rnn" role="tabpanel" aria-labelledby="t-rnn">
   <div class="card">
     <h2>Una red recurrente lee la frase palabra a palabra</h2>
-    <div class="meta"><span class="tag">Apartado 5.3 · Figuras 14-15, 21 y 22</span><span class="tag illus">Esquema: no ejecuta ninguna red</span></div>
+    <div class="meta"><span class="tag illus">Esquema: no ejecuta ninguna red</span></div>
     <p>En cada paso entra una palabra; el estado oculto <b>h</b> la combina con el estado anterior, que resume todo lo leído, y la red predice la palabra siguiente. Avanza paso a paso.</p>
     <div class="modos" id="rnn-modo" role="group" aria-label="Variante">
-      <button class="seg" data-m="simple" aria-pressed="true">Simple (Figura 15)</button>
-      <button class="seg" data-m="apilada" aria-pressed="false">Apilada, dos capas (Figura 21)</button>
-      <button class="seg" data-m="bidi" aria-pressed="false">Bidireccional (Figura 22)</button>
+      <button class="seg" data-m="simple" aria-pressed="true">Simple</button>
+      <button class="seg" data-m="apilada" aria-pressed="false">Apilada, dos capas</button>
+      <button class="seg" data-m="bidi" aria-pressed="false">Bidireccional</button>
     </div>
     <div id="rnn-pasos"></div>
     <svg id="rnn-svg" class="esquema" viewBox="0 0 1000 400" role="img" aria-label="Red recurrente desplegada en el tiempo"></svg>
@@ -270,7 +270,7 @@
   <div class="card">
     <h2>Atención paso a paso</h2>
     <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
-    <p>Atención(Q, K, V) = softmax(QK<sup>⊤</sup>/√d<sub>k</sub>)·V (Vaswani et al., 2017). Cada fila de Q es la <strong>query</strong> de una palabra; cada fila de K, su <strong>key</strong>; cada fila de V, su <strong>value</strong>. Por defecto, las matrices de los ejercicios 9 y 10 del tema (p. 60-61). Escribe una fila por línea, números separados por espacios.</p>
+    <p>Atención(Q, K, V) = softmax(QK<sup>⊤</sup>/√d<sub>k</sub>)·V (Vaswani et al., 2017). Cada fila de Q es la <strong>query</strong> de una palabra; cada fila de K, su <strong>key</strong>; cada fila de V, su <strong>value</strong>. Las matrices iniciales permiten seguir el cálculo paso a paso. Escribe una fila por línea, números separados por espacios.</p>
     <div class="grid3">
       <div><label for="at-q" class="small"><b>Q</b> (queries)</label><textarea class="mtx" id="at-q">0.5 0.3
 0.2 0.7
@@ -283,9 +283,9 @@
 0.7 0.3</textarea></div>
     </div>
     <div class="row">
-      <label class="inline"><input type="checkbox" id="at-esc"> Dividir por √d<sub>k</sub> (Vaswani; el tema no lo usa en sus ejercicios)</label>
+      <label class="inline"><input type="checkbox" id="at-esc"> Dividir por √d<sub>k</sub></label>
       <label class="inline"><input type="checkbox" id="at-cau"> Máscara causal (modelo de lenguaje; ejercicio 9)</label>
-      <button class="btn btn-gray" id="at-reset">Volver a las matrices del tema</button>
+      <button class="btn btn-gray" id="at-reset">Restaurar las matrices iniciales</button>
     </div>
     <div id="at-error"></div>
     <div class="grid3" id="at-mats"></div>
@@ -296,7 +296,7 @@
     <svg id="at-arcos" class="esquema" viewBox="0 0 900 230" role="img" aria-label="Pesos de atención de la palabra elegida como grosor de las líneas"></svg>
     <div id="at-pasos"></div>
     <div class="calc" id="at-det"></div>
-    <div class="badbox">La presentación del curso pasado (p. 45) dibujaba la query como una lista de pesos de atención, incluso negativos. La query es un vector de d<sub>k</sub> números; los pesos salen después, de la softmax, y nunca son negativos.</div>
+    <p>La <i>query</i> es un vector de d<sub>k</sub> números. Los pesos de atención se obtienen aplicando softmax a las puntuaciones y son no negativos.</p>
   </div>
 </section>
 
@@ -304,7 +304,7 @@
 <section class="panel" id="p-tr" role="tabpanel" aria-labelledby="t-tr">
   <div class="card">
     <h2>El bloque Transformer, pieza a pieza</h2>
-    <div class="meta"><span class="tag">Apartado 5.4 · Figuras 27, 31 y 33</span><span class="tag real">Posiciones: fórmula calculada en el navegador</span><span class="tag pre">Cabezas: pesos reales de BETO precalculados</span></div>
+    <div class="meta"><span class="tag real">Posiciones: fórmula calculada en el navegador</span><span class="tag pre">Cabezas: pesos reales de BETO precalculados</span></div>
     <p>Un bloque = atención multicabeza + red prealimentada, cada una con su suma residual y su normalización. BETO apila 12 bloques. Avanza pieza a pieza.</p>
     <div id="tr-pasos"></div>
     <div class="bloque">
@@ -354,7 +354,7 @@
     <h3 style="margin-top:0">Un vector por aparición</h3>
     <div class="seggroup" role="group" aria-label="Palabra" id="bert-pal">
       <button class="seg" data-p="banco" aria-pressed="true">banco</button>
-      <button class="seg" data-p="gato" aria-pressed="false">gato (frases del tema y dos más)</button>
+      <button class="seg" data-p="gato" aria-pressed="false">gato: animal y herramienta</button>
     </div>
     <div class="grid2"><div><table class="heat" id="bert-cos"></table><p class="small">Verde: mismo sentido; rojo: distinto. Coseno de los vectores de la última capa.</p></div><div id="bert-frases" class="small"></div></div>
     <h3>¿En qué capa se separan los sentidos de «banco»?</h3>
@@ -431,7 +431,7 @@ const pasosVen = Clase.pasos($("#ven-pasos"), { total: () => L.tokens($("#ven-fr
 
 // ================================================================ 2 · Vecinos
 const palabrasVec = Object.keys(D.vecinos);
-$("#vec-w").innerHTML = palabrasVec.map((w, k) => `<option value="${esc(w)}">${esc(w)}${k < D.sondas.length ? " (de la clase)" : ""}</option>`).join("");
+$("#vec-w").innerHTML = palabrasVec.map((w, k) => `<option value="${esc(w)}">${esc(w)}</option>`).join("");
 $("#vec-w").value = "hermosa";
 function pintarVecinos() {
   const w = $("#vec-w").value, r = D.vecinos[w];
@@ -443,7 +443,7 @@ function pintarVecinos() {
 $("#vec-w").addEventListener("change", pintarVecinos);
 pintarVecinos();
 const P = D.parametros;
-$("#vec-param").textContent = `Word2Vec: d = ${P.vector_size}, ventana ${P.window}, mínimo ${P.min_count} apariciones (${fmtN(D.vocabulario_modelos)} palabras), ${P.negative} negativos, ${P.epochs} épocas, semilla ${P.seed}, un hilo. TF-IDF: fórmula del tema sin palabras vacías.`;
+$("#vec-param").textContent = `Word2Vec: d = ${P.vector_size}, ventana ${P.window}, mínimo ${P.min_count} apariciones (${fmtN(D.vocabulario_modelos)} palabras), ${P.negative} negativos, ${P.epochs} épocas, semilla ${P.seed}, un hilo. TF-IDF sin palabras vacías.`;
 $("#vec-analog tbody").innerHTML = [["rocinante - quijote + sancho", "rucio", "puesto_rucio"], ["rey - hombre + mujer", "reina", "puesto_reina"]].map(([k, e, c]) =>
   `<tr><td>${esc(k.replace(/ - /g, " − "))}</td><td>${D.analogias[k].top5.map(([x]) => esc(x)).join(", ")}</td><td class="num">«${e}»: ${D.analogias[k][c]}.º</td></tr>`).join("");
 (function pca() {
@@ -479,7 +479,7 @@ $("#vec-analog tbody").innerHTML = [["rocinante - quijote + sancho", "rucio", "p
 })();
 
 // ================================================================ 3 · Buscar
-const METODOS = { tfidf: "TF-IDF (fórmula del tema)", w2v_media: "Media de vectores skip-gram", w2v_ponderada: "Media skip-gram ponderada por idf", fasttext_ponderada: "Media FastText ponderada por idf" };
+const METODOS = { tfidf: "TF-IDF", w2v_media: "Media de vectores skip-gram", w2v_ponderada: "Media skip-gram ponderada por idf", fasttext_ponderada: "Media FastText ponderada por idf" };
 $("#bus-res tbody").innerHTML = Object.entries(METODOS).map(([m, nom]) => {
   const r = L.resumenPuestos(D.busqueda.map((b) => b.metodos[m].puesto));
   return `<tr${m === "tfidf" ? ' class="correcto"' : ""}><td>${nom}</td><td class="num">${fmt(r.puesto_medio, 1)}</td><td class="num">${fmt(r.mrr, 3)}</td><td class="num">${r.entre_los_3_primeros} de ${D.busqueda.length}</td></tr>`;
@@ -756,7 +756,7 @@ pintarMLM();
   $("#bert-stats").innerHTML = [[m.capas, "capas"], [m.cabezas, "cabezas por capa"], [m.dimension_oculta, "dimensiones"], [fmtN(m.vocabulario), "subpalabras"], [m.posiciones_max, "posiciones"], [fmt(m.parametros_codificador / 1e6, 1) + " M", "parámetros"]]
     .map(([v, t]) => `<div><div class="big">${v}</div><div class="small">${t}</div></div>`).join("");
   $("#bert-tok").innerHTML = D.bert.tokenizacion.map((t) => `<p class="small" style="margin-top:.5rem">«${esc(t.frase)}» · ${t.palabras} palabras → ${t.tokens.length - 2} subpalabras</p><p>${t.tokens.map((x) => `<span class="pill${x.startsWith("[") ? " esp" : (x.startsWith("##") ? " cont" : "")}">${esc(x)}</span>`).join(" ")}</p>`).join("") +
-    `<p class="small">«##» continúa la palabra anterior; [CLS] abre y [SEP] cierra la secuencia. El tema escribe «WordPierce»: es WordPiece.</p>`;
+    `<p class="small">«##» continúa la palabra anterior; [CLS] abre y [SEP] cierra la secuencia. La tokenización utiliza WordPiece.</p>`;
   $("#bert-f").innerHTML = D.bert.relleno.map((r, k) => `<option value="${k}">${esc(r.frase)}</option>`).join("");
   $("#bert-capa").innerHTML = Array.from({ length: 12 }, (_, k) => `<option value="${k}"${k === 8 ? " selected" : ""}>${k + 1}</option>`).join("");
   $("#bert-cab").innerHTML = `<option value="media">media de las 12</option>` + Array.from({ length: 12 }, (_, k) => `<option value="${k}">${k}</option>`).join("");
@@ -775,7 +775,7 @@ function pintarCos() {
   $("#bert-cos").innerHTML = `<tr><th></th>${c.frases.map((_, j) => `<th>${j + 1}</th>`).join("")}</tr>` + c.coseno.map((f, i) =>
     `<tr><th>${i + 1}. ${esc(c.frases[i][0])}</th>${f.map((x, j) => `<td class="${i === j ? "" : (s[i] === s[j] ? "bueno" : "malo")}">${i === j ? "1" : fmt(x, 3)}</td>`).join("")}</tr>`).join("");
   $("#bert-frases").innerHTML = c.frases.map(([e, f], i) => `<p>${i + 1}. ${esc(f)}</p>`).join("") +
-    (bertPal === "gato" ? `<div class="warnbox">Con las frases del tema, la herramienta (1) se parece más a «Mi gato duerme…» (4) que a la otra herramienta (3): el sentido raro no se separa bien.</div>` : `<div class="info">Los pares del mismo sentido (0,824 y 0,875) superan a todos los cruzados (0,762-0,799).</div>`);
+    (bertPal === "gato" ? `<div class="warnbox">En estas frases, la herramienta (1) se parece más a «Mi gato duerme…» (4) que a la otra herramienta (3): el sentido raro no se separa bien.</div>` : `<div class="info">Los pares del mismo sentido (0,824 y 0,875) superan a todos los cruzados (0,762-0,799).</div>`);
 }
 segmentado("#bert-pal", (b) => { bertPal = b.dataset.p; pintarCos(); });
 pintarCos();

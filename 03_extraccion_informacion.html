@@ -172,7 +172,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información" aria-current="page">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="02_texto_como_dato.html">‹ Tema 2 · El texto como dato</a><a class="sig" href="04_modelado_lenguaje.html">Tema 4 · Modelado del lenguaje ›</a></nav>
   <h1><span class="num-tema">TEMA 3</span>Extracción de información de textos</h1>
-  <p>De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema. <span class="cuando">Clase 4 · semana 3</span></p>
+  <p>De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 12h13M4 19h9M4 26h13M4 33h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 22.5h7m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="29" y="8" width="15" height="30" rx="2.5" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M29 18h15M29 28h15M36.5 8v30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
 </header>
 
@@ -182,7 +182,7 @@
   <button class="tab" role="tab" id="t-chunk" aria-controls="p-chunk" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Chunking</button>
   <button class="tab" role="tab" id="t-ner" aria-controls="p-ner" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Entidades</button>
   <button class="tab" role="tab" id="t-rel" aria-controls="p-rel" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Relaciones</button>
-  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Raíz o lema (Clase 4)</button>
+  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Raíz o lema</button>
 </div>
 
 <div class="content">
@@ -191,7 +191,7 @@
 <section class="panel active" id="p-flujo" role="tabpanel" aria-labelledby="t-flujo">
   <div class="card">
     <h2>De un texto a información estructurada, paso a paso</h2>
-    <div class="meta"><span class="tag">Apartado 3.2 · arquitectura de extracción</span><span class="tag pre">Salidas reales de spaCy, precalculadas</span><span class="tag real">Relaciones con patrones: en el navegador</span></div>
+    <div class="meta"><span class="tag pre">Salidas reales de spaCy, precalculadas</span><span class="tag real">Relaciones con patrones: en el navegador</span></div>
     <div class="row"><label for="fluSel">Texto</label><select id="fluSel"></select></div>
     <p class="box" id="fluText"></p>
     <div class="steps" id="fluSteps" role="group" aria-label="Pasos"></div>
@@ -200,7 +200,7 @@
   </div>
   <div class="card">
     <h2>Cinco salidas, cinco tareas</h2>
-    <div class="meta"><span class="tag">Apartados 3.3-3.6</span><span class="tag illus">Ejemplos escritos para la clase</span></div>
+    <div class="meta"><span class="tag illus">Ejemplos ficticios</span></div>
     <p>Las mismas frases, «Gandalf viajó a Hobbiton» y «El viajero intrépido comió un postre delicioso», según la tarea que se les aplique.</p>
     <div class="row" id="tareaCtrl"></div>
     <div class="salidas" id="tareaOut"></div>
@@ -211,7 +211,7 @@
 <section class="panel" id="p-pos" role="tabpanel" aria-labelledby="t-pos" hidden>
   <div class="card">
     <h2>La misma palabra, distinta categoría</h2>
-    <div class="meta"><span class="tag">Apartado 3.3 · desambiguación</span><span class="tag pre">Respuesta de spaCy precalculada</span></div>
+    <div class="meta"><span class="tag pre">Respuesta de spaCy precalculada</span></div>
     <p>La misma forma con dos categorías (etiquetas UD). Debajo, lo que ha respondido spaCy: no siempre acierta.</p>
     <div class="row" id="ambCtrl"></div>
     <div class="pares" id="ambOut"></div>
@@ -219,13 +219,13 @@
   <div class="card">
     <h2>Dos juegos de etiquetas para la misma frase</h2>
     <div class="meta"><span class="tag pre">UD: spaCy · EAGLES: etiquetador de n-gramas entrenado con CESS-ESP</span></div>
-    <p>El Tema 3 usa las etiquetas del Penn Treebank, pensadas para el inglés. Para el español hay dos sistemas habituales: <b>UD</b> (categoría universal, la que da spaCy) y <b>EAGLES</b> (categoría, tipo, género, número, persona… en un código, la de CESS-ESP).</p>
+    <p>Las etiquetas del Penn Treebank están pensadas para el inglés. Para el español hay dos sistemas habituales: <b>UD</b> (categoría universal, la que da spaCy) y <b>EAGLES</b> (categoría, tipo, género, número, persona… en un código, la de CESS-ESP).</p>
     <div class="row"><label for="tagSel">Frase</label><select id="tagSel"></select></div>
     <div id="tagOut"></div>
   </div>
   <div class="card">
     <h2>La misma frase, seis etiquetadores (EAGLES)</h2>
-    <div class="meta"><span class="tag">Apartado 3.3 · Figuras 8-11</span><span class="tag pre">Salidas reales de NLTK 3.10.3 entrenado con CESS-ESP (90 % / 10 %), frase de prueba</span></div>
+    <div class="meta"><span class="tag pre">Salidas reales de NLTK 3.10.3 entrenado con CESS-ESP (90 % / 10 %), frase de prueba</span></div>
     <p>Arriba, la etiqueta correcta; cada fila, un etiquetador. Verde, acierta; rojo, falla; gris, no sabe (no devuelve nada). Las palabras subrayadas no aparecían en el entrenamiento. Avanza fila a fila para construir la cadena con respaldo.</p>
     <div class="row"><label for="cadSel">Frase</label><select id="cadSel"></select></div>
     <div id="cadPasos"></div>
@@ -235,10 +235,10 @@
   </div>
   <div class="card">
     <h2>¿Cuánto acierta cada etiquetador?</h2>
-    <div class="meta"><span class="tag pre">Entrenados y evaluados con CESS-ESP (90 % / 10 %) en el cuaderno de la Clase 4</span></div>
+    <div class="meta"><span class="tag pre">Entrenados y evaluados con CESS-ESP (90 % / 10 %)</span></div>
     <svg id="accChart" class="chart" viewBox="0 0 900 330" role="img" aria-label="Exactitud de los etiquetadores"></svg>
     <h3>Prueba el etiquetador de reglas morfológicas</h3>
-    <p class="small">Mismas reglas que el cuaderno (terminaciones -ar/-er/-ir, -mente, -ción…). Observa qué palabras etiqueta mal: «mar», «lugar», «tos»…</p>
+    <p class="small">Reglas basadas en terminaciones: -ar/-er/-ir, -mente, -ción… Observa qué palabras etiqueta mal: «mar», «lugar», «tos»…</p>
     <input type="text" id="rxIn" style="width:100%" value="Amar y respetar la vida en el mar es rápidamente una obligación de los lugares">
     <div class="tokens" id="rxOut"></div>
   </div>
@@ -248,7 +248,7 @@
 <section class="panel" id="p-chunk" role="tabpanel" aria-labelledby="t-chunk" hidden>
   <div class="card">
     <h2>Agrupar en sintagmas con una regla</h2>
-    <div class="meta"><span class="tag">Apartado 3.4 · chunking basado en reglas e IOB</span><span class="tag real">Regla aplicada en el navegador</span><span class="tag pre">Etiquetas UD de spaCy precalculadas</span></div>
+    <div class="meta"><span class="tag real">Regla aplicada en el navegador</span><span class="tag pre">Etiquetas UD de spaCy precalculadas</span></div>
     <div class="row"><label for="chSel">Frase</label><select id="chSel"></select></div>
     <div class="seggroup" id="chRule" role="group" aria-label="Regla"></div>
     <input type="text" id="chCustom" class="rule" aria-label="Regla personalizada" value="SN: {<DET>?<NOUN|PROPN><ADJ>*}">
@@ -263,7 +263,7 @@
   </div>
   <div class="card">
     <h2>Chinking: quitar lo que no es del grupo</h2>
-    <div class="meta"><span class="tag">Apartado 3.4 · Figura 18</span><span class="tag real">Calculado en el navegador con las etiquetas de spaCy</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador con las etiquetas de spaCy</span></div>
     <p>Al revés que la regla de arriba: se empieza con <b>toda la frase como un único trozo</b> y se sacan («chink») los verbos, preposiciones, conjunciones y signos. Lo que queda forma los grupos.</p>
     <pre class="box mono" style="font-size:1rem">SN:
   {&lt;.*&gt;+}                                   # todo es un trozo
@@ -277,16 +277,16 @@
 <section class="panel" id="p-ner" role="tabpanel" aria-labelledby="t-ner" hidden>
   <div class="card">
     <h2>Entidades nombradas generales</h2>
-    <div class="meta"><span class="tag">Apartado 3.5</span><span class="tag pre">spaCy es_core_news_sm: PER, LOC, ORG, MISC</span><span class="tag real">BIO y BIOES calculados en el navegador</span></div>
+    <div class="meta"><span class="tag pre">spaCy es_core_news_sm: PER, LOC, ORG, MISC</span><span class="tag real">BIO y BIOES calculados en el navegador</span></div>
     <div class="row"><label for="nerSel">Texto</label><select id="nerSel"></select>
       <span class="seggroup" id="nerCod" role="group" aria-label="Codificación" style="display:inline-flex;margin:0"></span></div>
     <div class="flow box" id="nerOut"></div>
     <table class="tags" id="nerTags"></table>
-    <p class="small">El modelo español solo distingue cuatro tipos. El tema usa además GPE, MONEY y DATE, que son etiquetas de modelos ingleses (OntoNotes).</p>
+    <p class="small">Este modelo español distingue PER, ORG, LOC y MISC. Las categorías disponibles dependen del modelo y del corpus de entrenamiento.</p>
   </div>
   <div class="card">
     <h2>Lo que declara el modelo y lo que mide otro corpus</h2>
-    <div class="meta"><span class="tag pre">Evaluación real con CoNLL-2002 (esp.testb) en el cuaderno de la Clase 4</span></div>
+    <div class="meta"><span class="tag pre">Evaluación real con CoNLL-2002 (esp.testb)</span></div>
     <svg id="nerChart" class="chart" viewBox="0 0 900 320" role="img" aria-label="Precisión, exhaustividad y F1 por tipo"></svg>
   </div>
   <div class="card">
@@ -296,7 +296,7 @@
     <textarea id="cliIn" aria-label="Notas clínicas"></textarea>
     <div class="grid2">
       <div class="box"><h3>spaCy (modelo general) · texto original</h3><div class="flow" id="cliSpacy"></div></div>
-      <div class="box"><h3>Reglas clínicas de la clase</h3><div id="cliOut"></div></div>
+      <div class="box"><h3>Reglas para entidades clínicas</h3><div id="cliOut"></div></div>
     </div>
   </div>
 </section>
@@ -305,7 +305,7 @@
 <section class="panel" id="p-rel" role="tabpanel" aria-labelledby="t-rel" hidden>
   <div class="card">
     <h2>Relaciones con patrones: (X, relación, Y)</h2>
-    <div class="meta"><span class="tag">Apartado 3.6 · aproximación basada en reglas</span><span class="tag real">Patrones aplicados en el navegador</span><span class="tag pre">Entidades de spaCy precalculadas</span></div>
+    <div class="meta"><span class="tag real">Patrones aplicados en el navegador</span><span class="tag pre">Entidades de spaCy precalculadas</span></div>
     <div class="checks" id="relPat"></div>
     <div class="grid2">
       <div class="box"><h3>Entidades detectadas</h3><div class="flow" id="relEnts"></div></div>
@@ -317,15 +317,15 @@
   </div>
   <div class="card">
     <h2>Snowball: aprender patrones a partir de semillas</h2>
-    <div class="meta"><span class="tag">Apartado 3.6 · semisupervisado (Agichtein y Gravano, 2000)</span><span class="tag illus">Ilustración: no ejecuta el algoritmo completo</span></div>
-    <p>Partimos de una tupla semilla y buscamos el texto que separa sus dos entidades. Ese texto se convierte en patrón y se aplica al resto, y las tuplas nuevas sirven de semilla en la vuelta siguiente (Figura 26). ¿Qué pasa si la semilla es errónea?</p>
+    <div class="meta"><span class="tag">Agichtein y Gravano, 2000</span><span class="tag illus">Ilustración: no ejecuta el algoritmo completo</span></div>
+    <p>Partimos de una tupla semilla y buscamos el texto que separa sus dos entidades. Ese texto se convierte en patrón y se aplica al resto, y las tuplas nuevas sirven de semilla en la vuelta siguiente. ¿Qué pasa si la semilla es errónea?</p>
     <div class="seggroup" id="snowSeed" role="group" aria-label="Semilla"></div>
     <div class="ciclo" id="snowCiclo"></div>
     <div class="ciclo-vuelta">↺ las tuplas nuevas vuelven a ser semillas</div>
     <div id="snowPasos"></div>
     <div class="snow-det" id="snowOut"></div>
     <p class="small" id="snowCorpus"></p>
-    <p class="small">No confundir con el stemmer Snowball del Tema 2: comparten nombre, no algoritmo.</p>
+    <p class="small">No confundir con el stemmer Snowball: comparten nombre, no algoritmo.</p>
   </div>
 </section>
 
@@ -333,7 +333,7 @@
 <section class="panel" id="p-raiz" role="tabpanel" aria-labelledby="t-raiz" hidden>
   <div class="card">
     <h2>¿Agrupa bien? Precisión y exhaustividad por pares</h2>
-    <div class="meta"><span class="tag">Problema de la Clase 4 · apartado 2.4</span><span class="tag real">Cálculo en el navegador</span><span class="tag pre">Raíces de NLTK y lemas de spaCy precalculados</span></div>
+    <div class="meta"><span class="tag real">Cálculo en el navegador</span><span class="tag pre">Raíces de NLTK y lemas de spaCy precalculados</span></div>
     <p>Dos formas forman un <b>par</b> si un método les da la misma clave. Comparamos los pares de cada método con los de la referencia (lema correcto).</p>
     <div class="seggroup" id="parMet" role="group" aria-label="Método"></div>
     <div class="grid2">
@@ -343,7 +343,7 @@
   </div>
   <div class="card">
     <h2>Resultados con datos reales</h2>
-    <div class="meta"><span class="tag pre">Cuaderno de la Clase 4</span></div>
+    <div class="meta"><span class="tag pre">Resultados precalculados</span></div>
     <svg id="raizChart" class="chart" viewBox="0 0 900 330" role="img" aria-label="Raíz frente a lema en cinco medidas"></svg>
     <details><summary class="small">Ver las cifras en una tabla</summary><div id="raizRes"></div></details>
   </div>
@@ -551,7 +551,7 @@ function dibujarArbol(svg, tokens, spans, etiqueta) {
   const tOut = document.getElementById("tareaOut");
   TAREAS.forEach(([o, t, c, e]) => tOut.append(el("div", {class: "salida", style: "border-top-color:" + c, onclick: ev => ev.currentTarget.classList.remove("oculto")},
     el("div", {class: "o"}, o), el("span", {class: "t", style: "background:" + c}, t), el("div", {class: "small t2"}, e))));
-  Clase.botonPregunta(document.getElementById("tareaCtrl"), oc => tOut.querySelectorAll(".salida").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las tareas para preguntar", ocultas: "Mostrar todas las tareas"});
+  Clase.botonPregunta(document.getElementById("tareaCtrl"), oc => tOut.querySelectorAll(".salida").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las tareas", ocultas: "Mostrar todas las tareas"});
 })();
 
 // ================================================================ 2 · POS
@@ -573,7 +573,7 @@ function dibujarArbol(svg, tokens, spans, etiqueta) {
     card.append(el("div", {class: "small"}, par.map(a => a.explicacion).join(" ")));
     ambOut.append(card);
   }
-  Clase.botonPregunta(document.getElementById("ambCtrl"), oc => ambOut.querySelectorAll(".par").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las categorías para preguntar", ocultas: "Mostrar todas las categorías"});
+  Clase.botonPregunta(document.getElementById("ambCtrl"), oc => ambOut.querySelectorAll(".par").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las categorías", ocultas: "Mostrar todas las categorías"});
 
   // La misma frase con cada etiquetador de la cadena (Figuras 8-11)
   const C = window.CADENA03, cadSel = document.getElementById("cadSel");
@@ -751,7 +751,7 @@ function dibujarArbol(svg, tokens, spans, etiqueta) {
     document.getElementById("snowCiclo").innerHTML = ETAPAS.map((t, i) => `<div class="${i === k ? "on" : ""}"><b>${i + 1} · ${t}</b><span class="small">${i <= k ? esc(textos[i]) : "…"}</span></div>`).join("");
     o.append(el("div", {}, ["La tupla de partida, escrita a mano.", "Las oraciones del corpus donde aparecen las dos entidades de la semilla.", "Lo que hay entre las dos entidades se convierte en patrón.", "El patrón se aplica al resto del corpus: estas son las tuplas que añade."][k]));
     if (k < 3) return;
-    o.append(el("div", {class: v === "mala" ? "warnbox" : "info"}, v === "mala" ? "Con una semilla errónea el sistema aprende que «viajó a» expresa el lugar de nacimiento y añade la tupla falsa (Ana Martínez, Nueva York); en la siguiente iteración los errores se multiplican (Tema 3, p. 53)." : "Con una semilla correcta el patrón «nació en» encuentra las otras tres tuplas. El Tema 3 usa «Lorca nació en Granada»: Lorca nació en Fuente Vaqueros (Granada), así que también las semillas hay que comprobarlas."));
+    o.append(el("div", {class: v === "mala" ? "warnbox" : "info"}, v === "mala" ? "Con una semilla errónea el sistema aprende que «viajó a» expresa el lugar de nacimiento y añade la tupla falsa (Ana Martínez, Nueva York); en la siguiente iteración los errores se multiplican." : "Con la semilla (Lorca, nacido_en, Fuente Vaqueros), el patrón «nació en» encuentra las otras tres tuplas. La calidad de las semillas condiciona las relaciones aprendidas."));
   }
   const pasosSnow = Clase.pasos(document.getElementById("snowPasos"), {total: 4, pintar: snow, etiqueta: k => ETAPAS[k]});
 })();

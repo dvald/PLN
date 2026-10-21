@@ -8,7 +8,7 @@ export const BLOQUES = {
   estad: { nombre: "Modelado estadístico y tópicos", color: "#00897B", fuerte: "#00897B", claro: "#E0F2F1", tab: "#4DB6AC" },
   neuronal: { nombre: "Modelos neuronales: embeddings, Transformers y LLM", color: "#8E24AA", fuerte: "#8E24AA", claro: "#F3E5F5", tab: "#CE93D8" },
   aplic: { nombre: "Aplicaciones, sentimientos y visualización", color: "#F57C00", fuerte: "#E65100", claro: "#FFF3E0", tab: "#FFB74D" },
-  repaso: { nombre: "Fuera de las clases", color: "#9AA5B1", fuerte: "#52606D", claro: "#F5F7FA", tab: "#B0BEC5" },
+  repaso: { nombre: "Repaso", color: "#9AA5B1", fuerte: "#52606D", claro: "#F5F7FA", tab: "#B0BEC5" },
 };
 
 // Orden de los bloques en el índice
@@ -49,7 +49,7 @@ export const TEMAS = [
 
 export const REPASO = {
   f: "repaso.html", bloque: "repaso", etiqueta: "REPASO", titulo: "Repaso de los tests · estudio autónomo",
-  desc: "Las preguntas de repaso de los Temas 5 a 10, con su explicación al responder. No se usan en las clases en directo: son para que cada estudiante compruebe lo que ha estudiado.",
+  desc: "Las preguntas de repaso de los Temas 5 a 10, con su explicación al responder. Comprueba lo que has aprendido.",
   pie: "Temas 5 a 10 · sin puntuación",
 };
 

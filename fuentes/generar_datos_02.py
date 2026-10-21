@@ -20,7 +20,7 @@ import analisis_corpus as A  # noqa: E402
 
 FRASES = [
     ("Tokenizar en español", "El Dr. Pérez llegó a las 08:30; no quiero acordarme del 3,5 % de EE. UU. ¿Me lo dices?"),
-    ("Pregunta de la Clase 2", "¿Me lo dices?"),
+    ("Pronombres en una pregunta", "¿Me lo dices?"),
     ("Clíticos pegados", "Dímelo."),
     ("Orden de las palabras (1)", "Quiero información de hipotecas, pero no seguros."),
     ("Orden de las palabras (2)", "Quiero información de seguros, pero no hipotecas."),
@@ -70,7 +70,7 @@ def main():
             desc += ", tres primeros párrafos"
         else:
             tx = "\n".join(A.unidades(nombre, tx)) + "\n"
-        ejemplos.append({"id": nombre, "titulo": "Corpus · " + desc, "texto": tx,
+        ejemplos.append({"id": nombre, "titulo": "Corpus · " + desc.replace(" escrita para la clase", "").replace(" escritas para la clase", " ficticias").replace(" escritos para la clase", " ficticios"), "texto": tx,
                          **analizar(tx)})
 
     res = json.loads((RAIZ / "Clases/Clase03_Tema2_Tokenizacion/revision/resultados_corpus.json")

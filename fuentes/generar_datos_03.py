@@ -20,10 +20,10 @@ sys.path.insert(0, str(CLASE))
 import analisis_t3 as A  # noqa: E402
 
 FRASES = [
-    ("Ejemplo del tema", "Frodo es miembro de la Comunidad del Anillo."),
-    ("Noticia de la Clase 3", A.leer("noticia").splitlines()[0]),
+    ("Ejemplo de extracción", "Frodo es miembro de la Comunidad del Anillo."),
+    ("Noticia ficticia", A.leer("noticia").splitlines()[0]),
     ("Biografías", A.leer("biografias").strip()),
-    ("Chunking del tema", "El viajero intrépido francés comió un postre delicioso."),
+    ("Grupos nominales", "El viajero intrépido francés comió un postre delicioso."),
     ("«He» no es un pronombre", "He comido un postre delicioso."),
     ("Ambigüedad de «planta»", "Juan planta una planta tropical."),
     ("Ambigüedad de «fui»", "Fui al médico y fui feliz."),

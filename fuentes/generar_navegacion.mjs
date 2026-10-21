@@ -43,7 +43,7 @@ function migas(k) {
 }
 function cabecera(c) {
   return `<header class="header">\n  ${migas(c.k)}\n  <h1><span class="num-tema">${c.etiqueta}</span>${esc(c.titulo)}</h1>\n`
-    + `  <p>${esc(c.desc)}${c.cuando ? ` <span class="cuando">${esc(c.cuando)}</span>` : ""}</p>\n`
+    + `  <p>${esc(c.desc)}</p>\n`
     + `  <div class="header-glifo">${glifo(c.glifo)}</div>\n</header>`;
 }
 function retocar(f, c) {
@@ -80,7 +80,7 @@ function tarjeta(t) {
         <ol class="pest" aria-label="Pestañas del Tema ${t.n}">
 ${ps.map((p) => `          <li><a href="${t.f}#${p.id}"><b>${p.n}</b>${esc(p.t)}</a></li>`).join("\n")}
         </ol>
-        <div class="tema-pie"><span>${esc(cuando(t))}</span><span>${ps.length} pestañas</span></div>
+        <div class="tema-pie"><span>${ps.length} pestañas</span></div>
       </article>`;
 }
 const ruta = TEMAS.map((t) => `<a href="${t.f}"${t.semanas.length < 2 ? ' class="corto"' : ""} style="${colores(t.bloque)};grid-column:span ${t.semanas.length}" `

@@ -128,7 +128,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones" aria-current="page">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="08_modelado_neuronal_ii.html">‹ Tema 8 · Modelado neuronal (II)</a><a class="sig" href="10_visualizacion.html">Tema 10 · Visualización ›</a></nav>
   <h1><span class="num-tema">TEMA 9</span>Aplicaciones de procesamiento de lenguaje natural</h1>
-  <p>Traducción, resumen, agentes, búsqueda, preguntas y respuestas y voz, con salidas reales de modelos y sus métricas. <span class="cuando">Clase 16 · semana 12</span></p>
+  <p>Traducción, resumen, agentes, búsqueda, preguntas y respuestas y voz, con salidas reales de modelos y sus métricas.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 5h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H13l-6 5v-5H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M24 22h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-1v5l-6-5H24a3 3 0 0 1-3-3V25a3 3 0 0 1 3-3z" fill="currentColor" stroke="currentColor" stroke-width="2.2"/><path d="M8 11h11M8 16h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 28h14M26 33h9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -149,7 +149,7 @@
 <section class="panel active" id="p-tra" role="tabpanel" aria-labelledby="t-tra">
   <div class="card">
     <h2>Palabra a palabra, voraz y en haz</h2>
-    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas</span><span class="tag real">chrF2 calculado en el navegador</span><span class="tag">Clase 16 · apartado 9.2</span></div>
+    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas</span><span class="tag real">chrF2 calculado en el navegador</span></div>
     <p>48 pares inglés-español <strong>escritos para la asignatura</strong> (16 de desarrollo y 32 de prueba). Para cada frase, tres traducciones reales del mismo modelo, <code>Helsinki-NLP/opus-mt-en-es</code>: cada palabra por separado, frase entera con decodificación voraz y frase entera con haz 2 (el elegido en desarrollo).</p>
     <div class="row">
       <label class="inline">Partición <select id="tra-par"><option value="">todas</option><option>desarrollo</option><option>prueba</option></select></label>
@@ -161,7 +161,7 @@
   </div>
   <div class="card">
     <h2>La búsqueda en haz, paso a paso</h2>
-    <div class="meta"><span class="tag">Apartado 9.2</span><span class="tag pre">Probabilidades reales de MarianMT (opus-mt-en-es, revisión 5bc4493), precalculadas; coincide con generate(num_beams = 2)</span></div>
+    <div class="meta"><span class="tag pre">Probabilidades reales de MarianMT (opus-mt-en-es, revisión 5bc4493), precalculadas; coincide con generate(num_beams = 2)</span></div>
     <p>En cada paso cada hipótesis viva se amplía con sus 3 subpalabras más probables; de todas las candidatas se quedan las 2 de mayor log-probabilidad acumulada (en morado). Las grises se descartan. Debajo de cada pieza, la log-probabilidad acumulada.</p>
     <div class="row"><label class="inline">Frase <select id="haz-sel"></select></label></div>
     <div id="haz-pasos"></div>
@@ -198,7 +198,7 @@
 <section class="panel" id="p-ate" role="tabpanel" aria-labelledby="t-ate">
   <div class="card">
     <h2>Atención cruzada real de MarianMT</h2>
-    <div class="meta"><span class="tag pre">Pesos reales precalculados (media de 8 cabezas)</span><span class="tag">Clase 16 · pp. 11-15</span></div>
+    <div class="meta"><span class="tag pre">Pesos reales precalculados (media de 8 cabezas)</span></div>
     <p>Cada fila es una pieza generada en español; cada columna, una pieza del original inglés. El color es el peso de atención cruzada; el recuadro naranja marca la columna con más peso de cada fila.</p>
     <div class="row">
       <label class="inline">Frase <select id="ate-sel"></select></label>
@@ -216,7 +216,7 @@
 <section class="panel" id="p-chr" role="tabpanel" aria-labelledby="t-chr">
   <div class="card">
     <h2>Calculadora de chrF</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (igual que sacrebleu 2.6.0)</span><span class="tag">Clase 16 · pp. 15-16</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador (igual que sacrebleu 2.6.0)</span></div>
     <p>n-gramas de <strong>caracteres</strong> sin espacios. Para cada orden: precisión = coincidencias / n-gramas de la traducción; exhaustividad = coincidencias / n-gramas de la referencia. Se promedian los órdenes con n-gramas en las dos cadenas y se combinan con F-beta. sacrebleu usa por defecto n ≤ 6 y β = 2 (chrF2).</p>
     <div class="chips" id="chr-ej"></div>
     <div class="grid2">
@@ -230,7 +230,7 @@
     <div class="stats" id="chr-stats"></div>
     <table id="chr-tabla"></table>
     <div id="chr-ngramas" class="small"></div>
-    <div class="info">Con «la casa» / «las casas» y n ≤ 2 sale 83,9, como en el turno de la Clase 16; con n ≤ 6, 40,5. Prueba a quitar letras de la traducción: con β = 2 lo que falta penaliza más que lo que sobra.</div>
+    <div class="info">Con «la casa» / «las casas» y n ≤ 2 sale 83,9; con n ≤ 6, 40,5. Prueba a quitar letras de la traducción: con β = 2 lo que falta penaliza más que lo que sobra.</div>
   </div>
 </section>
 
@@ -238,8 +238,8 @@
 <section class="panel" id="p-ses" role="tabpanel" aria-labelledby="t-ses">
   <div class="card">
     <h2>Sondas de género: qué elige el traductor</h2>
-    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas</span><span class="tag">Clase 16 · pp. 17-19 · ejercicio 8</span></div>
-    <p>En 14 frases el inglés no marca el género; en 6 un pronombre lo marca. Color del borde: género que elige el traductor (decodificación voraz). Para preguntar a la clase, oculta las salidas y destápalas una a una.</p>
+    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas</span></div>
+    <p>En 14 frases el inglés no marca el género; en 6 un pronombre lo marca. Color del borde: género que elige el traductor (decodificación voraz). Oculta las salidas para anticipar el resultado y después compruébalo.</p>
     <div class="row" id="ses-ctrl"></div>
     <div class="stats" id="ses-stats"></div>
     <div class="rejilla" id="ses-rejilla"></div>
@@ -257,7 +257,7 @@
     <div id="res-frases"></div>
     <div class="scroll" style="margin-top:.6rem"><table id="res-tabla"></table></div>
     <h3>Un resumen escrito en directo</h3>
-    <div class="row"><input type="text" id="res-mio" placeholder="Escribe aquí un resumen de una frase (por ejemplo, el que proponga la clase) y mira su ROUGE-1 y sus cifras"></div>
+    <div class="row"><input type="text" id="res-mio" placeholder="Escribe aquí un resumen de una frase y mira su ROUGE-1 y sus cifras"></div>
     <div id="res-mio-out" class="small"></div>
     <div class="warnbox">ROUGE solo cuenta palabras comunes con la referencia: no detecta que una cifra sea inventada. Por eso se compara aparte cada número completo del resumen con los de la noticia (100 no coincide con 1000). Esta comprobación literal no verifica unidades, atribuciones ni paráfrasis: hay que revisar el significado.</div>
     <p class="small" id="res-agregado"></p>
@@ -269,7 +269,7 @@
   <div class="card">
     <h2>Agente de marcos para reservar tutorías</h2>
     <svg id="age-esq" class="esquema" viewBox="0 0 1000 120" role="img" aria-label="Arquitectura del agente: comprensión, gestión del diálogo y generación"></svg>
-    <p class="small">Esquema simplificado de la Figura 12 del tema (agente de texto: sin reconocimiento ni síntesis de voz).</p>
+    <p class="small">Agente de texto: procesa mensajes escritos y mantiene el estado de la conversación.</p>
     <div class="meta"><span class="tag real">Reglas ejecutadas en el navegador (las mismas que en Python)</span><span class="tag">Sesión complementaria · 9.4</span></div>
     <p>Comprensión con reglas (intención y huecos: tema, día, hora, modalidad), gestión del diálogo con un marco y generación con plantillas. Horario supuesto: lunes a jueves de 16:00 a 20:00 y viernes de 9:00 a 13:00.</p>
     <div class="grid2">
@@ -277,7 +277,7 @@
         <div class="chat" id="age-chat" aria-live="polite"></div>
         <div class="row"><input type="text" id="age-in" placeholder="Escribe un mensaje (p. ej., «Quiero una tutoría del tema 9»)"><button class="btn btn-main" id="age-env">Enviar</button><button class="btn btn-gray" id="age-reset">Reiniciar</button></div>
         <div class="chips" id="age-ej"></div>
-        <label class="inline"><input type="checkbox" id="age-extra"> añadir la regla «no puedo ir» → cancelar (TODO 2 del cuaderno)</label>
+        <label class="inline"><input type="checkbox" id="age-extra"> añadir la regla «no puedo ir» → cancelar</label>
       </div>
       <div>
         <div class="box"><h3>Comprensión del último mensaje</h3><div id="age-nlu" class="mono small">—</div></div>
@@ -299,7 +299,7 @@
   <div class="card">
     <h2>Buscar en las noticias: índice invertido y TF-IDF</h2>
     <svg id="bus-esq" class="esquema" viewBox="0 0 1000 120" role="img" aria-label="Esquema de recuperación de información"></svg>
-    <p class="small">Esquema simplificado de la Figura 13 del tema (sistema de recuperación de información).</p>
+    <p class="small">Flujo de un sistema de recuperación de información.</p>
     <div class="meta"><span class="tag real">Índice y TF-IDF calculados en el navegador</span><span class="tag pre">Rangos de spaCy y BETO precalculados</span><span class="tag">Sesión complementaria · pp. 27-29</span></div>
     <div class="row">
       <label class="inline">Pregunta <select id="bus-sel"></select></label>
@@ -344,7 +344,7 @@
   <div class="card">
     <h2>Escuchar: síntesis con y sin normalizar</h2>
     <svg id="voz-esq" class="esquema" viewBox="0 0 1000 250" role="img" aria-label="Esquemas de reconocimiento del habla y de síntesis de voz"></svg>
-    <p class="small">Esquemas simplificados de las Figuras 17 a 20 del tema; 80 bandas log-mel según la configuración de openai/whisper-tiny.</p>
+    <p class="small">Representación de voz con 80 bandas log-mel, según la configuración de openai/whisper-tiny.</p>
     <div class="meta"><span class="tag pre">Audios sintetizados con MMS-TTS (CC BY-NC 4.0) y transcripciones reales de Whisper</span><span class="tag">Sesión complementaria · 9.6</span></div>
     <div id="voz-audios"></div>
     <div class="warnbox">Voz sintética, no de una persona real. El sintetizador tiene las cifras en su vocabulario, pero las pronuncia ininteligibles y descarta «%» y «,».</div>
@@ -450,7 +450,7 @@
   }
   $("for-sel").addEventListener("change", pintarForzado); pintarForzado();
   const ob = TR.opus_books;
-  $("tra-opus").innerHTML = `<p>OPUS Books inglés-español publica solo <strong>${ob.particiones_publicadas.map(esc).join(", ")}</strong> (${miles(ob.filas)} pares). El cuaderno del curso pasado pedía «validation» y fallaba. División propia con semilla ${ob.division_propia.semilla}: ${miles(ob.division_propia.entrenamiento)} / ${miles(ob.division_propia.validacion)} / ${miles(ob.division_propia.prueba)}. En 100 frases de esa prueba, el mismo traductor obtiene chrF2 ${n(ob.muestra_prueba_100.chrF2)} (textos literarios), frente a ${n(TR.prueba["haz " + TR.haz_elegido].chrF2)} en nuestras frases: las cifras de chrF no se comparan entre conjuntos. Además, los modelos opus-mt se entrenaron con datos de OPUS: esta muestra puede no ser independiente.</p>`;
+  $("tra-opus").innerHTML = `<p>OPUS Books inglés-español publica solo <strong>${ob.particiones_publicadas.map(esc).join(", ")}</strong> (${miles(ob.filas)} pares). División propia con semilla ${ob.division_propia.semilla}: ${miles(ob.division_propia.entrenamiento)} / ${miles(ob.division_propia.validacion)} / ${miles(ob.division_propia.prueba)}. En 100 frases de esa prueba, el mismo traductor obtiene chrF2 ${n(ob.muestra_prueba_100.chrF2)} (textos literarios), frente a ${n(TR.prueba["haz " + TR.haz_elegido].chrF2)} en nuestras frases: las cifras de chrF no se comparan entre conjuntos. Además, los modelos opus-mt se entrenaron con datos de OPUS: esta muestra puede no ser independiente.</p>`;
 
   // Árbol de la búsqueda en haz
   const HZ = window.HAZ09;
@@ -565,7 +565,7 @@
       `<div><div class="big">${con.filter((s) => s.genero_voraz === s.marcado).length} de ${con.length}</div><div class="small">con pronombre → respeta la pista</div></div>`;
   }
   const $$ = (q) => [...document.querySelectorAll(q)];
-  Clase.botonPregunta($("ses-ctrl"), (oc) => { $$("#ses-rejilla .sonda").forEach((x) => x.classList.toggle("oculto", oc)); $("ses-stats").style.visibility = oc ? "hidden" : ""; }, { ver: "Ocultar las salidas para preguntar", ocultas: "Mostrar todas las salidas" });
+  Clase.botonPregunta($("ses-ctrl"), (oc) => { $$("#ses-rejilla .sonda").forEach((x) => x.classList.toggle("oculto", oc)); $("ses-stats").style.visibility = oc ? "hidden" : ""; }, { ver: "Ocultar las salidas", ocultas: "Mostrar todas las salidas" });
   pintarSesgo();
 
   // ---------------------------------------------------------------- 5 · Resumen
@@ -667,14 +667,14 @@
     $("bus-res").innerHTML = "<tr><th class='num'>#</th><th>noticia</th><th class='num'>coseno TF-IDF</th></tr>" + s.slice(0, 5).map(([p, k], i) => `<tr class="${IDS[k] === correcto ? "hl" : ""}"><td class="num">${i + 1}</td><td><strong>${IDS[k]}</strong> · ${esc(NOT[k].titular)}</td><td class="num"><span style="display:inline-block;height:.8rem;border-radius:3px;background:#8E24AA;margin-right:.4rem;width:${(6 * p / Math.max(s[0][0], 1e-9)).toFixed(2)}rem"></span>${n(p, 3)}</td></tr>`).join("");
     if (correcto) {
       const rt = s.findIndex(([, k]) => IDS[k] === correcto) + 1, rg = D.rangos[sel.id];
-      $("bus-rangos").innerHTML = `<div class="info">Documento correcto: <strong>${correcto}</strong>. Rango con TF-IDF (calculado aquí): <strong>${rt}</strong> · puntuación del tema: ${rg["puntuación del tema (TF-IDF / |d|)"]} · vectores de spaCy: ${rg["vectores de spaCy (media)"]} · BETO: ${rg["BETO (media de la capa final)"]} (precalculados).</div>`;
+      $("bus-rangos").innerHTML = `<div class="info">Documento correcto: <strong>${correcto}</strong>. Rango con TF-IDF (calculado aquí): <strong>${rt}</strong> · TF-IDF normalizado por longitud: ${rg["puntuación del tema (TF-IDF / |d|)"]} · vectores de spaCy: ${rg["vectores de spaCy (media)"]} · BETO: ${rg["BETO (media de la capa final)"]} (precalculados).</div>`;
     } else $("bus-rangos").innerHTML = "<p class='small'>Consulta libre: no hay documento correcto anotado.</p>";
   }
   $("bus-sel").addEventListener("change", () => { $("bus-q").value = FAC.find((x) => x.id === $("bus-sel").value).pregunta; buscar(); });
   $("bus-go").addEventListener("click", buscar); $("bus-q").addEventListener("keydown", (e) => { if (e.key === "Enter") buscar(); });
   $("bus-q").value = FAC.find((x) => x.id === "Q20").pregunta; buscar();
   $("bus-mrr").innerHTML = "<tr><th>representación</th><th class='num'>MRR</th><th class='num'>1.º puesto</th><th class='num'>en los 3 primeros</th></tr>" +
-    Object.entries(D.mrr).map(([k, v]) => `<tr><td>${k}</td><td class="num">${n(v.prueba.MRR, 3)}</td><td class="num">${v.prueba["acierto@1"]} de ${v.prueba.consultas}</td><td class="num">${v.prueba["acierto@3"]} de ${v.prueba.consultas}</td></tr>`).join("");
+    Object.entries(D.mrr).map(([k, v]) => `<tr><td>${esc(k === "puntuación del tema (TF-IDF / |d|)" ? "TF-IDF normalizado por longitud" : k)}</td><td class="num">${n(v.prueba.MRR, 3)}</td><td class="num">${v.prueba["acierto@1"]} de ${v.prueba.consultas}</td><td class="num">${v.prueba["acierto@3"]} de ${v.prueba.consultas}</td></tr>`).join("");
   function calcMrr() {
     const r = $("mrr-in").value.split(/[,;\s]+/).map(Number).filter((x) => x >= 1 && Number.isFinite(x));
     $("mrr-out").textContent = r.length ? "MRR = " + n(L.mrr(r), 3) : "—";

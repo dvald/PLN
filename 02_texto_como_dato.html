@@ -152,7 +152,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato" aria-current="page">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="01_introduccion.html">‹ Tema 1 · Introducción</a><a class="sig" href="03_extraccion_informacion.html">Tema 3 · Extracción de información ›</a></nav>
   <h1><span class="num-tema">TEMA 2</span>El texto como dato</h1>
-  <p>Cómo se convierte un texto en datos: frecuencias, morfología, tokenización, normalización, raíces y lemas, y los recursos en español. <span class="cuando">Clases 3 y 4 · semanas 2 y 3</span></p>
+  <p>Cómo se convierte un texto en datos: frecuencias, morfología, tokenización, normalización, raíces y lemas, y los recursos en español.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="15" height="10" rx="3"/><rect x="20" y="5" width="9" height="10" rx="3"/><rect x="31" y="5" width="14" height="10" rx="3"/></g><g fill="currentColor"><rect x="5" y="20" width="6" height="23" rx="1.5"/><rect x="13" y="30" width="6" height="13" rx="1.5"/><rect x="21" y="35" width="6" height="8" rx="1.5"/><rect x="29" y="38" width="6" height="5" rx="1.5"/><rect x="37" y="39.5" width="6" height="3.5" rx="1.2"/></g></svg></div>
 </header>
 
@@ -171,7 +171,7 @@
 <section class="panel active" id="p-dato" role="tabpanel" aria-labelledby="t-dato">
   <div class="card">
     <h2>Mismas palabras, distinto significado</h2>
-    <div class="meta"><span class="tag">Apartado 2.2 · aspecto secuencial</span><span class="tag real">Cálculo real en el navegador</span></div>
+    <div class="meta"><span class="tag real">Cálculo real en el navegador</span></div>
     <p>Si representamos cada frase como una <b>bolsa de palabras</b> (qué palabras aparecen y cuántas veces), ¿se distinguen estas dos frases?</p>
     <div class="grid2">
       <div class="box"><h3>Frase A</h3><p id="bowA" class="mono"></p></div>
@@ -187,7 +187,7 @@
 
   <div class="card">
     <h2>¿Qué palabras dominan un texto? La ley de Zipf en el Quijote</h2>
-    <div class="meta"><span class="tag">Apartado 2.2 · frecuencia (Zipf, 1949)</span><span class="tag pre">Precalculado con el cuaderno de la Clase 3</span></div>
+    <div class="meta"><span class="tag">Zipf, 1949</span><span class="tag pre">Frecuencias precalculadas</span></div>
     <p>¿Qué parte de las palabras del Quijote son <b>palabras vacías</b> (artículos, preposiciones, conjunciones, pronombres…) según la lista española de NLTK? Cada casilla es el 1 % de las palabras.</p>
     <div class="row"><button class="btn btn-blue" id="zipfBtn" type="button">Mostrar la proporción</button></div>
     <div class="waffle" id="waffle" aria-label="Proporción de palabras vacías en el Quijote"></div>
@@ -207,7 +207,7 @@
 
   <div class="card">
     <h2>El contexto decide el sentido</h2>
-    <div class="meta"><span class="tag">Apartado 2.2 · perspectiva distribucional</span><span class="tag illus">Ejemplos sin modelo</span></div>
+    <div class="meta"><span class="tag illus">Ejemplos sin modelo</span></div>
     <p>La perspectiva distribucional dice que el significado de una palabra se puede inferir de las palabras que la rodean. La misma forma, <b>banco</b>, con tres sentidos: las palabras subrayadas son las que lo deciden.</p>
     <div class="row" id="bancoCtrl"></div>
     <div class="sentidos" id="bancoOut"></div>
@@ -218,7 +218,7 @@
 <section class="panel" id="p-morf" role="tabpanel" aria-labelledby="t-morf" hidden>
   <div class="card">
     <h2>Lexema, morfemas gramaticales y lema</h2>
-    <div class="meta"><span class="tag">Apartado 2.3</span><span class="tag">Análisis docente simplificado</span><span class="tag real">Raíz Snowball calculada en el navegador</span></div>
+    <div class="meta"><span class="tag">Análisis morfológico simplificado</span><span class="tag real">Raíz Snowball calculada en el navegador</span></div>
     <p>Elige una palabra. Verás su segmentación en morfemas, el lema (la forma de diccionario) y la raíz que obtiene el algoritmo Snowball, que <b>no busca morfemas</b>: recorta sufijos con reglas.</p>
     <div class="wordlist" id="morfWords" role="group" aria-label="Palabras"></div>
     <div id="morfOut"></div>
@@ -230,7 +230,7 @@
     </div>
   </div>
   <div class="card">
-    <h2>La raíz de Snowball con las palabras que proponga la clase</h2>
+    <h2>Obtén la raíz de tus palabras con Snowball</h2>
     <div class="meta"><span class="tag real">Snowball español</span></div>
     <p>Escribe palabras separadas por comas o espacios. Cada caja es una raíz: las palabras que caen en la misma caja se tratarán como una sola.</p>
     <input type="text" id="stemIn" style="width:100%" value="cantábamos, cantar, canto, cantante, mujer, mujeres, piénsalo, pensar, haciéndola">
@@ -242,7 +242,7 @@
 <section class="panel" id="p-tok" role="tabpanel" aria-labelledby="t-tok" hidden>
   <div class="card">
     <h2>Tokenizar un texto con cinco métodos</h2>
-    <div class="meta"><span class="tag">Apartado 2.4 · tokenización</span><span class="tag real">Espacios, regex y reglas: cálculo real en el navegador</span><span class="tag pre">NLTK y spaCy: precalculados para los ejemplos</span></div>
+    <div class="meta"><span class="tag real">Espacios, regex y reglas: cálculo real en el navegador</span><span class="tag pre">NLTK y spaCy: precalculados para los ejemplos</span></div>
     <div class="row">
       <label for="tokPreset">Ejemplo</label>
       <select id="tokPreset"></select>
@@ -266,7 +266,7 @@
   </div>
   <div class="card">
     <h2>Segmentar en oraciones</h2>
-    <div class="meta"><span class="tag">Apartado 2.4 · signos y abreviaturas</span><span class="tag real">Reglas: en el navegador</span><span class="tag pre">NLTK (punkt_tab) y spaCy: precalculados</span></div>
+    <div class="meta"><span class="tag real">Reglas: en el navegador</span><span class="tag pre">NLTK (punkt_tab) y spaCy: precalculados</span></div>
     <p>Un punto no siempre cierra una oración: «Dra.», «EE. UU.», «Pte.»… Compara las tres segmentaciones del ejemplo elegido arriba.</p>
     <div class="grid2" id="segOut"></div>
   </div>
@@ -276,7 +276,7 @@
 <section class="panel" id="p-norm" role="tabpanel" aria-labelledby="t-norm" hidden>
   <div class="card">
     <h2>Construye tu flujo de normalización</h2>
-    <div class="meta"><span class="tag">Apartado 2.4 · flujo (pipeline) de normalización</span><span class="tag real">Pasos calculados en el navegador</span><span class="tag pre">Tokens, categorías y lemas de spaCy precalculados</span></div>
+    <div class="meta"><span class="tag real">Pasos calculados en el navegador</span><span class="tag pre">Tokens, categorías y lemas de spaCy precalculados</span></div>
     <div class="row">
       <label for="normPreset">Ejemplo</label>
       <select id="normPreset"></select>
@@ -304,7 +304,7 @@
   </div>
   <div class="card">
     <h2>El mismo flujo sobre todo el Quijote</h2>
-    <div class="meta"><span class="tag pre">Precalculado con el cuaderno de la Clase 3 (spaCy sin parser ni NER)</span></div>
+    <div class="meta"><span class="tag pre">Precalculado con spaCy sin parser ni NER</span></div>
     <svg id="normBarras" class="chart" viewBox="0 0 1000 330" role="img" aria-label="Tokens y tipos del Quijote tras cada paso"></svg>
     <details style="margin-top:.6rem"><summary class="small">Ver la tabla con los tipos que aparecen una sola vez</summary>
     <table id="normQ"><thead><tr><th>Paso</th><th class="num">Tokens</th><th class="num">Tipos</th><th class="num">Tipos que aparecen una vez</th></tr></thead><tbody></tbody></table></details>
@@ -316,7 +316,7 @@
 <section class="panel" id="p-raiz" role="tabpanel" aria-labelledby="t-raiz" hidden>
   <div class="card">
     <h2>Raíz y lema, cara a cara</h2>
-    <div class="meta"><span class="tag">Apartado 2.4 · lematización y stemming</span><span class="tag real">Raíz: Snowball en el navegador</span><span class="tag pre">Lema: spaCy con su frase, precalculado</span></div>
+    <div class="meta"><span class="tag real">Raíz: Snowball en el navegador</span><span class="tag pre">Lema: spaCy con su frase, precalculado</span></div>
     <p>La palabra resaltada, dentro de su frase. A la izquierda, lo que recorta Snowball; a la derecha, el lema que da spaCy mirando la frase.</p>
     <div class="row"><span id="lemaPasos"></span><span id="lemaCtrl"></span></div>
     <div id="lemaOut"></div>
@@ -328,7 +328,7 @@
       <div class="box"><h3>Sobrerradicación: una raíz para palabras distintas</h3><p class="small">Cada caja es una raíz de Snowball; el color es la palabra de diccionario. Dos colores en una caja = mezcla palabras distintas.</p><div class="grupos" id="sobre"></div></div>
       <div class="box"><h3>Infrarradicación: un lema, varias raíces</h3><p class="small">Cada caja es un lema; debajo de cada forma, su raíz. Muchas raíces distintas = la familia se rompe.</p><div class="grupos" id="infra"></div></div>
     </div>
-    <p class="small" style="margin-top:.7rem">La lematización necesita un diccionario y la categoría gramatical; el stemming solo recorta. Ninguno es mejor siempre: la comparación sistemática es el problema de la Clase 4.</p>
+    <p class="small" style="margin-top:.7rem">La lematización necesita un diccionario y la categoría gramatical; el stemming solo recorta. La elección depende de la tarea y del contexto lingüístico.</p>
   </div>
 </section>
 
@@ -336,13 +336,12 @@
 <section class="panel" id="p-rec" role="tabpanel" aria-labelledby="t-rec" hidden>
   <div class="card">
     <h2>Cinco tipos de recurso lingüístico, un ejemplo de cada uno</h2>
-    <div class="meta"><span class="tag">Apartado 2.5 · Figuras 1 y 2</span><span class="tag illus">Entradas de ejemplo escritas para la clase</span></div>
+    <div class="meta"><span class="tag illus">Entradas de ejemplo</span></div>
     <div class="recursos" id="recMapa"></div>
   </div>
   <div class="card">
     <h2>Corpus en español</h2>
-    <div class="meta"><span class="tag">Apartado 2.6</span></div>
-    <p>Tamaño de los dos corpus de referencia de la RAE, en millones de formas:</p>
+        <p>Tamaño de los dos corpus de referencia de la RAE, en millones de formas:</p>
     <div class="corpus-bar"><b>CREA (1975-2004)</b><div class="b" style="width:35%">algo más de 160 millones</div></div>
     <div class="corpus-bar"><b>CORPES XXI (desde 2001)</b><div class="b" style="width:100%;background:var(--estad)">unos 455 millones · casi 420 000 documentos</div></div>
     <table style="margin-top:1rem">
@@ -354,11 +353,11 @@
         <tr><td><b>UD Spanish AnCora</b> 2.8</td><td>Corpus periodístico anotado con lemas, categorías, rasgos morfológicos y dependencias</td><td>Con él (y WikiNER) se entrenó <code>es_core_news_sm</code>; licencia GPL 3.0</td></tr>
       </tbody>
     </table>
-    <p class="small" style="margin-top:.6rem">Fuentes: rae.es/banco-de-datos/crea y /corpes-xxi (consultadas el 11/10/2026); metadatos del modelo es_core_news_sm 3.8.0; Tema 2, apartado 2.6.</p>
+    <p class="small" style="margin-top:.6rem">Fuentes: rae.es/banco-de-datos/crea y /corpes-xxi (consultadas el 11/10/2026); metadatos del modelo es_core_news_sm 3.8.0.</p>
   </div>
   <div class="card">
     <h2>Herramientas: qué hace cada una con el español</h2>
-    <div class="meta"><span class="tag">Apartado 2.7</span><span class="tag real">Versiones probadas en el entorno de la asignatura</span></div>
+    <div class="meta"><span class="tag real">Versiones probadas en el entorno de la asignatura</span></div>
     <table>
       <thead><tr><th>Herramienta</th><th>Para qué la usamos</th><th>Lo que hay que saber</th></tr></thead>
       <tbody>
@@ -561,19 +560,19 @@ const palabras = toks => toks.filter(L.esPalabra);
   Clase.botonPregunta(document.getElementById("bancoCtrl"), oculto => {
     [...bancoOut.children].forEach(x => x.classList.toggle("oculto", oculto));
     if (oculto) [...bancoOut.children].forEach(x => x.addEventListener("click", () => x.classList.remove("oculto"), {once: true}));
-  }, {ver: "Ocultar los sentidos para preguntar", ocultas: "Mostrar todos los sentidos"});
+  }, {ver: "Ocultar los sentidos", ocultas: "Mostrar todos los sentidos"});
 })();
 
 // ================================================================ 2 · Morfología
 const MORF = [
   {w: "mujeres", seg: [["mujer", "lex", "lexema"], ["es", "gram", "número: plural"]], lema: "mujer", nota: "El lexema aporta el significado léxico; -es, el significado gramatical de plural."},
   {w: "mujer", seg: [["mujer", "lex", "lexema"], ["∅", "cero", "número: singular"]], lema: "mujer", nota: "El singular tiene un morfema cero: significado gramatical sin forma. Snowball recorta «muj» en el singular y «mujer» en el plural: no las agrupa."},
-  {w: "cantábamos", seg: [["cant", "lex", "lexema"], ["aba", "gram", "indicativo, pretérito imperfecto"], ["mos", "gram", "1.ª persona del plural"]], lema: "cantar", nota: "Así lo segmenta el Tema 2. En un análisis más fino, -aba- = vocal temática -a- + -ba- (tiempo, modo y aspecto)."},
+  {w: "cantábamos", seg: [["cant", "lex", "lexema"], ["aba", "gram", "indicativo, pretérito imperfecto"], ["mos", "gram", "1.ª persona del plural"]], lema: "cantar", nota: "En un análisis más fino, -aba- = vocal temática -a- + -ba- (tiempo, modo y aspecto)."},
   {w: "perros", seg: [["perr", "lex", "lexema"], ["o", "gram", "género: masculino"], ["s", "gram", "número: plural"]], lema: "perro", nota: "Dos morfemas gramaticales encadenados: género y número."},
   {w: "jugaron", seg: [["jug", "lex", "lexema"], ["aron", "gram", "pret. perfecto simple, 3.ª plural"]], lema: "jugar", nota: "Snowball obtiene «jug», que aquí coincide con el lexema."},
   {w: "juego", seg: [["jueg", "lex", "lexema con diptongo"], ["o", "gram", "presente, 1.ª singular"]], lema: "jugar", nota: "La raíz cambia (jug- → jueg-): una de las alteraciones de la raíz que hacen el español más difícil que el inglés (apartado 2.3). Snowball da «jueg» y ya no la une con «jugaron»."},
   {w: "piénsalo", seg: [["piens", "lex", "lexema con diptongo"], ["a", "gram", "imperativo, 2.ª singular"], ["lo", "clit", "pronombre átono pegado"]], lema: "pensar (+ lo)", nota: "Un token, dos palabras gramaticales. Snowball solo quita el pronombre tras infinitivo o gerundio («haciéndola» → «hac»); aquí deja «piensal»."},
-  {w: "ingenieras", seg: [["ingenier", "lex", "lexema"], ["a", "gram", "género: femenino"], ["s", "gram", "número: plural"]], lema: "ingeniero (DLE: «ingeniero, ra»)", nota: "spaCy 3.8 (es_core_news_sm) devuelve el lema «ingeniera» en la frase del Tema 2: el resultado depende del convenio de cada lematizador."},
+  {w: "ingenieras", seg: [["ingenier", "lex", "lexema"], ["a", "gram", "género: femenino"], ["s", "gram", "número: plural"]], lema: "ingeniero (DLE: «ingeniero, ra»)", nota: "spaCy 3.8 (es_core_news_sm) devuelve el lema «ingeniera» en este ejemplo: el resultado depende del convenio de cada lematizador."},
 ];
 (function () {
   const words = document.getElementById("morfWords"), out = document.getElementById("morfOut");
@@ -631,7 +630,7 @@ const MORF = [
     ["nltk", "spacy"].forEach(m => { segA.enable(m, !!e, "Precalculado solo para los ejemplos sin modificar"); segB.enable(m, !!e, "Precalculado solo para los ejemplos sin modificar"); });
     if (!e && (A === "nltk" || A === "spacy")) { A = "reglas"; segA.set(A); }
     if (!e && (B === "nltk" || B === "spacy")) { B = "reglas"; segB.set(B); }
-    document.getElementById("tokNote").textContent = e ? "Ejemplo predefinido: los cinco métodos disponibles." : "Texto modificado: NLTK y spaCy no se ejecutan en el navegador; usa el cuaderno de la Clase 3 para probarlos.";
+    document.getElementById("tokNote").textContent = e ? "Ejemplo predefinido: los cinco métodos disponibles." : "Texto modificado: solo están disponibles los métodos que se calculan en el navegador.";
     const ta_ = toks(A), tb_ = cmp.checked ? toks(B) : null;
     const st = document.getElementById("tokStats"); st.innerHTML = "";
     st.append(el("div", {}, el("div", {class: "big"}, String(ta_.length)), el("div", {class: "small"}, "tokens · método A")),
@@ -650,7 +649,7 @@ const MORF = [
     const so = document.getElementById("segOut"); so.innerHTML = "";
     const col = (tit, list, note) => el("div", {class: "box"}, el("h3", {}, `${tit} · ${list ? list.length : "—"}`),
       list ? el("ol", {class: "sents"}, list.map(s => el("li", {}, s))) : el("p", {class: "small"}, note));
-    so.append(col("Reglas de la clase", L.unidades(ta.value).flatMap(L.segReglas)),
+    so.append(col("Reglas para el español", L.unidades(ta.value).flatMap(L.segReglas)),
               col("NLTK sent_tokenize", e ? e.oraciones.nltk : null, "Solo para ejemplos predefinidos."),
               col("spaCy", e ? e.oraciones.spacy : null, "Solo para ejemplos predefinidos."));
   }
@@ -672,7 +671,7 @@ const MORF = [
     if (datos.length < METODOS.length) svg.append(svgEl("text", {x: 245, y: 245, "font-size": 15, fill: "#52606D"}, "NLTK y spaCy solo están precalculados para los ejemplos sin modificar."));
     const c = document.getElementById("tokConclusion");
     c.hidden = !(e && e.id === "f0");
-    if (e && e.id === "f0") c.textContent = `NLTK da ${e.nltk.length}: deja «¿Me» pegado y parte «EE. UU.» en «EE», «.» y «UU.». spaCy (${e.spacy.length}) y las reglas de la clase separan «¿» y mantienen «EE. UU.» como un solo token. Separar por espacios (${L.tokEspacios(e.texto).length}) deja la puntuación pegada a las palabras.`;
+    if (e && e.id === "f0") c.textContent = `NLTK da ${e.nltk.length}: deja «¿Me» pegado y parte «EE. UU.» en «EE», «.» y «UU.». spaCy (${e.spacy.length}) y las reglas para el español separan «¿» y mantienen «EE. UU.» como un solo token. Separar por espacios (${L.tokEspacios(e.texto).length}) deja la puntuación pegada a las palabras.`;
   }
 })();
 
@@ -745,7 +744,7 @@ const MORF = [
     ["f9", "jugaron", "jugar", "Lema y raíz agrupan «jugaron» y «jugado»."],
     ["f9", "juego", "jugar", "El lema la une a «jugar»; la raíz «jueg» ya no coincide con «jug»."],
     ["f8", "fui", "ser", "Error del modelo: en «fui feliz» el verbo es «ser», pero el modelo pequeño elige «ir» en los dos casos."],
-    ["f10", "ingenieras", "ingeniero", "El Tema 2 dice «ingeniero», como el diccionario; spaCy conserva el femenino. Depende del convenio del lematizador."],
+    ["f10", "ingenieras", "ingeniero", "El diccionario recoge «ingeniero, ra»; spaCy devuelve «ingeniera» en este contexto. Depende del convenio del lematizador."],
     ["f2", "Dímelo", "decir", "No separa el pronombre pegado y lo toma por nombre propio: sin buena tokenización no hay buen lema."],
     ["f6", "Días", "día", "La mayúscula inicial engaña al modelo: lo toma por nombre propio y no lo lematiza; «días» en minúscula sí da «día»."],
   ];
@@ -770,7 +769,7 @@ const MORF = [
     out.append(nota);
   }
   const pasosLema = Clase.pasos(document.getElementById("lemaPasos"), {total: CASOS.length, pintar: pintarLema, etiqueta: k => "«" + CASOS[k][1] + "»"});
-  Clase.botonPregunta(document.getElementById("lemaCtrl"), o => { lemaOculto = o; pintarLema(pasosLema.k); }, {ver: "Ocultar raíz y lema para preguntar", ocultas: "Mostrar siempre raíz y lema"});
+  Clase.botonPregunta(document.getElementById("lemaCtrl"), o => { lemaOculto = o; pintarLema(pasosLema.k); }, {ver: "Ocultar raíz y lema", ocultas: "Mostrar siempre raíz y lema"});
 
   // Sobrerradicación: color = palabra de diccionario (lema), caja = raíz
   const LEMA = {casa: "casa", casas: "casa", casar: "casar", casado: "casar", casaron: "casar", sol: "sol", solo: "solo", sola: "solo", "solía": "soler", soler: "soler",
@@ -797,8 +796,8 @@ const MORF = [
     ["Diccionario", "#1E88E5", "Palabras ordenadas con su definición, pensadas para una persona.",
      '<b>banco</b> <i>m.</i><br>1. Asiento para varias personas.<br>2. Entidad financiera.<br>3. Conjunto de peces que nadan juntos.', "Ejemplo real: el DLE de la RAE."],
     ["Lexicón", "#00897B", "Diccionario con información morfológica de cada pieza.",
-     '<span class="mono">-mos</span> → 1.ª persona del plural<br><span class="mono">-es</span> → plural<br><span class="mono">-aba</span> → pretérito imperfecto', "Lo que necesita un analizador morfológico (Tema 2.3)."],
-    ["Tesauro", "#8E24AA", "Palabras con sus sinónimos y antónimos (Figura 2 del tema).",
+     '<span class="mono">-mos</span> → 1.ª persona del plural<br><span class="mono">-es</span> → plural<br><span class="mono">-aba</span> → pretérito imperfecto', "Lo que necesita un analizador morfológico."],
+    ["Tesauro", "#8E24AA", "Palabras con sus sinónimos y antónimos.",
      '<b>rápido</b><br>sinónimos: veloz, ligero, raudo<br>antónimo: lento', "Tesauro en sentido literario."],
     ["Base de relaciones léxicas", "#F57C00", "Sentidos de las palabras y relaciones entre ellos.",
      '<svg viewBox="0 0 220 130" width="100%" role="img" aria-label="rueda es parte de coche; coche es un vehículo"><g font-size="15" font-family="system-ui"><rect x="5" y="10" width="70" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="40" y="30" text-anchor="middle">rueda</text><rect x="145" y="10" width="70" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="180" y="30" text-anchor="middle">coche</text><rect x="135" y="90" width="80" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="175" y="110" text-anchor="middle">vehículo</text><line x1="75" y1="25" x2="143" y2="25" stroke="#52606D" stroke-width="2"/><text x="110" y="19" text-anchor="middle" font-size="12" fill="#52606D">parte de</text><line x1="180" y1="40" x2="177" y2="88" stroke="#52606D" stroke-width="2"/><text x="172" y="68" text-anchor="end" font-size="12" fill="#52606D">es un</text></g></svg>', "Ejemplo real: WordNet."],

@@ -160,7 +160,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos" aria-current="page">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="05_modelado_neuronal.html">‹ Tema 5 · Modelado neuronal (I)</a><a class="sig" href="07_sentimientos.html">Tema 7 · Sentimientos ›</a></nav>
   <h1><span class="num-tema">TEMA 6</span>Análisis y modelado de tópicos</h1>
-  <p>Clasificar, agrupar y descubrir temas: n-gramas, Naive Bayes, LSA, NMF y LDA con noticias y el Quijote, y entidades con spaCy. <span class="cuando">Clases 9, 10 y 11 y laboratorio · semanas 7 y 8</span></p>
+  <p>Clasificar, agrupar y descubrir temas: n-gramas, Naive Bayes, LSA, NMF y LDA con noticias y el Quijote, y entidades con spaCy.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="10" cy="12" r="3.6"/><circle cx="17" cy="9" r="3.6"/><circle cx="15" cy="17" r="3.6"/><circle cx="34" cy="13" r="3.6" fill-opacity=".55"/><circle cx="40" cy="18" r="3.6" fill-opacity=".55"/><circle cx="33" cy="21" r="3.6" fill-opacity=".55"/><circle cx="20" cy="35" r="3.6" fill-opacity=".3"/><circle cx="27" cy="39" r="3.6" fill-opacity=".3"/><circle cx="28" cy="31" r="3.6" fill-opacity=".3"/></g><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3"><circle cx="14" cy="13" r="10"/><circle cx="36" cy="17" r="10"/><circle cx="25" cy="35" r="10"/></g></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -181,18 +181,18 @@
 <section class="panel active" id="p-enf" role="tabpanel" aria-labelledby="t-enf">
   <div class="card">
     <h2>¿Clasificar, agrupar o modelar tópicos?</h2>
-    <div class="meta"><span class="tag illus">Ilustración: no ejecuta ningún modelo</span><span class="tag">Clase 9 · apartados 6.1-6.2</span></div>
+    <div class="meta"><span class="tag illus">Ilustración: no ejecuta ningún modelo</span></div>
     <p>Cada situación, en su enfoque. La clave está en dos preguntas: <strong>¿hay etiquetas?</strong> y <strong>¿qué debe devolver el método?</strong> Pulsa un caso para ver por qué.</p>
     <div class="row" id="enf-ctrl"></div>
     <div class="bandeja3" id="enf-bandeja" hidden></div>
     <div class="tablero3" id="enf-tablero"></div>
   </div>
   <div class="card">
-    <h2>Los tres enfoques (Figuras 1-3 del tema)</h2>
+    <h2>Tres enfoques para analizar documentos</h2>
     <div class="grid3">
-      <div class="box"><h3>Clasificación supervisada</h3><p class="small">Hay etiquetas previas. Aprende de textos etiquetados y asigna una (o varias) de las etiquetas conocidas. Clase 10.</p></div>
-      <div class="box"><h3>Clustering</h3><p class="small">No hay etiquetas. Agrupa documentos parecidos; cada uno en un grupo (duro) o con probabilidades (blando). Hay que ponerle nombre al grupo. Clase 11.</p></div>
-      <div class="box"><h3>Modelado de tópicos</h3><p class="small">No hay etiquetas. LSA usa componentes con pesos que pueden ser negativos; NMF, factores no negativos. En LDA, cada tópico sí es una distribución de palabras y cada documento, una mezcla probabilística de tópicos. Clase 11.</p></div>
+      <div class="box"><h3>Clasificación supervisada</h3><p class="small">Hay etiquetas previas. Aprende de textos etiquetados y asigna una (o varias) de las etiquetas conocidas.</p></div>
+      <div class="box"><h3>Clustering</h3><p class="small">No hay etiquetas. Agrupa documentos parecidos; cada uno en un grupo (duro) o con probabilidades (blando). Hay que ponerle nombre al grupo.</p></div>
+      <div class="box"><h3>Modelado de tópicos</h3><p class="small">No hay etiquetas. LSA usa componentes con pesos que pueden ser negativos; NMF, factores no negativos. En LDA, cada tópico sí es una distribución de palabras y cada documento, una mezcla probabilística de tópicos.</p></div>
     </div>
   </div>
 </section>
@@ -201,8 +201,8 @@
 <section class="panel" id="p-ng" role="tabpanel" aria-labelledby="t-ng">
   <div class="card">
     <h2>Un texto en n-gramas</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 9 · apartado 6.3</span></div>
-    <p>Misma tokenización que en las clases (palabras de letras, en minúsculas; los números desaparecen). Activa «quitar palabras vacías» y mira qué bigramas aparecen que <em>no</em> están en el texto.</p>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
+    <p>La tokenización conserva palabras formadas por letras, las pasa a minúsculas y descarta los números. Activa «quitar palabras vacías» y mira qué bigramas aparecen que <em>no</em> están en el texto.</p>
     <input type="text" id="ng-texto" value="Los tipos de interés frenan la compra de vivienda" aria-label="Texto para dividir en n-gramas" style="width:100%">
     <div class="row">
       <label class="inline">n = <select id="ng-n"><option>1</option><option selected>2</option><option>3</option></select></label>
@@ -228,8 +228,8 @@
 <section class="panel" id="p-nb" role="tabpanel" aria-labelledby="t-nb">
   <div class="card">
     <h2>Naive Bayes con las noticias</h2>
-    <div class="meta"><span class="tag real">Entrenado en el navegador con las 60 noticias de entrenamiento</span><span class="tag">Clase 10</span></div>
-    <div class="warnbox">La demo usa <strong>palabras</strong>, no lemas (el navegador no ejecuta spaCy). En la Clase 10, la variante elegida por validación cruzada fue la de lemas de contenido (15 de 20 en prueba); con palabras salen otras cifras.</div>
+    <div class="meta"><span class="tag real">Entrenado en el navegador con las 60 noticias de entrenamiento</span></div>
+    <p>El clasificador utiliza <strong>palabras</strong>. Cambiar la representación a lemas modifica el vocabulario y puede cambiar las predicciones.</p>
     <div class="row">
       <label class="inline">alfa <input type="range" id="nb-alfa" min="0.05" max="2" step="0.05" value="1"> <span id="nb-alfav">1,00</span></label>
       <label class="inline"><input type="checkbox" id="nb-vac"> quitar palabras vacías</label>
@@ -245,7 +245,7 @@
     <div id="nb-eval"></div>
   </div>
   <div class="card">
-    <h2>El ejemplo a mano de la Clase 10</h2>
+    <h2>Un ejemplo de Naive Bayes paso a paso</h2>
     <div id="nb-mano"></div>
   </div>
 </section>
@@ -253,14 +253,14 @@
 <!-- 4 · LSA -->
 <section class="panel" id="p-lsa" role="tabpanel" aria-labelledby="t-lsa">
   <div class="card">
-    <h2>LSA: SVD de la matriz del tema</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (Jacobi)</span><span class="tag">Clase 11 · apartado 6.5 · Figura 8 (Aggarwal, 2018)</span></div>
+    <h2>LSA: descomposición de una matriz de documentos</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (Jacobi)</span><span class="tag">Aggarwal, 2018</span></div>
     <p>Edita los recuentos y elige cuántos tópicos conservar. El signo de cada tópico se fija como en scikit-learn (el mayor valor absoluto de cada fila de Pᵀ, positivo); puedes invertirlo para comprobar que la reconstrucción no cambia.</p>
     <div id="mat-edit"></div>
     <div class="row">
       <label class="inline">k = <input type="range" id="lsa-k" min="1" max="5" value="2"> <span id="lsa-kv">2</span></label>
       <button class="btn btn-gray" id="lsa-flip">Invertir el signo del tópico 1</button>
-      <button class="btn btn-gray" id="mat-reset">Restaurar la matriz del tema</button>
+      <button class="btn btn-gray" id="mat-reset">Restaurar la matriz inicial</button>
     </div>
     <div class="grid2"><div id="lsa-q"></div><div id="lsa-p"></div></div>
     <div id="lsa-rec"></div>
@@ -274,13 +274,13 @@
 <section class="panel" id="p-nmf" role="tabpanel" aria-labelledby="t-nmf">
   <div class="card">
     <h2>NMF: factorización no negativa de la misma matriz</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (actualizaciones multiplicativas de Lee y Seung)</span><span class="tag">Clase 11</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador (actualizaciones multiplicativas de Lee y Seung)</span></div>
     <p>La matriz es la de la pestaña LSA (si la editas allí, cambia aquí). La demo usa actualizaciones multiplicativas con un inicio aleatorio; scikit-learn usa por defecto descenso por coordenadas con inicio NNDSVDA: con k = 2 llega al mismo error (<span id="nmf-skerr"></span>), con otra escala.</p>
     <div class="row">
       <label class="inline">k = <select id="nmf-k"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
       <label class="inline">semilla <input type="number" id="nmf-seed" value="1" min="0" max="9999" style="width:5rem"></label>
       <label class="inline">iteraciones <select id="nmf-it"><option>10</option><option>100</option><option selected>2000</option></select></label>
-      <label class="inline"><input type="checkbox" id="nmf-norm"> normalizar (columnas de W y filas de H suman 1, como la Figura 12)</label>
+      <label class="inline"><input type="checkbox" id="nmf-norm"> normalizar (columnas de W y filas de H suman 1)</label>
     </div>
     <div class="grid2"><div id="nmf-w"></div><div id="nmf-h"></div></div>
     <div id="nmf-err"></div>
@@ -291,8 +291,8 @@
 <section class="panel" id="p-lda" role="tabpanel" aria-labelledby="t-lda">
   <div class="card">
     <h2>LDA paso a paso: muestreo de Gibbs</h2>
-    <div class="meta"><span class="tag real">Algoritmo real ejecutado en el navegador, en un corpus diminuto</span><span class="tag">Clase 11</span></div>
-    <p>Cada documento de la matriz del tema se convierte en una lista de palabras (doc 1: león, león, tigre, tigre, guepardo, jaguar, jaguar). Cada palabra tiene un tópico (color). En cada barrido, cada palabra se quita y se reasigna con probabilidad proporcional a <span class="mono">(n<sub>k,w</sub> + β) / (n<sub>k</sub> + Wβ) · (n<sub>d,k</sub> + α)</span>: cuánto usa el tópico esa palabra y cuánto usa el documento ese tópico (Griffiths y Steyvers, 2004). Pulsa una palabra para ver sus probabilidades.</p>
+    <div class="meta"><span class="tag real">Algoritmo real ejecutado en el navegador, en un corpus diminuto</span></div>
+    <p>Cada documento de la matriz se convierte en una lista de palabras (doc 1: león, león, tigre, tigre, guepardo, jaguar, jaguar). Cada palabra tiene un tópico (color). En cada barrido, cada palabra se quita y se reasigna con probabilidad proporcional a <span class="mono">(n<sub>k,w</sub> + β) / (n<sub>k</sub> + Wβ) · (n<sub>d,k</sub> + α)</span>: cuánto usa el tópico esa palabra y cuánto usa el documento ese tópico (Griffiths y Steyvers, 2004). Pulsa una palabra para ver sus probabilidades.</p>
     <div class="warnbox">scikit-learn no usa Gibbs sino inferencia variacional: sus números no coinciden con los de esta pestaña, aunque el modelo es el mismo.</div>
     <div class="row">
       <label class="inline">K <select id="lda-k"><option selected>2</option><option>3</option></select></label>
@@ -314,7 +314,7 @@
 <section class="panel" id="p-top" role="tabpanel" aria-labelledby="t-top">
   <div class="card">
     <h2>Tópicos de las noticias y del Quijote</h2>
-    <div class="meta"><span class="tag pre">Precalculado con scikit-learn 1.9.1 (analisis_topicos.py)</span><span class="tag">Clase 11</span></div>
+    <div class="meta"><span class="tag pre">Precalculado con scikit-learn 1.9.1</span></div>
     <div class="seggroup" id="top-seg">
       <button class="seg" aria-pressed="true" data-v="nmf">Noticias · NMF</button>
       <button class="seg" aria-pressed="false" data-v="lsa">Noticias · LSA</button>
@@ -435,9 +435,9 @@ const SITUACIONES = [
   ["Una empresa quiere saber de qué hablan 50 000 correos de clientes, sin categorías previas, y ver qué mezcla de temas tiene cada uno.", "modelado", "Sin etiquetas y con mezclas por documento: modelado de tópicos."],
   ["Se quiere repartir 3 000 reseñas en grupos de reseñas parecidas para que un analista revise un grupo cada día.", "clustering", "Sin etiquetas y cada reseña en un grupo: clustering (duro)."],
   ["Un filtro debe decidir si cada correo es spam o no, y hay miles de correos ya marcados.", "clasificación", "Etiquetas binarias conocidas: clasificación supervisada binaria."],
-  ["Un historiador quiere descubrir los grandes temas de 126 capítulos de una novela y cuánto pesa cada uno en cada capítulo.", "modelado", "Sin etiquetas y con proporciones por capítulo: modelado de tópicos (como el Quijote en la Clase 11)."],
+  ["Un historiador quiere descubrir los grandes temas de 126 capítulos de una novela y cuánto pesa cada uno en cada capítulo.", "modelado", "Sin etiquetas y con proporciones por capítulo: modelado de tópicos."],
   ["Un foro quiere detectar temas nuevos que aparecen este mes y que no estaban en sus categorías.", "modelado", "Temas nuevos sin etiquetas: modelado de tópicos (o clustering). Un clasificador solo conoce sus categorías."],
-  ["Hay que etiquetar cada consulta de clientes como envío, facturación, producto o servicio, con un histórico etiquetado.", "clasificación", "Multiclase con etiquetas conocidas (Tabla 1 del tema)."],
+  ["Hay que etiquetar cada consulta de clientes como envío, facturación, producto o servicio, con un histórico etiquetado.", "clasificación", "Multiclase con etiquetas conocidas."],
   ["Se quiere agrupar 200 artículos científicos en 5 bloques para repartirlos entre 5 revisores, sin solapamientos.", "clustering", "Un artículo, un bloque y sin etiquetas: clustering duro."]];
 const ENF = [["clasificación", "Clasificación supervisada", "#1E88E5", "hay etiquetas · devuelve una de ellas"],
   ["clustering", "Clustering", "#00897B", "sin etiquetas · cada documento en un grupo"],
@@ -554,7 +554,7 @@ function pintarManoNB() {
   $("#nb-mano").innerHTML = `<p>${m.textos.map((t) => `<span class="pill">${t.clase}</span> «${esc(t.texto)}»`).join("<br>")}</p>` +
     `<p>Frase: <strong>«${esc(m.frase)}»</strong> · |V| = ${mod.V}</p>` +
     tabla(["clase", "puntuación (ln)"], mod.clases.map((c) => [c, fmt(r.puntuaciones[c], 4)]), ["", "num"]) +
-    `<p class="small">Gana <strong>${r.prediccion}</strong>, como en la diapositiva (−8,5058 frente a −8,8519).</p>`;
+    `<p class="small">Gana <strong>${r.prediccion}</strong> (−8,5058 frente a −8,8519).</p>`;
 }
 $("#nb-alfa").addEventListener("input", () => { entrenarNB(); clasificarNB(); evaluarNB(); calorConfusion(); });
 $("#nb-vac").addEventListener("change", () => { entrenarNB(); clasificarNB(); evaluarNB(); calorConfusion(); });
@@ -632,8 +632,8 @@ function pintarNMF() {
   $("#nmf-w").innerHTML = "<h3>W (documentos × tópicos)</h3>" + tabla(["", ...Array.from({ length: k }, (_, t) => `tópico ${t + 1}`)], W.map((f, i) => [`doc ${i + 1}`].concat(f.map((x) => fmt(x, 3)))), ["", "num", "num", "num", "num"]);
   $("#nmf-h").innerHTML = "<h3>H (tópicos × términos)</h3>" + tabla(["", ...TERM], H.map((f, t) => [`tópico ${t + 1}`].concat(f.map((x) => (x > 0.5 * mx ? `<strong>${fmt(x, 3)}</strong>` : fmt(x, 3))))), ["", "num", "num", "num", "num", "num", "num"]);
   const sv = L.svd(MAT), errSVD = L.frobenius(MAT, L.reconstruir(sv, Math.min(k, MAT[0].length)));
-  $("#nmf-err").innerHTML = `<div class="info">Error de NMF: <strong>${fmt(o.error, 4)}</strong> · SVD con el mismo k: ${fmt(errSVD, 4)} · Figura 10 del tema (aproximación entera ilustrativa): ${fmt(D.matriz.figura10_error, 4)}` +
-    ($("#nmf-err").dataset.sigma ? ` · Σ (producto de las sumas, Figura 12): ${$("#nmf-err").dataset.sigma}` : "") + "</div>" +
+  $("#nmf-err").innerHTML = `<div class="info">Error de NMF: <strong>${fmt(o.error, 4)}</strong> · SVD con el mismo k: ${fmt(errSVD, 4)}` +
+    ($("#nmf-err").dataset.sigma ? ` · Σ (producto de las sumas): ${$("#nmf-err").dataset.sigma}` : "") + "</div>" +
     '<p class="small">Todo es no negativo. Cambia la semilla: la escala de W y H cambia, pero el producto y el error apenas. Con 10 iteraciones aún no ha convergido.</p>';
   calor("#nmf-w"); calor("#nmf-h");
 }
@@ -724,7 +724,7 @@ function pintarIntruso() {
   $$("#int-lista .caso-intruso").forEach((x) => x.addEventListener("click", () => x.classList.remove("oculto")));
 }
 pintarIntruso();
-Clase.botonPregunta($("#int-ctrl"), (oc) => $$("#int-lista .caso-intruso").forEach((x) => x.classList.toggle("oculto", oc)), { ver: "Ocultar las intrusas para preguntar", ocultas: "Mostrar todas las intrusas" });
+Clase.botonPregunta($("#int-ctrl"), (oc) => $$("#int-lista .caso-intruso").forEach((x) => x.classList.toggle("oculto", oc)), { ver: "Ocultar las intrusas", ocultas: "Mostrar todas las intrusas" });
 
 // ================================================================ 9 · Entidades
 const TR = D.entidades.tramos;

@@ -3,7 +3,7 @@
 window.REPASO = {
  "5": {
   "titulo": "Tema 5 · Modelado del lenguaje neuronal (I)",
-  "origen": "Preguntas de comprobación preparadas con la demo del tema (no son el test oficial).",
+  "origen": "Preguntas de práctica con respuesta razonada.",
   "preguntas": [
    {
     "p": "Skip-gram…",
@@ -21,7 +21,7 @@ window.REPASO = {
      "una clasificación binaria con sigmoide (¿vecina real o al azar?)"
     ],
     "c": 1,
-    "e": "Evita recorrer todo el vocabulario en cada par; el tema (p. 11) mezcla ambas formulaciones."
+    "e": "Evita recorrer todo el vocabulario en cada par de entrenamiento."
    },
    {
     "p": "FastText representa una palabra con…",
@@ -75,13 +75,13 @@ window.REPASO = {
      "144"
     ],
     "c": 1,
-    "e": "12 capas con 12 cabezas cada una. El tema (p. 50) habla de «doce capas multihead»: son 12 cabezas por capa."
+    "e": "BERT-base tiene 12 capas con 12 cabezas de atención en cada una."
    }
   ]
  },
  "6": {
   "titulo": "Tema 6 · Análisis y modelado de tópicos",
-  "origen": "Las diez preguntas del test del tema (pp. 57-60), con la respuesta razonada. Donde el tema es ambiguo se aceptan dos respuestas.",
+  "origen": "Preguntas de repaso con respuesta razonada. Algunas admiten más de una opción.",
   "preguntas": [
    {
     "p": "1. ¿Qué se entiende por análisis de tópicos en el PLN?",
@@ -128,7 +128,7 @@ window.REPASO = {
     "e": "Un único clasificador multiclase cuyas clases son las combinaciones vistas en el entrenamiento."
    },
    {
-    "p": "5. Técnicas que generan features para clasificar tópicos (según la p. 17 del tema):",
+    "p": "5. Técnicas que generan características para clasificar tópicos:",
     "o": [
      "A. Eliminación de stopwords",
      "B. NER",
@@ -139,7 +139,7 @@ window.REPASO = {
      1,
      3
     ],
-    "e": "Pregunta ambigua: el tema clasifica tokenización y palabras vacías como preprocesado, y NER y vectorización como generación de features. Respuesta más defendible: B y D."
+    "e": "El reconocimiento de entidades y la vectorización generan características. La tokenización y la eliminación de palabras vacías preparan el texto."
    },
    {
     "p": "6. Verdadero sobre entrenar y evaluar clasificadores de tópicos:",
@@ -150,7 +150,7 @@ window.REPASO = {
      "D. Todas falsas"
     ],
     "c": 1,
-    "e": "F1 combina precisión y exhaustividad (Clase 10). Con data drift hay que reentrenar."
+    "e": "F1 combina precisión y exhaustividad. Los cambios en los datos pueden hacer necesario reentrenar el modelo."
    },
    {
     "p": "7. Verdaderas sobre evaluar clustering:",
@@ -175,7 +175,7 @@ window.REPASO = {
      "D. Etiquetado basado en títulos"
     ],
     "c": 3,
-    "e": "Fácil de leer, pero un texto no representa a todo el grupo (Figura 6)."
+    "e": "Fácil de leer, pero un texto no representa a todo el grupo."
    },
    {
     "p": "9. Correcto sobre LSA:",
@@ -186,7 +186,7 @@ window.REPASO = {
      "D. Necesita etiquetas"
     ],
     "c": 1,
-    "e": "Ojo: los tópicos de LSA tienen signo arbitrario y están anidados (correcciones a las pp. 33 y 35)."
+    "e": "LSA aplica SVD a la matriz de documentos y términos para obtener componentes latentes."
    },
    {
     "p": "10. Correcto sobre LDA:",
@@ -203,7 +203,7 @@ window.REPASO = {
  },
  "7": {
   "titulo": "Tema 7 · Análisis de sentimientos y minería de opiniones",
-  "origen": "Las diez preguntas del test del tema (pp. 67-71), con la respuesta razonada.",
+  "origen": "Preguntas de repaso con respuesta razonada.",
   "preguntas": [
    {
     "p": "1. ¿Qué es el análisis de sentimientos y la minería de opiniones?",
@@ -214,7 +214,7 @@ window.REPASO = {
      "D. Evaluar el crecimiento de la información en Internet"
     ],
     "c": 1,
-    "e": "Definición del tema (pp. 5-6): la polaridad del sujeto de opinión hacia el objeto, a partir del texto."
+    "e": "Se identifica en el texto la polaridad del sujeto de opinión hacia el objeto."
    },
    {
     "p": "2. Nivel que determina la opinión sobre un objeto específico del texto:",
@@ -225,7 +225,7 @@ window.REPASO = {
      "D. Ninguno"
     ],
     "c": 2,
-    "e": "Nivel de entidad u objeto de opinión, el más fino (p. 9); lleva al análisis por aspectos."
+    "e": "Nivel de entidad u objeto de opinión, el más fino; lleva al análisis por aspectos."
    },
    {
     "p": "3. Limitación de ampliar el léxico con diccionarios (WordNet):",
@@ -236,7 +236,7 @@ window.REPASO = {
      "D. No tiene en cuenta el contexto"
     ],
     "c": 3,
-    "e": "«rápido» es positivo en un coche y negativo en una exposición (p. 11); por eso aparecen los métodos basados en corpus."
+    "e": "«rápido» es positivo en un coche y negativo en una exposición; por eso aparecen los métodos basados en corpus."
    },
    {
     "p": "4. ¿Cuál es una opinión indirecta?",
@@ -247,7 +247,7 @@ window.REPASO = {
      "D. «He ido de viaje a Roma»"
     ],
     "c": 2,
-    "e": "Opina sobre la aspirina a través de su efecto en otra cosa (pp. 12-13); aquí, positivamente."
+    "e": "Opina sobre la aspirina a través de su efecto en otra cosa; aquí, positivamente."
    },
    {
     "p": "5. «Sí, genial. El trato fue una maravilla. Solo tardaron ocho horas en atender mi petición»:",
@@ -269,7 +269,7 @@ window.REPASO = {
      "D. Se basa en el análisis sintáctico"
     ],
     "c": 1,
-    "e": "Es el método no supervisado de Turney (2002; el tema lo atribuye a Turney y Littman, 2003): SO = PMI(frase, excellent) - PMI(frase, poor)."
+    "e": "El método no supervisado de Turney (2002) calcula SO = PMI(frase, excellent) - PMI(frase, poor)."
    },
    {
     "p": "7. En la quíntupla del ejemplo del televisor:",
@@ -280,7 +280,7 @@ window.REPASO = {
      "D. s es la entidad y h el aspecto"
     ],
     "c": 1,
-    "e": "e = entidad (el televisor), a = aspecto (claridad, resolución), s = sentimiento (asombroso), h = emisor (los consumidores expertos), t = momento (tras la campaña) (pp. 38-39)."
+    "e": "e = entidad (el televisor), a = aspecto (claridad, resolución), s = sentimiento (asombroso), h = emisor (los consumidores expertos), t = momento (tras la campaña)."
    },
    {
     "p": "8. Característica del spam de tipo I (reseña falsa):",
@@ -302,7 +302,7 @@ window.REPASO = {
      "D. Todas"
     ],
     "c": 3,
-    "e": "Las tres aparecen entre los rasgos de Jindal y Liu que recoge el tema (pp. 47-49): feedback, longitud y calificaciones."
+    "e": "Las tres son rasgos analizados por Jindal y Liu: feedback, longitud y calificaciones."
    },
    {
     "p": "10. Modelo que usa OpinionMiner para aspecto y orientación:",
@@ -313,13 +313,13 @@ window.REPASO = {
      "D. LightGBM"
     ],
     "c": 1,
-    "e": "Jin et al. (2009) etiquetan secuencialmente entidades y opiniones con modelos ocultos de Markov (p. 45)."
+    "e": "Jin et al. (2009) etiquetan secuencialmente entidades y opiniones con modelos ocultos de Markov."
    }
   ]
  },
  "8": {
   "titulo": "Tema 8 · Modelado del lenguaje neuronal (II)",
-  "origen": "Preguntas de comprobación preparadas con la demo del tema (no son el test oficial).",
+  "origen": "Preguntas de práctica con respuesta razonada.",
   "preguntas": [
    {
     "p": "¿Qué distingue a un codificador de un decodificador Transformer?",
@@ -339,7 +339,7 @@ window.REPASO = {
      "Solo el vector de [CLS]"
     ],
     "c": 0,
-    "e": "Un vector por token, que el decodificador consulta con atención cruzada (corrige la p. 8 del tema)."
+    "e": "Un vector por token, que el decodificador consulta mediante atención cruzada."
    },
    {
     "p": "En SpanBERT, el 15 % se refiere a…",
@@ -405,7 +405,7 @@ window.REPASO = {
  },
  "9": {
   "titulo": "Tema 9 · Aplicaciones de PLN",
-  "origen": "Las diez preguntas del test del tema (pp. 58-63, 0 puntos). La explicación cita la página del tema y, cuando hay matiz, lo medido en clase. La clave es la deducida del texto: si la del aula difiere, prevalece la del aula.",
+  "origen": "Preguntas de repaso con respuesta razonada.",
   "preguntas": [
    {
     "p": "Indica las afirmaciones verdaderas en el contexto de las tareas de MT:",
@@ -416,7 +416,7 @@ window.REPASO = {
      "D. Ninguna de las anteriores."
     ],
     "c": 2,
-    "e": "Las divergencias léxicas afectan a palabras concretas (p. 6). Palabra a palabra, nuestro traductor baja de 75,7 a 47,7 de chrF2."
+    "e": "Las divergencias léxicas afectan a palabras concretas. Palabra a palabra, nuestro traductor baja de 75,7 a 47,7 de chrF2."
    },
    {
     "p": "¿Cuál es el objetivo del teacher forcing en un codificador-decodificador?",
@@ -427,7 +427,7 @@ window.REPASO = {
      "D. Usar LM causales en el codificador y en el decodificador."
     ],
     "c": 1,
-    "e": "Al entrenar, cada paso recibe la palabra correcta de la referencia (pp. 10-11). Solo existe en el entrenamiento: en inferencia el modelo usa sus propias predicciones."
+    "e": "Al entrenar, cada paso recibe la palabra correcta de la referencia. Solo existe en el entrenamiento: en inferencia el modelo usa sus propias predicciones."
    },
    {
     "p": "¿Qué diferencia hay entre la capa cross-attention y la causal self-attention del decodificador?",
@@ -438,7 +438,7 @@ window.REPASO = {
      "D. Ninguna de las anteriores."
     ],
     "c": 1,
-    "e": "Atención cruzada: Q del decodificador y K, V del codificador (p. 15). En la figura 7, la causal va antes que la cruzada."
+    "e": "En la atención cruzada, Q procede del decodificador y K y V proceden del codificador."
    },
    {
     "p": "Autocompletado frente a resumen con transformers:",
@@ -449,7 +449,7 @@ window.REPASO = {
      "D. Ninguna de las anteriores."
     ],
     "c": 0,
-    "e": "Matiz: el texto (pp. 20-22) resume con un LM causal y un delimitador δ, y el esquema de la p. 3 dice lo contrario; C es falsa porque ambos se entrenan con teacher forcing."
+    "e": "El resumen dispone del texto de entrada completo y puede usar un codificador bidireccional. También puede generarse con un modelo causal. Ambas tareas admiten teacher forcing durante el entrenamiento."
    },
    {
     "p": "¿Qué son los agentes conversacionales?",
@@ -460,7 +460,7 @@ window.REPASO = {
      "D. Programas que solo usan texto."
     ],
     "c": 0,
-    "e": "Voz, texto o multimodal (p. 23). B describe solo el caso más sencillo."
+    "e": "Voz, texto o multimodal. B describe solo el caso más sencillo."
    },
    {
     "p": "¿Cuál es un ejemplo de factoid question?",
@@ -471,7 +471,7 @@ window.REPASO = {
      "D. Todas las anteriores."
     ],
     "c": 0,
-    "e": "Pregunta sobre un hecho concreto (p. 27). B y C son abiertas."
+    "e": "Pregunta sobre un hecho concreto. B y C son abiertas."
    },
    {
     "p": "¿Para qué sirve el índice invertido en recuperación ad hoc?",
@@ -482,7 +482,7 @@ window.REPASO = {
      "D. Ninguna de las anteriores."
     ],
     "c": 1,
-    "e": "Diccionario término → documentos (pp. 28-29). En nuestras 92 noticias, una consulta tiene de media 7 candidatos."
+    "e": "Diccionario término → documentos. En nuestras 92 noticias, una consulta tiene de media 7 candidatos."
    },
    {
     "p": "Sobre un sistema de IR para factoid QA:",
@@ -493,7 +493,7 @@ window.REPASO = {
      "D. Todas son correctas."
     ],
     "c": 3,
-    "e": "Las tres (pp. 30-33). Matiz medido: [CLS] solo funciona si el modelo se entrenó con preguntas sin respuesta; nuestro lector (SQAC) detecta 1 de 3."
+    "e": "Las tres. Matiz medido: [CLS] solo funciona si el modelo se entrenó con preguntas sin respuesta; nuestro lector (SQAC) detecta 1 de 3."
    },
    {
     "p": "Indica la afirmación INCORRECTA sobre ASR:",
@@ -504,7 +504,7 @@ window.REPASO = {
      "D. Todas son incorrectas."
     ],
     "c": 0,
-    "e": "Los rasgos se comprimen antes del codificador (p. 39): en Whisper, 3000 tramas pasan a 1500 posiciones."
+    "e": "Los rasgos se comprimen antes del codificador: en Whisper, 3000 tramas pasan a 1500 posiciones."
    },
    {
     "p": "Indica la afirmación INCORRECTA sobre TTS:",
@@ -515,13 +515,13 @@ window.REPASO = {
      "D. Todas son incorrectas."
     ],
     "c": 2,
-    "e": "El decodificador predice el espectrograma Mel; el vocoder genera la onda (p. 41). Sobre A: es lo habitual, pero hay sistemas multihablante."
+    "e": "El decodificador predice el espectrograma Mel; el vocoder genera la onda. Sobre A: es lo habitual, pero hay sistemas multihablante."
    }
   ]
  },
  "10": {
   "titulo": "Tema 10 · Visualización de textos",
-  "origen": "Preguntas de práctica; el test oficial está en el aula.",
+  "origen": "Preguntas de práctica con respuesta razonada.",
   "preguntas": [
    {
     "p": "Dos noticias aparecen juntas en un mapa t-SNE. ¿Qué puedes concluir?",
@@ -531,10 +531,10 @@ window.REPASO = {
      "Nada sin comprobarlo en el espacio original"
     ],
     "c": 2,
-    "e": "En la Clase 17, d15 y e13 eran vecinas en el mapa con coseno 0. La distancia del mapa es una pista."
+    "e": "Las noticias d15 y e13 aparecen próximas en el mapa pese a tener coseno 0. La distancia proyectada no garantiza similitud en el espacio original."
    },
    {
-    "p": "¿Qué ventaja tiene una proyección lineal como PCA, según el tema?",
+    "p": "¿Qué ventaja tiene una proyección lineal como PCA?",
     "o": [
      "Es incremental e interpretable",
      "Captura relaciones no lineales",

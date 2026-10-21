@@ -74,7 +74,7 @@
   // ------------------------------------------------------------ «ocultar soluciones»
   // Botón que alterna entre caso resuelto y modo pregunta. alCambiar(oculto) redibuja lo necesario.
   Clase.botonPregunta = function (host, alCambiar, textos) {
-    const t = Object.assign({ ver: "Ocultar soluciones para preguntar", ocultas: "Mostrar todas las soluciones" }, textos || {});
+    const t = Object.assign({ ver: "Ocultar soluciones", ocultas: "Mostrar todas las soluciones" }, textos || {});
     const b = document.createElement("button");
     b.type = "button"; b.className = "btn-pregunta"; b.setAttribute("aria-pressed", "false"); b.textContent = t.ver;
     b.addEventListener("click", () => {
@@ -103,7 +103,7 @@
       if (!m.querySelector(".tag:not(.illus)") || m.querySelector(".fuentes-btn")) return;
       const b = document.createElement("button");
       b.type = "button"; b.className = "fuentes-btn"; b.textContent = "i";
-      b.title = "Procedencia de los datos y apartado del tema"; b.setAttribute("aria-label", b.title);
+      b.title = "Datos y método"; b.setAttribute("aria-label", b.title);
       b.addEventListener("click", () => m.classList.toggle("abierta"));
       m.append(b);
     });

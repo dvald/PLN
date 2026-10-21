@@ -139,7 +139,7 @@
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)" aria-current="page">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="07_sentimientos.html">‹ Tema 7 · Sentimientos</a><a class="sig" href="09_aplicaciones.html">Tema 9 · Aplicaciones ›</a></nav>
   <h1><span class="num-tema">TEMA 8</span>Modelado de lenguaje neuronal (II)</h1>
-  <p>Los Transformers por dentro y en uso: máscaras, generación, huecos, subpalabras, ajuste fino frente a prompts, destilación y alineación. <span class="cuando">Clases 14 y 15 · semanas 10 y 11</span></p>
+  <p>Los Transformers por dentro y en uso: máscaras, generación, huecos, subpalabras, ajuste fino frente a prompts, destilación y alineación.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M12 14Q18 3 24 14M24 14Q30 3 36 14M12 14Q24-4 36 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="6" y="17" width="36" height="9" rx="2.5"/><rect x="6" y="29" width="36" height="9" rx="2.5"/></g><g fill="currentColor"><circle cx="12" cy="43" r="2.6"/><circle cx="24" cy="43" r="2.6"/><circle cx="36" cy="43" r="2.6"/></g></svg></div>
 </header>
 <div class="tabs" role="tablist" aria-label="Pestañas de la demo">
@@ -160,7 +160,7 @@
 <section class="panel active" id="p-mas" role="tabpanel" aria-labelledby="t-mas">
   <div class="card">
     <h2>Mismo bloque, distinta máscara</h2>
-    <div class="meta"><span class="tag illus">Esquema exacto (no ejecuta ningún modelo)</span><span class="tag real">Comprobación con modelos reales al final</span><span class="tag">Clase 14 · d. 6-7</span></div>
+    <div class="meta"><span class="tag illus">Esquema exacto (no ejecuta ningún modelo)</span><span class="tag real">Comprobación con modelos reales al final</span></div>
     <p>Cada fila es la palabra que calcula su salida (consulta); cada columna, la palabra a la que puede atender (clave). Pulsa una fila para ver qué ve esa palabra.</p>
     <div class="row"><label for="mas-frase"><b>Frase:</b></label><input type="text" id="mas-frase" value="El Real Sporting ganó el partido"></div>
     <div class="seggroup" id="mas-tipo" role="group" aria-label="Arquitectura">
@@ -184,7 +184,7 @@
 <section class="panel" id="p-sig" role="tabpanel" aria-labelledby="t-sig">
   <div class="card">
     <h2>La siguiente subpalabra y la temperatura</h2>
-    <div class="meta"><span class="tag pre">Logits reales de Qwen2.5-0.5B base (precalculados)</span><span class="tag">Cálculo en el navegador: softmax con temperatura sobre las 20 primeras</span><span class="tag">Clase 14 · d. 15-16</span></div>
+    <div class="meta"><span class="tag pre">Logits reales de Qwen2.5-0.5B base (precalculados)</span><span class="tag">Cálculo en el navegador: softmax con temperatura sobre las 20 primeras</span></div>
     <div class="row"><label for="sig-prompt"><b>Texto:</b></label><select id="sig-prompt"></select></div>
     <div class="row"><label for="sig-T"><b>Temperatura T = <span id="sig-Tv">1,0</span></b></label><input type="range" id="sig-T" min="0.2" max="2.5" step="0.1" value="1"></div>
     <p class="small" id="sig-nota"></p>
@@ -209,7 +209,7 @@
 <section class="panel" id="p-rel" role="tabpanel" aria-labelledby="t-rel">
   <div class="card">
     <h2>Rellenar el hueco: codificador frente a codificador-decodificador</h2>
-    <div class="meta"><span class="tag real">Salidas reales de BETO y BARTO (precalculadas)</span><span class="tag">Clase 14 · d. 13-14</span></div>
+    <div class="meta"><span class="tag real">Salidas reales de BETO y BARTO (precalculadas)</span></div>
     <div class="grid2">
       <div class="box"><h3>BETO: una subpalabra por [MASK]</h3><select id="rel-beto"></select><div id="rel-beto-res"></div></div>
       <div class="box"><h3>BARTO: reescribe la frase</h3><select id="rel-barto"></select><div id="rel-barto-res"></div></div>
@@ -217,7 +217,7 @@
   </div>
   <div class="card">
     <h3>Atención cruzada de BARTO</h3>
-    <div class="meta"><span class="tag real">Pesos reales (media de 6 capas y 12 cabezas)</span><span class="tag">Clase 14 · d. 9</span></div>
+    <div class="meta"><span class="tag real">Pesos reales (media de 6 capas y 12 cabezas)</span></div>
     <p>Entrada del codificador: <b id="rel-ent"></b>. El decodificador escribe la frase con «partido». Pulsa un paso del decodificador para ver a qué posiciones de la entrada atiende.</p>
     <div class="scroll"><table class="heat" id="rel-heat"></table></div>
     <div id="rel-fila"></div>
@@ -233,8 +233,8 @@
 <section class="panel" id="p-fun" role="tabpanel" aria-labelledby="t-fun">
   <div class="card">
     <h2>BETO congelado como extractor de rasgos</h2>
-    <div class="meta"><span class="tag real">Vectores [CLS] reales y regresión logística (Python)</span><span class="tag">Intervalos calculados en el navegador</span><span class="tag">Clase 14 · d. 20-22</span></div>
-    <p>Las mismas 60 noticias de entrenamiento y 20 de prueba que la Clase 10. BETO no se entrena: se toma el vector de [CLS] de la última capa y se entrena una regresión logística.</p>
+    <div class="meta"><span class="tag real">Vectores [CLS] reales y regresión logística (Python)</span><span class="tag">Intervalos calculados en el navegador</span></div>
+    <p>Se utilizan 60 noticias de entrenamiento y 20 de prueba. BETO no se entrena: se toma el vector de [CLS] de la última capa y se entrena una regresión logística.</p>
     <div class="grid2">
       <div><table id="fun-cmp"></table><p class="small" id="fun-vc"></p></div>
       <div><h3>Matriz de confusión de BETO congelado (prueba)</h3><table class="mat" id="fun-cm"></table></div>
@@ -257,7 +257,7 @@
 <section class="panel" id="p-sub" role="tabpanel" aria-labelledby="t-sub">
   <div class="card">
     <h2>Etiquetas por palabra, modelo con subpalabras</h2>
-    <div class="meta"><span class="tag real">Tokenización real de BETO</span><span class="tag">Alineación calculada en el navegador</span><span class="tag">Clase 15 · d. 9</span></div>
+    <div class="meta"><span class="tag real">Tokenización real de BETO</span><span class="tag">Alineación calculada en el navegador</span></div>
     <div class="row"><label for="sub-frase"><b>Frase:</b></label><select id="sub-frase"></select></div>
     <p>Cambia las etiquetas BIO de las palabras y la regla para las subpalabras de continuación.</p>
     <div id="sub-pal" class="row"></div>
@@ -275,7 +275,7 @@
 <section class="panel" id="p-fra" role="tabpanel" aria-labelledby="t-fra">
   <div class="card">
     <h2>Fragmentos (spans): cuántos hay y cómo se resumen</h2>
-    <div class="meta"><span class="tag">Cálculo exacto en el navegador</span><span class="tag">Clase 15 · d. 10</span></div>
+    <div class="meta"><span class="tag">Cálculo exacto en el navegador</span></div>
     <div class="row"><label for="fra-frase"><b>Frase:</b></label><input type="text" id="fra-frase"></div>
     <div class="row"><label for="fra-L"><b>Longitud máxima L = <span id="fra-Lv"></span></b></label><input type="range" id="fra-L" min="1" max="12" step="1" value="3"></div>
     <div class="stats"><div><div class="big" id="fra-n"></div><div class="small">fragmentos con L</div></div><div><div class="big" id="fra-tot"></div><div class="small">todos: T(T+1)/2</div></div></div>
@@ -283,10 +283,10 @@
     <div id="fra-lista"></div>
   </div>
   <div class="card">
-    <h3>La media del fragmento: fórmula correcta frente a la impresa en el tema (p. 33)</h3>
+    <h3>Media de los vectores de un fragmento</h3>
     <div class="row"><label for="fra-i">Desde</label><select id="fra-i"></select><label for="fra-j">hasta</label><select id="fra-j"></select></div>
     <div class="scroll" style="max-height:none"><table id="fra-pesos"></table></div>
-    <div class="badbox">El tema escribe 1/((j−1)+1) y suma desde k = 1: eso promedia todas las palabras desde el principio de la frase hasta j, no solo las del fragmento. Correcto: 1/(j−i+1), sumando desde k = i.</div>
+    <p>Para un fragmento que empieza en i y termina en j, suma los vectores desde i hasta j y divide por el número de palabras: j−i+1.</p>
     <div class="info" id="fra-anid"></div>
   </div>
 </section>
@@ -295,7 +295,7 @@
 <section class="panel" id="p-aju" role="tabpanel" aria-labelledby="t-aju">
   <div class="card">
     <h2>¿Ajustar o preguntar? Las mismas 20 noticias de prueba</h2>
-    <div class="meta"><span class="tag real">Predicciones reales (Python, CPU)</span><span class="tag">Aciertos, intervalos y matrices calculados en el navegador</span><span class="tag">Clase 15 · d. 12-16</span></div>
+    <div class="meta"><span class="tag real">Predicciones reales (Python, CPU)</span><span class="tag">Aciertos, intervalos y matrices calculados en el navegador</span></div>
     <div class="scroll" style="max-height:none"><table id="aju-res"></table></div>
     <p class="small">Intervalo de Wilson al 95 %. Con 20 noticias, cada acierto vale 5 puntos.</p>
   </div>
@@ -317,8 +317,8 @@
 <!-- ============================================================ 8 -->
 <section class="panel" id="p-pro" role="tabpanel" aria-labelledby="t-pro">
   <div class="card">
-    <h2>Anatomía del prompt de la clase</h2>
-    <div class="meta"><span class="tag real">Prompt real y respuestas grabadas de Qwen2.5-Instruct</span><span class="tag">Clase 15 · d. 19-22</span></div>
+    <h2>Anatomía de un prompt</h2>
+    <div class="meta"><span class="tag real">Prompt real y respuestas grabadas de Qwen2.5-Instruct</span></div>
     <div class="seggroup" id="pro-modo" role="group" aria-label="Con o sin ejemplos">
       <button class="seg" aria-pressed="true" data-m="cero">Sin ejemplos (zero-shot)</button>
       <button class="seg" aria-pressed="false" data-m="pocos">Un ejemplo por sección (few-shot)</button>
@@ -330,7 +330,7 @@
   </div>
   <div class="card">
     <h2>Estrategias de prompting</h2>
-    <div class="meta"><span class="tag">Apartado 8.5 · Figuras 23-25 (Kaddour et al., 2023)</span><span class="tag illus">Prompts escritos para la clase; no son salidas de un modelo</span></div>
+    <div class="meta"><span class="tag">Kaddour et al., 2023</span><span class="tag illus">Prompts de ejemplo; no son salidas de un modelo</span></div>
     <div class="estrategias">
       <div class="estrategia"><b>Sin ejemplos (zero-shot)</b><span class="small">Solo la instrucción.</span><pre>Clasifica la noticia en economía, deportes, salud o tecnología.
 Noticia: «El paro baja en Aragón por tercer mes consecutivo».
@@ -357,7 +357,7 @@ Usuario: Ahora en menos de diez palabras y sin cifras.</pre></div>
 <section class="panel" id="p-des" role="tabpanel" aria-labelledby="t-des">
   <div class="card">
     <h2>Destilación: lo que el maestro sabe más allá de la respuesta</h2>
-    <div class="meta"><span class="tag pre">Logits reales de la cabeza MLM de BETO (30 primeras subpalabras)</span><span class="tag">Softmax con temperatura en el navegador</span><span class="tag">Clase 15 · d. 24</span></div>
+    <div class="meta"><span class="tag pre">Logits reales de la cabeza MLM de BETO (30 primeras subpalabras)</span><span class="tag">Softmax con temperatura en el navegador</span></div>
     <p id="des-frase"></p>
     <div class="row"><label for="des-T"><b>Temperatura T = <span id="des-Tv">1</span></b></label><input type="range" id="des-T" min="1" max="6" step="0.5" value="1"></div>
     <div class="grid2">
@@ -374,7 +374,7 @@ Usuario: Ahora en menos de diez palabras y sin cifras.</pre></div>
 <section class="panel" id="p-ali" role="tabpanel" aria-labelledby="t-ali">
   <div class="card">
     <h2>¿Qué se entrena en cada caso?</h2>
-    <div class="meta"><span class="tag">Apartados 8.4 y 8.5 · Figuras 21 y 22</span><span class="tag pre">Parámetros y aciertos reales de las Clases 14 y 15</span></div>
+    <div class="meta"><span class="tag pre">Parámetros y aciertos de los modelos</span></div>
     <p>El mismo modelo preentrenado sirve de cuatro maneras. Morado: se entrena; gris: congelado.</p>
     <div class="modos8" id="ali-modo"></div>
     <div class="ajuste">
@@ -384,16 +384,15 @@ Usuario: Ahora en menos de diez palabras y sin cifras.</pre></div>
   </div>
   <div class="card">
     <h2>InstructGPT: de modelo que continúa a asistente que obedece</h2>
-    <div class="meta"><span class="tag">Apartado 8.6 · Figura 30 (Ouyang et al., 2022)</span><span class="tag illus">Esquema del artículo; no ejecuta ningún modelo</span></div>
+    <div class="meta"><span class="tag">Ouyang et al., 2022</span><span class="tag illus">Esquema del artículo; no ejecuta ningún modelo</span></div>
     <div id="ali-pasos"></div>
     <div class="etapas" id="ali-etapas"></div>
     <div class="info" id="ali-etapa-msg"></div>
     <p class="small">El resultado se ve en la pestaña 8: el mismo Qwen2.5-0.5B, sin posentrenamiento, continúa el texto; la versión instruida responde a la petición.</p>
   </div>
   <div class="card">
-    <h2>Algunos modelos preentrenados que aparecen en el curso</h2>
-    <div class="meta"><span class="tag">Apartado 8.3 · Figura 7 (resumida)</span></div>
-    <svg id="ali-tl" class="esquema" viewBox="0 0 1000 190" role="img" aria-label="Línea de tiempo de modelos preentrenados"></svg>
+    <h2>Modelos preentrenados</h2>
+        <svg id="ali-tl" class="esquema" viewBox="0 0 1000 190" role="img" aria-label="Línea de tiempo de modelos preentrenados"></svg>
   </div>
 </section>
 
@@ -562,7 +561,7 @@ function filaCmp(nombre, k, n, vc, rasgos) {
   return `<tr><td>${nombre}</td><td>${rasgos}</td><td class="num">${vc}</td><td class="num">${k} / ${n}</td><td class="num">${fmt(a, 2)} – ${fmt(b, 2)}</td></tr>`;
 }
 $("#fun-cmp").innerHTML = "<tr><th>Método</th><th>Rasgos</th><th class='num'>VC</th><th class='num'>Prueba</th><th class='num'>IC 95 %</th></tr>" +
-  filaCmp("Naive Bayes (Clase 10)", BC.nb.aciertos, BC.nb.total, "0,787", "lemas de contenido") +
+  filaCmp("Naive Bayes", BC.nb.aciertos, BC.nb.total, "0,787", "lemas de contenido") +
   filaCmp("BETO congelado + regresión", BC.prueba.aciertos, BC.prueba.total, fmt(BC.vc.eleccion.cv_media, 3), `[${BC.vc.eleccion.representacion}], C = ${fmt(BC.vc.eleccion.C, 1)}`);
 $("#fun-vc").innerHTML = "Validación cruzada en entrenamiento (5 × 10): " + BC.vc.tabla.map((t) => `${t.representacion} C=${fmt(t.C, 1)}: ${fmt(t.cv_media, 3)}`).join(" · ") +
   `. Con la otra representación (solo informativo): ${BC.otra.aciertos} / 20.`;
@@ -664,12 +663,11 @@ function pintarPesos() {
   const T = fraPal.length; if (!T) return;
   let i = +$("#fra-i").value, j = +$("#fra-j").value;
   if (j < i) { j = i; $("#fra-j").value = j; }
-  const ok = L.pesosMedia(T, i, j), tema = L.pesosMediaTema(T, i, j);
+  const ok = L.pesosMedia(T, i, j);
   $("#fra-pesos").innerHTML = "<tr><th>Fórmula</th>" + fraPal.map((w) => `<th>${esc(w)}</th>`).join("") + "</tr>" +
-    `<tr><td>Correcta: 1/(j−i+1)</td>${ok.map((v) => `<td class="${v ? "bueno" : "cero"}">${v ? fmt(v, 2) : "0"}</td>`).join("")}</tr>` +
-    `<tr><td>Impresa en el tema</td>${tema.map((v, k) => `<td class="${v ? (k < i ? "malo" : "bueno") : "cero"}">${v ? fmt(v, 2) : "0"}</td>`).join("")}</tr>`;
+    `<tr><td>Peso: 1/(j−i+1)</td>${ok.map((v) => `<td class="${v ? "bueno" : "cero"}">${v ? fmt(v, 2) : "0"}</td>`).join("")}</tr>`;
   $("#fra-anid").innerHTML = `Fragmento «${esc(fraPal.slice(i, j + 1).join(" "))}»: spanRep = [h<sub>i</sub>; h<sub>j</sub>; g<sub>ij</sub>] = 3 × 768 = 2304 números con BETO.` +
-    (D.spans.palabras.join(" ") === fraPal.join(" ") ? " En la frase de la clase, «Observatorio Económico del Ebro» (ORG) contiene «Ebro» (LOC): dos fragmentos distintos, imposible de anotar a la vez con BIO." : "");
+    (D.spans.palabras.join(" ") === fraPal.join(" ") ? " En esta frase, «Observatorio Económico del Ebro» (ORG) contiene «Ebro» (LOC): dos fragmentos distintos, imposible de anotar a la vez con BIO." : "");
 }
 $("#fra-frase").addEventListener("input", pintarFragmentos);
 $("#fra-L").addEventListener("input", pintarFragmentos);
@@ -677,7 +675,7 @@ $("#fra-i").addEventListener("change", pintarPesos);
 $("#fra-j").addEventListener("change", pintarPesos);
 
 // ================================================================ 7 · ¿Ajustar o preguntar?
-const MET = [["nb", "Naive Bayes (Clase 10)"], ["beto_congelado", "BETO congelado + regresión"]]
+const MET = [["nb", "Naive Bayes"], ["beto_congelado", "BETO congelado + regresión"]]
   .concat([0, 1, 2, 3, 4].map((s) => [`ajuste_todo_${s}`, `BETO ajustado, todo · semilla ${s}`]))
   .concat([0, 1, 2, 3, 4].map((s) => [`ajuste_parcial_${s}`, `BETO ajustado, 2 últimas capas · semilla ${s}`]))
   .concat([["q05_cero", "Qwen 0,5B · sin ejemplos"], ["q05_pocos", "Qwen 0,5B · un ejemplo por sección"], ["q05_puntuacion", "Qwen 0,5B · puntuando etiquetas"],
@@ -686,12 +684,12 @@ const NOMBRE = Object.fromEntries(MET);
 const N = D.noticias;
 const aciertos = (k) => N.filter((n) => n.pred[k] === n.seccion).length;
 (function () {
-  const grupos = [["Naive Bayes (Clase 10)", ["nb"], "entrenado"], ["BETO congelado + regresión", ["beto_congelado"], "entrenado"],
+  const grupos = [["Naive Bayes", ["nb"], "entrenado"], ["BETO congelado + regresión", ["beto_congelado"], "entrenado"],
     ["BETO ajustado, todo (5 semillas)", [0, 1, 2, 3, 4].map((s) => `ajuste_todo_${s}`), "entrenado"],
     ["BETO ajustado, 2 últimas capas (5 semillas)", [0, 1, 2, 3, 4].map((s) => `ajuste_parcial_${s}`), "entrenado"],
     ["Qwen 0,5B · sin ejemplos", ["q05_cero"], "prompt"], ["Qwen 0,5B · un ejemplo por sección", ["q05_pocos"], "prompt"],
     ["Qwen 0,5B · puntuando etiquetas", ["q05_puntuacion"], "prompt"], ["Qwen 0,5B · autoconsistencia", ["q05_autoconsistencia"], "prompt"],
-    ["Qwen 1,5B · sin ejemplos (solo docente)", ["q15_cero"], "prompt"], ["Qwen 1,5B · un ejemplo por sección (solo docente)", ["q15_pocos"], "prompt"]];
+    ["Qwen 1,5B · sin ejemplos", ["q15_cero"], "prompt"], ["Qwen 1,5B · un ejemplo por sección", ["q15_pocos"], "prompt"]];
   $("#aju-res").innerHTML = "<tr><th>Método</th><th>Tipo</th><th class='num'>Aciertos</th><th class='num'>IC 95 % (media)</th><th class='barcell'>Exactitud</th></tr>" +
     grupos.map(([n, ks, tipo]) => {
       const a = ks.map(aciertos), m = a.reduce((x, y) => x + y, 0) / a.length, [lo, hi] = L.wilson(Math.round(m), 20);
@@ -739,7 +737,7 @@ function pintarPrompts() {
     `<p class="small">Longitud del prompt (plantilla de chat de Qwen): ${proModo === "cero" ? P.subpalabras.cero : P.subpalabras.pocos} subpalabras para la primera noticia de prueba.</p>`;
   const R = n.respuestas, k5 = proModo === "cero" ? "q05_cero" : "q05_pocos", k15 = proModo === "cero" ? "q15_cero" : "q15_pocos";
   const celda = (resp, pred) => `<td class="${pred === n.seccion ? "bueno" : "malo"}">«${esc(resp.trim())}»${pred === "(otra)" ? " (fuera de formato)" : ""}</td>`;
-  $("#pro-resp").innerHTML = `<table><tr><th>Sección real</th><th>Qwen 0,5B</th><th>Qwen 1,5B (solo docente)</th></tr><tr><td>${n.seccion}</td>${celda(R[k5], n.pred[k5])}${celda(R[k15], n.pred[k15])}</tr></table>` +
+  $("#pro-resp").innerHTML = `<table><tr><th>Sección real</th><th>Qwen 0,5B</th><th>Qwen 1,5B</th></tr><tr><td>${n.seccion}</td>${celda(R[k5], n.pred[k5])}${celda(R[k15], n.pred[k15])}</tr></table>` +
     (proModo === "cero" ? `<p class="small">Autoconsistencia (0,5B, 5 muestras a T = 0,7): ${R.q05_votos.join(" · ")} → <b>${esc(n.pred.q05_autoconsistencia)}</b>.</p>` : "");
 }
 segmentado("#pro-modo", (b) => { proModo = b.dataset.m; pintarPrompts(); });
@@ -776,8 +774,8 @@ const MODOS = [
   { n: "Prompt (sin entrenar)", capas: [], cabeza: false, prompt: false, num: "0", txt: `Nada se entrena: se escribe una instrucción y, si acaso, unos ejemplos. Qwen2.5-0.5B acertó ${aciertos("q05_cero")} de 20 sin ejemplos y ${aciertos("q05_pocos")} con un ejemplo por sección (pestaña 7).` },
   { n: "Modelo congelado + regresión", capas: [], cabeza: true, prompt: false, num: "3 076", txt: `Solo una regresión logística sobre el vector [CLS] de BETO: 768 × 4 + 4 parámetros. Acertó ${aciertos("beto_congelado")} de 20 (pestaña 4).` },
   { n: "Ajuste de las 2 últimas capas", capas: [10, 11], cabeza: true, prompt: false, num: "14 769 412", txt: `Se descongelan las dos últimas capas, el pooler y el clasificador. Aciertos en las 5 semillas: ${[0, 1, 2, 3, 4].map((k) => aciertos("ajuste_parcial_" + k)).join(" · ")} de 20.` },
-  { n: "Ajuste fino completo", capas: [...Array(12).keys()], cabeza: true, prompt: false, num: "109 853 956", txt: `Todo el modelo se reentrena: hace falta guardar una copia completa por tarea (Figura 22). Aciertos en las 5 semillas: ${[0, 1, 2, 3, 4].map((k) => aciertos("ajuste_todo_" + k)).join(" · ")} de 20.` },
-  { n: "Ajuste del prompt (prompt tuning)", capas: [], cabeza: false, prompt: true, num: "unos miles", txt: "Solo se aprenden unos vectores que se anteponen a la entrada (por ejemplo, 20 vectores de 768 números = 15 360); el modelo queda congelado y se comparte entre tareas. No se hizo en clase." },
+  { n: "Ajuste fino completo", capas: [...Array(12).keys()], cabeza: true, prompt: false, num: "109 853 956", txt: `Todo el modelo se reentrena: hace falta guardar una copia completa por tarea. Aciertos en las 5 semillas: ${[0, 1, 2, 3, 4].map((k) => aciertos("ajuste_todo_" + k)).join(" · ")} de 20.` },
+  { n: "Ajuste del prompt (prompt tuning)", capas: [], cabeza: false, prompt: true, num: "unos miles", txt: "Solo se aprenden unos vectores que se anteponen a la entrada (por ejemplo, 20 vectores de 768 números = 15 360); el modelo queda congelado y se comparte entre tareas." },
 ];
 let modoAli = 1;
 function pintarAli() {
