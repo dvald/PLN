@@ -60,6 +60,8 @@ Las etiquetas de cada tarjeta lo indican: verde es *calculado en el navegador*, 
 
 `repaso.html` reúne las preguntas de repaso de los Temas 5 a 10 para el estudio autónomo; no se usa en las clases.
 
+Las fuentes, atribuciones, licencias y notas de validación se conservan en [fuentes/PROCEDENCIA.txt](fuentes/PROCEDENCIA.txt).
+
 ## Carpeta `fuentes/`
 
 - `generar_datos_NN.py`, `generar_cadena_03.py` y `generar_haz_09.py` generan los datos precalculados (`*_datos.js` y similares).

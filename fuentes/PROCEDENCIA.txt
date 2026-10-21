@@ -1,0 +1,65 @@
+PROCEDENCIA Y VALIDACIÓN DE LAS DEMOS
+
+Información trasladada de los pies de página y avisos internos el 21/10/2026. Se conserva para documentar fuentes, atribuciones, licencias y comprobaciones. Las etiquetas de cada demo distinguen cálculos, resultados precalculados e ilustraciones.
+
+01_introduccion.html
+--------------------
+Material docente de Procesamiento del Lenguaje Natural (UNIR, curso 2026/27) para proyectar en clase. Funciona sin conexión: no envía datos ni ejecuta modelos. Fuentes de los hitos y de las correcciones del tema: ficha del Tema 1. Versión 12/10/2026 (modo clase).
+
+Aviso trasladado: Fuentes de los hitos y correcciones: ficha del Tema 1
+
+02_texto_como_dato.html
+-----------------------
+Corpus de la Clase 3: noticia, reseñas, mensajes y notas clínicas escritos para la clase (ficticios) y el Quijote (dominio público, Project Gutenberg, ebook 2000). Lista de palabras vacías: corpus stopwords de NLTK (listas de Snowball). Funciona sin conexión y no envía datos.
+
+Aviso trasladado: Snowball español, idéntico a NLTK 3.10.3 (comprobado con 23 066 palabras)
+
+Aviso trasladado: Datos comprobados el 11/10/2026
+
+03_extraccion_informacion.html
+------------------------------
+Textos: noticia y notas clínicas ficticias de la Clase 3, biografías con datos verificados (nobelprize.org, Universidad de Salamanca, Museo Casa Natal de Fuente Vaqueros). Datos de evaluación: CESS-ESP y CoNLL-2002 (distribuidos con NLTK, uso de investigación). Funciona sin conexión y no envía datos.
+
+04_modelado_lenguaje.html
+-------------------------
+Cálculos: 04_modelado_lenguaje_lib.js , comprobado frente a ngramas.py , analisis_bow.py y scikit-learn 1.9.1 ( Demos/fuentes/prueba_lib_04.json ). Datos: tres reseñas (sesión de refuerzo 2025/26) y Don Quijote (Project Gutenberg, ebook 2000, dominio público). Referencias: Jurafsky y Martin, Speech and Language Processing , cap. 3 (borrador del 19/08/2026 y ed. del 7/1/2023); Tema 4 de la asignatura. Funciona sin conexión y no envía datos.
+
+Aviso trasladado: Calculado en el navegador (comprobado frente a Python y scikit-learn 1.9.1)
+
+Aviso trasladado: Calculado en el navegador (comprobado frente a ngramas.py)
+
+05_modelado_neuronal.html
+-------------------------
+Cálculos: 05_modelado_neuronal_lib.js , comprobado frente a Python, numpy y gensim ( Demos/fuentes/prueba_lib_05.json ). Datos precalculados con Demos/fuentes/generar_datos_05.py a partir de los análisis de las Clases 7 y 8. Texto: Don Quijote (Project Gutenberg, ebook 2000, dominio público). Modelo: BETO (Cañete et al., 2020; CC BY 4.0). Referencias: Mikolov et al. (2013), Bojanowski et al. (2017), Vaswani et al. (2017), Devlin et al. (2019), Clark et al. (2019); Jurafsky y Martin, Speech and Language Processing , borrador del 19/08/2026; Tema 5 de la asignatura. Funciona sin conexión y no envía datos.
+
+Aviso trasladado: Calculado en el navegador (comprobado frente a Python)
+
+Aviso trasladado: Calculado en el navegador (comprobado frente a numpy)
+
+06_topicos.html
+---------------
+Cálculos: 06_topicos_lib.js , comprobado frente a Python, numpy y scikit-learn ( Demos/fuentes/prueba_lib_06.json ). Datos precalculados con Demos/fuentes/generar_datos_06.py a partir de los análisis de las Clases 9, 10 y 11 y del laboratorio. Noticias y notas clínicas: textos ficticios redactados para la asignatura. Quijote: Project Gutenberg, ebook 2000 (dominio público). Matriz de ejemplo: Figura 8 del tema (Aggarwal, 2018). Referencias: Deerwester et al. (1990), Lee y Seung (1999), Blei, Ng y Jordan (2003), Griffiths y Steyvers (2004), Hoffman, Blei y Bach (2010), Chang et al. (2009), Manning, Raghavan y Schütze (2008). Funciona sin conexión y no envía datos.
+
+Aviso trasladado: Calculado en el navegador (Jacobi), comprobado frente a numpy
+
+07_sentimientos.html
+--------------------
+Las demos funcionan sin conexión y no envían datos. Corpus de reseñas ficticias y léxico de la asignatura (Temas/Tema07/recursos/datos). Biblioteca comprobada contra Python: Demos/fuentes/prueba_lib_07.json.
+
+08_modelado_neuronal_ii.html
+----------------------------
+Procedencia. Salidas de BETO ( dccuchile/bert-base-spanish-wwm-cased , rev. c4d86612f51b), Qwen2.5-0.5B y 0.5B-Instruct, Qwen2.5-1.5B-Instruct y BARTO ( vgaraujov/bart-base-spanish ) calculadas en CPU con transformers 5.19.0 por Clases/Clase14_Tema8_Transformers/analisis_c14.py y Clases/Clase15_Tema8_AjusteFino/analisis_c15.py ; Naive Bayes, de la Clase 10. Noticias ficticias del Tema 6. La página no ejecuta ningún modelo: calcula en el navegador las máscaras, la softmax con temperatura, el muestreo, los intervalos, la alineación de etiquetas, los fragmentos y las matrices de confusión (comprobado frente a Python con Demos/fuentes/probar_lib_08.js ). Funciona sin conexión y no envía datos.
+
+09_aplicaciones.html
+--------------------
+Datos propios redactados para la asignatura (12/10/2026): frases de traducción, sondas, preguntas, resúmenes, enunciados del agente y frases de voz; noticias ficticias del Tema 6. Modelos: Helsinki-NLP/opus-mt-en-es (Apache 2.0), Qwen2.5-0.5B-Instruct (Apache 2.0), dccuchile BETO-SQAC, facebook/mms-tts-spa (CC BY-NC 4.0), openai/whisper-tiny y -base (Apache 2.0), con revisiones fijadas. Figura del tema: Jurafsky y Martin. Generado por Demos/fuentes/generar_datos_09.py ; biblioteca comprobada con Demos/fuentes/probar_lib_09.js . Funciona sin conexión.
+
+Aviso trasladado: Salidas reales de MarianMT precalculadas (12/10/2026)
+
+10_visualizacion.html
+---------------------
+Funciona sin conexión y no envía datos. Fuentes de los datos: noticias y reseñas ficticias redactadas para la asignatura (Temas 6 y 7); Don Quijote , Project Gutenberg, ebook 2000 (dominio público). Cálculos comprobados frente a Python con Demos/fuentes/probar_lib_10.js .
+
+repaso.html
+-----------
+Preguntas recogidas de las demos de los Temas 5 a 10 preparadas el 12/10/2026. Cuando una pregunta es del test del tema, la clave es la deducida del texto del tema; si la del aula virtual difiere, prevalece la del aula. Funciona sin conexión y no envía datos.

@@ -350,10 +350,6 @@
 </section>
 </div>
 
-<footer>
-  <p id="foot"></p>
-  <p>Textos: noticia y notas clínicas ficticias de la Clase 3, biografías con datos verificados (nobelprize.org, Universidad de Salamanca, Museo Casa Natal de Fuente Vaqueros). Datos de evaluación: CESS-ESP y CoNLL-2002 (distribuidos con NLTK, uso de investigación). Funciona sin conexión y no envía datos.</p>
-</footer>
 
 <script src="03_extraccion_informacion_lib.js"></script>
 <script src="03_extraccion_informacion_datos.js"></script>
@@ -364,8 +360,6 @@
 const L = window.LIB03, D = window.DATOS03;
 const pct = x => (100 * x).toFixed(1).replace(".", ",") + " %";
 const dec = x => x.toFixed(2).replace(".", ",");
-document.getElementById("foot").textContent =
-  `Resultados precalculados con NLTK ${D.versiones.nltk}, spaCy ${D.versiones.spacy} y ${D.versiones.modelo} (${D.generado}).`;
 
 // ---------------------------------------------------------------- pestañas
 const tabs = [...document.querySelectorAll(".tab")];

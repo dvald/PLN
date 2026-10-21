@@ -231,7 +231,7 @@
   </div>
   <div class="card">
     <h2>La raíz de Snowball con las palabras que proponga la clase</h2>
-    <div class="meta"><span class="tag real">Snowball español, idéntico a NLTK 3.10.3 (comprobado con 23 066 palabras)</span></div>
+    <div class="meta"><span class="tag real">Snowball español</span></div>
     <p>Escribe palabras separadas por comas o espacios. Cada caja es una raíz: las palabras que caen en la misma caja se tratarán como una sola.</p>
     <input type="text" id="stemIn" style="width:100%" value="cantábamos, cantar, canto, cantante, mujer, mujeres, piénsalo, pensar, haciéndola">
     <div id="stemOut"></div>
@@ -341,7 +341,7 @@
   </div>
   <div class="card">
     <h2>Corpus en español</h2>
-    <div class="meta"><span class="tag">Apartado 2.6</span><span class="tag">Datos comprobados el 11/10/2026</span></div>
+    <div class="meta"><span class="tag">Apartado 2.6</span></div>
     <p>Tamaño de los dos corpus de referencia de la RAE, en millones de formas:</p>
     <div class="corpus-bar"><b>CREA (1975-2004)</b><div class="b" style="width:35%">algo más de 160 millones</div></div>
     <div class="corpus-bar"><b>CORPES XXI (desde 2001)</b><div class="b" style="width:100%;background:var(--estad)">unos 455 millones · casi 420 000 documentos</div></div>
@@ -372,10 +372,6 @@
 </section>
 </div>
 
-<footer>
-  <p id="foot"></p>
-  <p>Corpus de la Clase 3: noticia, reseñas, mensajes y notas clínicas escritos para la clase (ficticios) y el Quijote (dominio público, Project Gutenberg, ebook 2000). Lista de palabras vacías: corpus <i>stopwords</i> de NLTK (listas de Snowball). Funciona sin conexión y no envía datos.</p>
-</footer>
 
 <script src="02_texto_como_dato_lib.js"></script>
 <script src="02_texto_como_dato_datos.js"></script>
@@ -385,8 +381,6 @@
 const L = window.LIB02, D = window.DATOS02;
 const SW = new Set(D.stopwords_es);
 const fmt = n => n < 10000 ? String(n) : n.toLocaleString("es-ES").replace(/\./g, "\u00A0");
-document.getElementById("foot").textContent =
-  `Resultados precalculados con NLTK ${D.versiones.nltk}, spaCy ${D.versiones.spacy} y ${D.versiones.modelo} (${D.generado}).`;
 
 // ---------------------------------------------------------------- pestañas
 const tabs = [...document.querySelectorAll(".tab")];

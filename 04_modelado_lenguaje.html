@@ -168,7 +168,7 @@
 <section class="panel" id="p-bow" role="tabpanel" aria-labelledby="t-bow">
   <div class="card">
     <h2>Bolsa de palabras: binaria, TF, WTF y TF-IDF</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a Python y scikit-learn 1.9.1)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Un documento por línea. Tokenización: minúsculas y letras del español. Pulsa una celda para ver su cálculo.</p>
     <textarea id="bow-docs" aria-label="Documentos, uno por línea"></textarea>
     <div class="row">
@@ -234,7 +234,7 @@
 <section class="panel" id="p-ngramas" role="tabpanel" aria-labelledby="t-ngramas">
   <div class="card">
     <h2>N-gramas: contar y dividir</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a ngramas.py)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Corpus de entrenamiento (frases separadas por punto). Cada frase lleva <code>&lt;s&gt;</code> al principio y <code>&lt;/s&gt;</code> al final; no se quita ninguna palabra. Este corpus se usa también en las pestañas 5 y 6.</p>
     <div class="row">
       <button class="btn btn-gray" data-corpus="resenas">Tres reseñas</button>
@@ -267,7 +267,7 @@
 <section class="panel" id="p-suav" role="tabpanel" aria-labelledby="t-suav">
   <div class="card">
     <h2>Suavizado: cada técnica, paso a paso</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a ngramas.py)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p class="small" id="sv-corpusinfo"></p>
     <div class="seggroup" role="group" aria-label="Técnica" id="sv-metodo">
       <button class="seg" data-m="mle" aria-pressed="false">MLE</button>
@@ -363,9 +363,6 @@
   </div>
 </section>
 </div>
-<footer>
-  Cálculos: <code>04_modelado_lenguaje_lib.js</code>, comprobado frente a <code>ngramas.py</code>, <code>analisis_bow.py</code> y scikit-learn 1.9.1 (<code>Demos/fuentes/prueba_lib_04.json</code>). Datos: tres reseñas (sesión de refuerzo 2025/26) y <em>Don Quijote</em> (Project Gutenberg, ebook 2000, dominio público). Referencias: Jurafsky y Martin, <em>Speech and Language Processing</em>, cap. 3 (borrador del 19/08/2026 y ed. del 7/1/2023); Tema 4 de la asignatura. Funciona sin conexión y no envía datos.
-</footer>
 
 <script src="04_modelado_lenguaje_lib.js"></script>
 <script src="04_modelado_lenguaje_datos.js"></script>

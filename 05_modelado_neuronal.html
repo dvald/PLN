@@ -156,7 +156,7 @@
 <section class="panel active" id="p-ven" role="tabpanel" aria-labelledby="t-ven">
   <div class="card">
     <h2>Del texto a los pares de entrenamiento</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a Python)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Word2Vec aprende de las <strong>ventanas</strong> que rodean a cada palabra (tema, apartado 5.2, Figuras 2 y 3). <strong>Skip-gram</strong> usa la palabra central para predecir cada palabra de su ventana; <strong>CBOW</strong> usa la ventana para predecir la palabra central. Los pares salen del propio texto: es aprendizaje autosupervisado. Pulsa una palabra para hacerla central.</p>
     <div class="row">
       <input type="text" id="ven-frase" value="El cliente ha comprado un coche rojo." aria-label="Frase" style="flex:1">
@@ -269,7 +269,7 @@
 <section class="panel" id="p-at" role="tabpanel" aria-labelledby="t-at">
   <div class="card">
     <h2>Atención paso a paso</h2>
-    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a numpy)</span></div>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
     <p>Atención(Q, K, V) = softmax(QK<sup>⊤</sup>/√d<sub>k</sub>)·V (Vaswani et al., 2017). Cada fila de Q es la <strong>query</strong> de una palabra; cada fila de K, su <strong>key</strong>; cada fila de V, su <strong>value</strong>. Por defecto, las matrices de los ejercicios 9 y 10 del tema (p. 60-61). Escribe una fila por línea, números separados por espacios.</p>
     <div class="grid3">
       <div><label for="at-q" class="small"><b>Q</b> (queries)</label><textarea class="mtx" id="at-q">0.5 0.3
@@ -373,9 +373,6 @@
 
 </div>
 
-<footer>
-  Cálculos: <code>05_modelado_neuronal_lib.js</code>, comprobado frente a Python, numpy y gensim (<code>Demos/fuentes/prueba_lib_05.json</code>). Datos precalculados con <code>Demos/fuentes/generar_datos_05.py</code> a partir de los análisis de las Clases 7 y 8. Texto: <em>Don Quijote</em> (Project Gutenberg, ebook 2000, dominio público). Modelo: BETO (Cañete et al., 2020; CC BY 4.0). Referencias: Mikolov et al. (2013), Bojanowski et al. (2017), Vaswani et al. (2017), Devlin et al. (2019), Clark et al. (2019); Jurafsky y Martin, <em>Speech and Language Processing</em>, borrador del 19/08/2026; Tema 5 de la asignatura. Funciona sin conexión y no envía datos.
-</footer>
 
 <script src="05_modelado_neuronal_lib.js"></script>
 <script src="05_modelado_neuronal_datos.js"></script>
