@@ -20,7 +20,7 @@ sys.path.insert(0, str(CLASE))
 import analisis_t3 as A  # noqa: E402
 
 FRASES = [
-    ("Ejemplo del tema (corregido)", "Frodo es miembro de la Comunidad del Anillo."),
+    ("Ejemplo del tema", "Frodo es miembro de la Comunidad del Anillo."),
     ("Noticia de la Clase 3", A.leer("noticia").splitlines()[0]),
     ("Biografías", A.leer("biografias").strip()),
     ("Chunking del tema", "El viajero intrépido francés comió un postre delicioso."),

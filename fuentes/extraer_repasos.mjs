@@ -38,7 +38,7 @@ const META = {
   7: { titulo: "Tema 7 · Análisis de sentimientos y minería de opiniones", origen: "Las diez preguntas del test del tema (pp. 67-71), con la respuesta razonada." },
   8: { titulo: "Tema 8 · Modelado del lenguaje neuronal (II)", origen: "Preguntas de comprobación preparadas con la demo del tema (no son el test oficial)." },
   9: { titulo: "Tema 9 · Aplicaciones de PLN", origen: "Las diez preguntas del test del tema (pp. 58-63, 0 puntos). La explicación cita la página del tema y, cuando hay matiz, lo medido en clase. La clave es la deducida del texto: si la del aula difiere, prevalece la del aula." },
-  10: { titulo: "Tema 10 · Visualización de textos", origen: "Preguntas propias de la preparación; el test oficial está en el aula." },
+  10: { titulo: "Tema 10 · Visualización de textos", origen: "Preguntas de práctica; el test oficial está en el aula." },
 };
 // En el Tema 5 la respuesta correcta era siempre la primera: se alterna como hacía su demo
 out[5].preguntas.forEach((x, i) => { if (i % 2 === 1) { x.o = x.o.slice().reverse(); x.c = x.o.length - 1 - x.c; } });

@@ -521,7 +521,7 @@ window.REPASO = {
  },
  "10": {
   "titulo": "Tema 10 · Visualización de textos",
-  "origen": "Preguntas propias de la preparación; el test oficial está en el aula.",
+  "origen": "Preguntas de práctica; el test oficial está en el aula.",
   "preguntas": [
    {
     "p": "Dos noticias aparecen juntas en un mapa t-SNE. ¿Qué puedes concluir?",
