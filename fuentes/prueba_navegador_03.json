@@ -1,0 +1,18 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/03_extraccion_informacion.html",
+ "navegador": "Google Chrome (extensión Claude in Chrome) con servidor local temporal http://127.0.0.1:8793; y Chrome sin interfaz (--headless=new --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Seis pasos del flujo con contenido en cada uno; biografías: 22 entidades y 6 relaciones en las tablas; cuestionario «¿Qué tarea es?» 5 de 5",
+  "pestaña_2": "8 preguntas de ambigüedad con retroalimentación (p. ej., «Como pan»: spaCy dice SCONJ, se equivoca); tabla UD/lema/EAGLES; gráfico de 6 etiquetadores; etiquetador de reglas en vivo (mar → vmn0000)",
+  "pestaña_3": "Regla del inglés: [El viajero] [un postre]; regla del español: [El viajero intrépido] [francés] [un postre delicioso] con IOB; regla propia inválida muestra el error; regla SV propia funciona; «He comido…»: He/O comido/O un/B-SN postre/I-SN delicioso/I-SN",
+  "pestaña_4": "Entidades de la noticia con BIO y BIOES (S-LOC, B/I/E-MISC…); gráfico CoNLL-2002 con la línea del F1 declarado; reglas clínicas en vivo con texto propio: «No refiere fiebre ni tos» marca fiebre y tos como negadas y HTA no",
+  "pestaña_5": "6 relaciones con todos los patrones; 0 al desactivar el de nacimiento; Snowball: semilla correcta → 3 tuplas nuevas; semilla errónea → (Ana Martínez, Nueva York) como nacido_en",
+  "pestaña_6": "Ejemplo por pares: raíz 4/11, precisión 0,36, exhaustividad 0,50; lema 8/8, 1,00 y 1,00 (comprobado a mano); tabla de resultados reales",
+  "indice": "Demos/index.html enlaza las tres demos (200); la demo del Tema 3 enlaza el índice y la del Tema 2 (200); los cuatro archivos JS responden 200",
+  "consola": "Sin errores de la página",
+  "defectos_corregidos": ["Índice erróneo en una pregunta de ambigüedad («gato» en lugar de «bajo»), detectado al revisar los datos", "La ilustración de Snowball no producía tuplas con el corpus de biografías (entidades en oraciones distintas); rehecha con un conjunto de oraciones propio y etiquetada como ilustración", "Etiquetas BIO partidas en dos líneas en las tablas"]
+ },
+ "prueba_file": "DOM volcado tras ejecutar los scripts: 13 preguntas de cuestionario, 38 entidades marcadas, gráficos SVG dibujados y pie con versiones",
+ "limites": "No probado en Safari ni Firefox; las entidades y categorías son salidas precalculadas de spaCy para los ejemplos, no un modelo ejecutado en el navegador"
+}

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 7 · Análisis de sentimientos y minería de opiniones — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1rem; font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: #FFB74D; }
+  .content { max-width: 1120px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--estad-l); border-left: 4px solid var(--estad); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #004D40; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: var(--estad); color: #fff; }
+  .btn-main:hover { background: #00695C; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible, td.clic:focus-visible { outline: 3px solid #80CBC4; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; font-family: Menlo, Consolas, monospace; font-size: .92rem; }
+  input[type=text] { min-width: 18rem; }
+  input[type=range] { width: 12rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .4rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.clic { cursor: pointer; }
+  td.clic:hover { background: var(--estad-l); }
+  td.sel { background: #FFE082 !important; font-weight: 700; }
+  tr.hl td { background: var(--warn-l); }
+  td.cero { color: var(--muted); }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  .scroll { overflow-x: auto; max-height: 28rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .calc { font-family: Menlo, Consolas, monospace; font-size: .9rem; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: .7rem .9rem; white-space: pre-wrap; margin: .5rem 0; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .path { display: flex; flex-direction: column; gap: .3rem; margin: .6rem 0; }
+  .lvl { border: 2px solid var(--line); border-radius: 10px; padding: .6rem .9rem; background: #fff; }
+  .lvl.usado { border-color: var(--ok); background: var(--ok-l); }
+  .lvl.saltado { border-color: #EF9A9A; background: var(--bad-l); }
+  .lvl.no { opacity: .55; }
+  .arrow { text-align: center; color: var(--ink2); font-size: 1.2rem; line-height: 1; }
+  .pill { display: inline-block; padding: .05rem .45rem; border-radius: 6px; background: var(--estad-l); border: 1px solid #80CBC4; font-family: Menlo, Consolas, monospace; font-size: .88rem; margin: .1rem; }
+  .pill.unk { background: var(--warn-l); border-color: #F0D78C; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  .pill.cont { background: var(--aplic-l); border-color: #FFB74D; }
+  .pill.esp { background: #ECEFF1; border-color: #B0BEC5; }
+  .pill.mask { background: #FFE082; border-color: #F0B400; font-weight: 700; }
+  .pill.azar { background: var(--bad-l); border-color: #EF9A9A; }
+  .pill.igual { background: var(--ok-l); border-color: #A5D6A7; }
+  .tokbtn { font: inherit; font-family: Menlo, Consolas, monospace; font-size: .9rem; padding: .2rem .6rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; margin: .15rem; }
+  .tokbtn.centro { background: var(--texto-l); border-color: var(--texto); font-weight: 700; }
+  .tokbtn.ctx { background: var(--estad-l); border-color: var(--estad); }
+  .mat { width: auto; min-width: 12rem; }
+  .mat td, .mat th { text-align: center; font-variant-numeric: tabular-nums; padding: .3rem .55rem; }
+  .heat td { text-align: center; font-variant-numeric: tabular-nums; font-size: .82rem; padding: .25rem .35rem; }
+  .bar { height: 1rem; background: var(--estad); border-radius: 3px; }
+  .barcell { width: 50%; }
+  .correcto td { background: var(--ok-l); font-weight: 700; }
+  textarea.mtx { min-height: 4.6rem; width: 100%; }
+  footer { max-width: 1120px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .6rem; font-size: .85rem; } input[type=text] { min-width: 0; width: 100%; } }
+
+  .ent { border-radius: 4px; padding: 0 .15rem; border-bottom: 3px solid; }
+  .ent.PER { background: #E3F2FD; border-color: #1E88E5; }
+  .ent.LOC { background: #E0F2F1; border-color: #00897B; }
+  .ent.ORG { background: #F3E5F5; border-color: #8E24AA; }
+  .ent.MISC { background: #FFF3E0; border-color: #F57C00; }
+  .ent.FARMACO { background: #F3E5F5; border-color: #8E24AA; }
+  .ent.DOSIS { background: #E3F2FD; border-color: #1E88E5; }
+  .ent.FRECUENCIA { background: #E0F2F1; border-color: #00897B; }
+  .ent.ENFERMEDAD, .ent.SINTOMA { background: #ECEFF1; border-color: #78909C; }
+  .ent sub { font-size: .68rem; font-weight: 700; color: var(--ink2); margin-left: .15rem; }
+  .doctext { line-height: 2.1; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .8rem 1rem; }
+  .tok { display: inline-block; padding: .1rem .4rem; margin: .12rem; border-radius: 6px; font-family: Menlo, Consolas, monospace; font-size: .88rem; border: 1px solid transparent; cursor: pointer; }
+  .tok.k0 { background: #E0F2F1; border-color: #00897B; }
+  .tok.k1 { background: #FFF3E0; border-color: #F57C00; }
+  .tok.k2 { background: #E3F2FD; border-color: #1E88E5; }
+  .tok.k3 { background: #F3E5F5; border-color: #8E24AA; }
+  .tok.sel { outline: 3px solid #1F2933; }
+  .neg { color: var(--bad); font-weight: 700; }
+  input.celda { width: 3.2rem; text-align: center; padding: .25rem; }
+  .intr { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0; }
+  /* modo clase */
+  .frase-c { padding: .55rem .8rem; border-radius: 8px; margin: .35rem 0; font-size: 1.12rem; border-left: 8px solid; background: var(--soft); }
+  .frase-c small { display: block; font-size: .78rem; color: var(--ink2); margin-top: .15rem; }
+  .apil { display: flex; height: 2.2rem; border-radius: 6px; overflow: hidden; margin: .5rem 0; }
+  .apil span { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: .85rem; white-space: nowrap; overflow: hidden; }
+  .tira { display: flex; flex-wrap: wrap; gap: .35rem; margin: .5rem 0 .8rem; align-items: flex-end; }
+  .tira span { display: inline-block; text-align: center; padding: .25rem .5rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; font-size: 1.15rem; }
+  .tira span small { display: block; font-size: .78rem; font-weight: 800; }
+  .tira span.mod { background: #E3F2FD; border-color: #1E88E5; }
+  .div-fila { display: grid; grid-template-columns: minmax(0, 1fr) 14rem 4rem; gap: .6rem; align-items: center; margin: .3rem 0; }
+  .div-barra { position: relative; height: 1.3rem; background: #F5F7FA; border-radius: 4px; }
+  .div-barra::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 2px; background: #9AA5B1; }
+  .div-barra i { position: absolute; top: 0; bottom: 0; border-radius: 4px; }
+  .asp-fila { display: grid; grid-template-columns: 7rem 1fr 1fr; gap: .3rem; align-items: center; margin: .2rem 0; font-size: .92rem; }
+  .asp-fila .neg { display: flex; justify-content: flex-end; }
+  .asp-fila b { display: inline-block; height: 1rem; border-radius: 3px; }
+  .escala5 { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .6rem; margin-top: .6rem; }
+  .escala5 .nivel { border-radius: 10px; padding: .6rem; min-height: 9rem; border-top: 6px solid; background: var(--soft); }
+  .escala5 .nivel h3 { margin: 0 0 .4rem; font-size: 1rem; }
+  .ej5 { font: inherit; text-align: left; display: block; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .45rem .6rem; margin-bottom: .4rem; cursor: pointer; font-size: .95rem; }
+  .bandeja5 { display: flex; flex-wrap: wrap; gap: .5rem; padding: .6rem; border: 2px dashed #F0D78C; border-radius: 10px; background: var(--warn-l); margin-top: .6rem; }
+  .bandeja5[hidden] { display: none; }
+  .bandeja5 .ej5 { width: auto; margin: 0; }
+  .emociones { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .6rem; }
+  .emociones div { border-radius: 10px; padding: .6rem .7rem; color: #fff; }
+  .emociones b { display: block; font-size: 1.15rem; }
+  .emociones span { font-size: .85rem; }
+  .plano-ve { width: 100%; height: auto; display: block; }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-aplic">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos" aria-current="page">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="06_topicos.html">‹ Tema 6 · Tópicos</a><a class="sig" href="08_modelado_neuronal_ii.html">Tema 8 · Modelado neuronal (II) ›</a></nav>
+  <h1><span class="num-tema">TEMA 7</span>Análisis de sentimientos y minería de opiniones</h1>
+  <p>Qué opina un texto y sobre qué: niveles, léxico con negación, Naive Bayes frente a BETO, aspectos, PMI, spam y emociones. <span class="cuando">Clases 12 y 13 · semana 9</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M7 34a17 17 0 0 1 34 0" fill="none" stroke="currentColor" stroke-width="6" stroke-opacity=".22" stroke-linecap="round"/><path d="M28.5 17.6A17 17 0 0 1 41 34" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M24 34 33 22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/><circle cx="24" cy="34" r="4" fill="currentColor"/><path d="M8 42h8M32 42h8M36 38v8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-niv" aria-controls="p-niv" aria-selected="true"><span class="tab-n">1</span> Niveles</button>
+  <button class="tab" role="tab" id="t-est" aria-controls="p-est" aria-selected="false"><span class="tab-n">2</span> Estrellas</button>
+  <button class="tab" role="tab" id="t-lex" aria-controls="p-lex" aria-selected="false"><span class="tab-n">3</span> Léxico paso a paso</button>
+  <button class="tab" role="tab" id="t-neg" aria-controls="p-neg" aria-selected="false"><span class="tab-n">4</span> Negación como rasgo</button>
+  <button class="tab" role="tab" id="t-com" aria-controls="p-com" aria-selected="false"><span class="tab-n">5</span> Comparar métodos</button>
+  <button class="tab" role="tab" id="t-fra" aria-controls="p-fra" aria-selected="false"><span class="tab-n">6</span> Frases y agregación</button>
+  <button class="tab" role="tab" id="t-asp" aria-controls="p-asp" aria-selected="false"><span class="tab-n">7</span> Aspectos</button>
+  <button class="tab" role="tab" id="t-pmi" aria-controls="p-pmi" aria-selected="false"><span class="tab-n">8</span> PMI de Turney</button>
+  <button class="tab" role="tab" id="t-spm" aria-controls="p-spm" aria-selected="false"><span class="tab-n">9</span> Spam</button>
+  <button class="tab" role="tab" id="t-emo" aria-controls="p-emo" aria-selected="false"><span class="tab-n">10</span> Emociones</button>
+</div>
+
+<div class="content">
+
+<!-- 1 · Niveles -->
+<section class="panel active" id="p-niv" role="tabpanel" aria-labelledby="t-niv">
+  <div class="card">
+    <h2>Una reseña, tres niveles</h2>
+    <div class="meta"><span class="tag illus">Anotación del corpus: no ejecuta ningún modelo</span><span class="tag">Clase 12 · apartados 7.1-7.2</span></div>
+    <p>Elige una reseña del corpus (180 reseñas <strong>ficticias</strong> escritas para la asignatura). Compara la polaridad del documento, la de cada frase y la de cada aspecto, y las estrellas que puso el cliente.</p>
+    <div class="row">
+      <label class="inline">Dominio <select id="niv-dom"><option value="">todos</option><option>restaurante</option><option>alojamiento</option><option>tecnologia</option><option>compras</option></select></label>
+      <label class="inline">Polaridad <select id="niv-pol"><option value="">todas</option><option>positiva</option><option>negativa</option><option>mixta</option></select></label>
+      <label class="inline">Reseña <select id="niv-sel"></select></label>
+    </div>
+    <div id="niv-doc"></div>
+    <h3>Frases</h3>
+    <div id="niv-frases"></div>
+    <h3>Aspectos</h3>
+    <div id="niv-asp"></div>
+  </div>
+  <div class="card">
+    <h2>Subjetividad y polaridad en todo el corpus</h2>
+    <p>Las cuatro categorías de Benamara et al. (2011): <strong>S</strong> subjetiva con polaridad, <strong>OO</strong> objetiva que implica una opinión, <strong>O</strong> objetiva sin opinión y <strong>SN</strong> subjetiva sin polaridad.</p>
+    <div class="stats" id="niv-ben"></div>
+    <div class="info">En reseñas, casi todas las frases objetivas opinan («Esperamos cuarenta minutos…»). Un método que solo busque palabras de opinión no las ve.</div>
+  </div>
+</section>
+
+<!-- 2 · Estrellas -->
+<section class="panel" id="p-est" role="tabpanel" aria-labelledby="t-est">
+  <div class="card">
+    <h2>Las estrellas no son la etiqueta</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 12 · apartado 7.3 (p. 23)</span></div>
+    <p>El tema propone convertir estrellas en clases: positiva con 4 o más, negativa con 2 o menos y neutra en medio. Mueve los umbrales y mira cuántas reseñas coinciden con la polaridad anotada <strong>leyendo el texto</strong> (las mixtas cuentan como coincidencia si caen en «neutra»).</p>
+    <div class="row">
+      <label class="inline">Positiva si estrellas ≥ <select id="est-pos"><option>3</option><option selected>4</option><option>5</option></select></label>
+      <label class="inline">Negativa si estrellas ≤ <select id="est-neg"><option>1</option><option selected>2</option><option>3</option></select></label>
+    </div>
+    <div class="stats" id="est-stats"></div>
+    <div class="scroll"><table id="est-cruce"></table></div>
+    <h3>Reseñas en las que estrellas y texto no cuadran</h3>
+    <div class="scroll"><table id="est-lista"></table></div>
+    <div class="warnbox">Las estrellas sirven de etiqueta para una tarea concreta (predecir la puntuación); no equivalen a la polaridad de cada frase ni a cualquier categoría.</div>
+  </div>
+</section>
+
+<!-- 3 · Léxico -->
+<section class="panel" id="p-lex" role="tabpanel" aria-labelledby="t-lex">
+  <div class="card">
+    <h2>Léxico paso a paso</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (igual que el código de Python)</span><span class="tag">Clase 12 · apartado 7.3</span></div>
+    <p>El léxico de la asignatura (<span id="lex-n"></span> formas, de -3 a +3), congelado antes de escribir el corpus, más cuatro reglas que puedes activar o desactivar. Escribe una frase o elige un ejemplo.</p>
+    <textarea id="lex-txt" aria-label="Texto para puntuar">El servicio no fue muy atento, pero la comida estaba deliciosa.</textarea>
+    <div class="row" id="lex-ejemplos"></div>
+    <div class="row">
+      <label class="inline"><input type="checkbox" id="lex-neg" checked> negación</label>
+      <select id="lex-negmodo" aria-label="Tipo de negación"><option value="cambio">cambio de signo</option><option value="desplazamiento">desplazamiento (Taboada)</option></select>
+      <label class="inline"><input type="checkbox" id="lex-int" checked> intensificadores y atenuantes</label>
+      <label class="inline"><input type="checkbox" id="lex-adv" checked> «pero» y «aunque»</label>
+      <label class="inline"><input type="checkbox" id="lex-irr" checked> irrealidad (condicionales y preguntas)</label>
+    </div>
+    <div class="stats" id="lex-stats"></div>
+    <div id="lex-traza"></div>
+    <div class="info">Reglas: un negador («no», «nunca», «jamás», «tampoco», «ni», «sin», «nada», «poco») cambia el signo de la siguiente palabra de opinión de su cláusula, a 3 palabras como máximo; «muy» ×1,5, «algo» ×0,5; lo anterior a «pero», y la cláusula de «aunque», ×0,5; en condicionales y preguntas, las palabras de opinión no cuentan.</div>
+  </div>
+</section>
+
+<!-- 4 · Negación -->
+<section class="panel" id="p-neg" role="tabpanel" aria-labelledby="t-neg">
+  <div class="card">
+    <h2>Negación como rasgo: dos reglas</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 12</span></div>
+    <p>Para un clasificador, la negación se marca en las palabras que quedan bajo su alcance (Das y Chen, 2001; Pang et al., 2002). Compara la regla escrita para el español con <code>mark_negation</code> de NLTK 3.10, que usa una lista inglesa de negadores y distingue mayúsculas.</p>
+    <textarea id="neg-txt" aria-label="Texto para marcar">No me ha gustado nada el servicio. Nunca había comido un sushi tan fresco. La comida no está a la altura.</textarea>
+    <h3>Regla española (prefijo NO_ hasta la coma, el punto o un adversativo)</h3>
+    <div class="doctext" id="neg-es"></div>
+    <h3><code>mark_negation</code> de NLTK (sufijo _NEG hasta . : ; ! ?)</h3>
+    <div class="doctext" id="neg-nltk"></div>
+    <div class="stats" id="neg-stats"></div>
+  </div>
+</section>
+
+<!-- 5 · Comparar -->
+<section class="panel" id="p-com" role="tabpanel" aria-labelledby="t-com">
+  <div class="card">
+    <h2>Comparar métodos en la misma prueba</h2>
+    <div class="meta"><span class="tag pre">Predicciones precalculadas con scikit-learn 1.9.1 y BETO (Clase 12)</span><span class="tag real">Aciertos y léxico calculados en el navegador</span></div>
+    <p>Las 40 reseñas de prueba (20 positivas y 20 negativas), las mismas para todos los métodos. Filtra por fenómeno o por dominio y mira cuántas acierta cada uno. Pulsa una reseña para ver qué dijo cada método.</p>
+    <div class="row">
+      <label class="inline">Fenómeno <select id="com-fen"><option value="">todos</option><option value="neg">negación</option><option value="impl">implícita</option><option value="con">contraste</option><option value="int">intensidad</option><option value="comp">comparación</option><option value="cond">condicional</option><option value="iro">ironía</option><option value="preg">pregunta</option></select></label>
+      <label class="inline">Dominio <select id="com-dom"><option value="">todos</option><option>restaurante</option><option>alojamiento</option><option>tecnologia</option><option>compras</option></select></label>
+      <label class="inline"><input type="checkbox" id="com-err"> solo reseñas en las que falla alguno</label>
+    </div>
+    <div class="scroll" style="max-height:none"><table id="com-res"></table></div>
+    <div class="warnbox" id="com-aviso"></div>
+    <div class="scroll"><table id="com-lista"></table></div>
+    <div id="com-detalle"></div>
+  </div>
+</section>
+
+<!-- 6 · Frases -->
+<section class="panel" id="p-fra" role="tabpanel" aria-labelledby="t-fra">
+  <div class="card">
+    <h2>De las frases a la reseña</h2>
+    <div class="meta"><span class="tag pre">P(positiva) por frase precalculada con BETO + regresión logística (Clase 13)</span><span class="tag real">Reglas calculadas en el navegador</span></div>
+    <p>Elige una reseña de prueba. Cada frase tiene la probabilidad de ser positiva que da el modelo de frases y su subjetividad predicha. Cuatro reglas deciden la reseña.</p>
+    <div class="row"><label class="inline">Reseña <select id="fra-sel"></select></label><label class="inline"><input type="checkbox" id="fra-disc" checked> solo las 11 en las que las reglas discrepan</label></div>
+    <div id="fra-tabla"></div>
+    <div id="fra-reglas"></div>
+  </div>
+  <div class="card">
+    <h2>En las 40 reseñas de prueba</h2>
+    <div id="fra-global"></div>
+    <div class="info">Quitar las frases objetivas empeora aquí: eran OO, frases que opinan sin palabras de opinión. Y el clasificador de documentos, que ve la reseña entera, gana a cualquier regla.</div>
+  </div>
+</section>
+
+<!-- 7 · Aspectos -->
+<section class="panel" id="p-asp" role="tabpanel" aria-labelledby="t-asp">
+  <div class="card">
+    <h2>Aspectos: sustantivos frecuentes (Hu y Liu, 2004)</h2>
+    <div class="meta"><span class="tag pre">Sustantivos precalculados con spaCy 3.8.16 (es_core_news_sm 3.8.0)</span><span class="tag real">Extracción y medidas calculadas en el navegador</span></div>
+    <p>Candidatos: sustantivos que aparecen en al menos <em>u</em> reseñas de entrenamiento de su dominio. En cada frase de prueba se extraen los candidatos que contiene y se comparan con los aspectos anotados.</p>
+    <div class="row"><label class="inline">Umbral <em>u</em>: <input type="range" id="asp-u" min="1" max="4" value="2" step="1"> <span id="asp-uval"></span> reseñas</label>
+      <label class="inline">Dominio <select id="asp-dom"><option>restaurante</option><option>alojamiento</option><option>tecnologia</option><option>compras</option></select></label></div>
+    <div class="stats" id="asp-stats"></div>
+    <h3>Candidatos del dominio</h3>
+    <div id="asp-cand"></div>
+    <h3>Frases de prueba del dominio</h3>
+    <div class="scroll"><table id="asp-frases"></table></div>
+    <div class="warnbox">Con unas 33 reseñas de entrenamiento por dominio, casi ningún aspecto concreto se repite; bajar el umbral sube la exhaustividad, pero entran sustantivos que no son aspectos («día», «noche», «vez»).</div>
+  </div>
+  <div class="card">
+    <h2>Resumen por aspectos (anotación de las 180 reseñas)</h2>
+    <div id="asp-resumen"></div>
+  </div>
+</section>
+
+<!-- 8 · PMI -->
+<section class="panel" id="p-pmi" role="tabpanel" aria-labelledby="t-pmi">
+  <div class="card">
+    <h2>PMI de Turney (2002) dentro del corpus</h2>
+    <div class="meta"><span class="tag pre">Frases de dos palabras y lemas precalculados con spaCy</span><span class="tag real">PMI y orientación calculados en el navegador</span></div>
+    <p>Turney extraía frases de dos palabras con patrones de categorías (aquí, en español: ADJ NOUN, NOUN ADJ, ADV ADJ, ADV VERB) y medía su orientación (SO) con su información mutua con una referencia positiva menos la de una negativa, contando resultados de AltaVista. Aquí cuentan las reseñas de entrenamiento en las que aparecen juntas.</p>
+    <div class="row">
+      <label class="inline">Referencia positiva <select id="pmi-pos"><option>excelente</option><option>bueno</option><option>encantar</option><option>recomendar</option><option>perfecto</option><option>genial</option></select></label>
+      <label class="inline">Referencia negativa <select id="pmi-neg"><option>pésimo</option><option>malo</option><option>horrible</option><option>desastre</option><option>fatal</option></select></label>
+    </div>
+    <div class="stats" id="pmi-stats"></div>
+    <div class="scroll"><table id="pmi-tabla"></table></div>
+    <div class="badbox">El método no necesita etiquetas, pero sí un corpus enorme: con 132 reseñas cortas, casi ninguna frase coincide nunca con las referencias.</div>
+  </div>
+</section>
+
+<!-- 9 · Spam -->
+<section class="panel" id="p-spm" role="tabpanel" aria-labelledby="t-spm">
+  <div class="card">
+    <h2>Spam de reseñas: rasgos, no etiquetas</h2>
+    <div class="meta"><span class="tag illus">Diez ejemplos ficticios; no se entrena nada</span><span class="tag">Clase 13 · apartado 7.6</span></div>
+    <p>Activa reglas sencillas y mira qué textos marcan. Los tipos 2 (solo la marca) y 3 (no es reseña) se reconocen fácilmente; el tipo 1 (reseña falsa) no se puede etiquetar con seguridad leyendo el texto (Jindal y Liu, 2008).</p>
+    <div class="row">
+      <label class="inline"><input type="checkbox" class="spm-r" value="enlace" checked> enlace o teléfono</label>
+      <label class="inline"><input type="checkbox" class="spm-r" value="pregunta" checked> es una pregunta</label>
+      <label class="inline"><input type="checkbox" class="spm-r" value="marca" checked> habla de «la marca»</label>
+      <label class="inline"><input type="checkbox" class="spm-r" value="excl"> 2 o más «!»</label>
+      <label class="inline"><input type="checkbox" class="spm-r" value="opin"> 4 o más palabras positivas del léxico</label>
+    </div>
+    <div class="scroll"><table id="spm-tabla"></table></div>
+    <div class="warnbox">Los rasgos señalan sospechas. Una reseña falsa bien escrita parece genuina; por eso se usan también datos de fuera del texto (feedback, desviación de la puntuación media, conducta del autor: Lim et al., 2010).</div>
+  </div>
+</section>
+
+<!-- 10 · Repaso -->
+<section class="panel" id="p-emo" role="tabpanel" aria-labelledby="t-emo">
+  <div class="card">
+    <h2>Seis emociones primarias (Parrott, 2001)</h2>
+    <div class="meta"><span class="tag">Apartado 7.2 · Figura 2</span><span class="tag illus">Frases de ejemplo escritas para la clase</span></div>
+    <p>No hay acuerdo sobre un conjunto básico de emociones; el tema usa las seis primarias de Parrott, que se dividen en secundarias y terciarias.</p>
+    <div class="emociones" id="emo-cards"></div>
+  </div>
+  <div class="card">
+    <h2>Racional o emocional: cinco niveles de sentimiento</h2>
+    <div class="meta"><span class="tag">Apartado 7.2</span><span class="tag illus">Ejemplos del tema y escritos para la clase</span></div>
+    <p>Una opinión puede ser racional (se apoya en hechos o en la utilidad) o emocional (expresa un estado de ánimo). Pulsa una frase para ver por qué está en su nivel.</p>
+    <div class="row" id="esc-ctrl"></div>
+    <div class="bandeja5" id="esc-bandeja" hidden></div>
+    <div class="escala5" id="esc-niveles"></div>
+    <div class="info" id="esc-msg">Emoción y opinión no son lo mismo: «Hoy estoy muy feliz» expresa una emoción sin opinar sobre nada.</div>
+  </div>
+  <div class="card">
+    <h2>Valencia y excitación</h2>
+    <div class="meta"><span class="tag">Apartado 7.2</span><span class="tag illus">Ilustración: posiciones aproximadas, no medidas</span></div>
+    <p>La <b>valencia</b> es el tono (positivo, negativo o cercano a cero); la <b>excitación</b>, la intensidad o energía de la emoción. Dos frases positivas pueden diferir mucho en excitación.</p>
+    <svg id="emo-plano" class="plano-ve" viewBox="0 0 900 470" role="img" aria-label="Frases situadas por valencia y excitación"></svg>
+  </div>
+</section>
+
+</div>
+<footer>Las demos funcionan sin conexión y no envían datos. Corpus de reseñas ficticias y léxico de la asignatura (Temas/Tema07/recursos/datos). Biblioteca comprobada contra Python: Demos/fuentes/prueba_lib_07.json.</footer>
+<script src="07_sentimientos_datos.js"></script>
+<script src="07_sentimientos_lib.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const D = window.DATOS07, L = window.LIB07;
+const $ = (s) => document.querySelector(s), $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dec = (x, d = 2) => (Number.isFinite(x) ? x.toFixed(d).replace(".", ",") : "—");
+const sgn = (x, d = 2) => (x > 0 ? "+" : "") + dec(x, d);
+const POLCLASE = { positiva: "bueno", negativa: "malo" };
+const NOMBRE_DOM = { restaurante: "restaurantes", alojamiento: "alojamientos", tecnologia: "tecnología", compras: "compras" };
+const FENOM = { neg: "negación", impl: "implícita", con: "contraste", int: "intensidad", comp: "comparación", cond: "condicional", iro: "ironía", preg: "pregunta" };
+const FD = L.frasesDe(D.frases);
+const RID = Object.fromEntries(D.resenas.map((r) => [r.id, r]));
+
+// ---------------------------------------------------------------- pestañas
+function activar(t) {
+  $$(".tab").forEach((b) => b.setAttribute("aria-selected", String(b === t)));
+  $$(".panel").forEach((p) => p.classList.toggle("active", p.id === t.getAttribute("aria-controls")));
+}
+$$(".tab").forEach((t, i, arr) => {
+  t.addEventListener("click", () => activar(t));
+  t.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    const n = arr[(i + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length];
+    n.focus(); activar(n);
+  });
+});
+
+// ---------------------------------------------------------------- 1 · niveles
+function pintarSelectorNiveles() {
+  const dom = $("#niv-dom").value, pol = $("#niv-pol").value;
+  const lista = D.resenas.filter((r) => (!dom || r.dominio === dom) && (!pol || r.polaridad === pol));
+  $("#niv-sel").innerHTML = lista.map((r) => `<option value="${r.id}">${r.id} · ${r.estrellas} estr. · ${esc(r.texto.slice(0, 60))}…</option>`).join("");
+  pintarNiveles();
+}
+function pintarNiveles() {
+  const r = RID[$("#niv-sel").value];
+  if (!r) return;
+  $("#niv-doc").innerHTML = `<div class="doctext">${esc(r.texto)}</div><div class="stats"><div><div class="big">${r.estrellas}</div><div class="small">estrellas (las puso el cliente)</div></div>` +
+    `<div><div class="big">${r.polaridad}</div><div class="small">polaridad del documento (texto)</div></div><div><div class="big">${r.conjunto}</div><div class="small">conjunto</div></div></div>` +
+    (r.nota ? `<div class="warnbox">${esc(r.nota)}</div>` : "");
+  const fr = FD[r.id];
+  const COLPOL = { positiva: ["#2E7D32", "#E8F5E9"], negativa: ["#C62828", "#FFEBEE"], neutra: ["#9AA5B1", "#F5F7FA"] };
+  $("#niv-frases").innerHTML = fr.map((f) => { const [c, bg] = COLPOL[f.polaridad] || COLPOL.neutra;
+    return `<div class="frase-c" style="border-left-color:${c};background:${bg};${f.subjetividad === "objetiva" ? "border-left-style:dashed;" : ""}">${esc(f.texto)}<small>${f.polaridad} · ${f.subjetividad}${f.fenomenos.trim() ? " · " + f.fenomenos.split(" ").filter(Boolean).map((x) => FENOM[x]).join(", ") : ""}</small></div>`; }).join("") +
+    `<p class="small">Borde continuo: frase subjetiva; discontinuo: objetiva.</p>`;
+  const asp = fr.flatMap((f) => f.aspectos.split(" ").filter(Boolean));
+  $("#niv-asp").innerHTML = asp.length ? asp.map((a) => {
+    const s = a.slice(-1), t = a.slice(0, -1);
+    return `<span class="pill ${s === "+" ? "igual" : s === "-" ? "azar" : "esp"}">${esc(t)} ${s === "+" ? "positivo" : s === "-" ? "negativo" : "neutro"}</span>`;
+  }).join(" ") : `<span class="small">Sin aspectos explícitos anotados.</span>`;
+}
+function pintarBenamara() {
+  const c = { S: 0, OO: 0, O: 0, SN: 0 };
+  for (const f of D.frases) {
+    const k = f.subjetividad === "subjetiva" ? (f.polaridad !== "neutra" ? "S" : "SN") : (f.polaridad !== "neutra" ? "OO" : "O");
+    c[k] += 1;
+  }
+  const n = { S: "subjetivas con polaridad", OO: "objetivas que opinan", O: "objetivas sin opinión", SN: "subjetivas sin polaridad" };
+  const tot = Object.values(c).reduce((a, b) => a + b, 0), COL = { S: "#8E24AA", OO: "#F57C00", O: "#9AA5B1", SN: "#1E88E5" };
+  $("#niv-ben").innerHTML = Object.keys(c).map((k) => `<div><div class="big" style="color:${COL[k]}">${c[k]}</div><div class="small">${k} · ${n[k]}</div></div>`).join("");
+  $("#niv-ben").insertAdjacentHTML("afterend", `<div class="apil">${Object.keys(c).map((k) => `<span style="width:${100 * c[k] / tot}%;background:${COL[k]}">${c[k] / tot > 0.06 ? k + " " + c[k] : ""}</span>`).join("")}</div>`);
+}
+["#niv-dom", "#niv-pol"].forEach((s) => $(s).addEventListener("change", pintarSelectorNiveles));
+$("#niv-sel").addEventListener("change", pintarNiveles);
+
+// ---------------------------------------------------------------- 2 · estrellas
+function pintarEstrellas() {
+  const pos = +$("#est-pos").value, neg = +$("#est-neg").value;
+  if (neg >= pos) { $("#est-stats").innerHTML = `<div class="badbox">El umbral negativo debe ser menor que el positivo.</div>`; return; }
+  const { cruce, coinciden } = L.cruceEstrellas(D.resenas, pos, neg);
+  const polares = D.resenas.filter((r) => r.polaridad !== "mixta");
+  const coincP = polares.filter((r) => L.deEstrellas(+r.estrellas, pos, neg) === r.polaridad).length;
+  const rep = { positiva: 0, negativa: 0, neutra: 0 };
+  D.resenas.forEach((r) => { rep[L.deEstrellas(+r.estrellas, pos, neg)] += 1; });
+  $("#est-stats").innerHTML = `<div><div class="big">${coinciden} de ${D.resenas.length}</div><div class="small">coinciden con el texto (mixta = neutra)</div></div>` +
+    `<div><div class="big">${coincP} de ${polares.length}</div><div class="small">positivas y negativas que coinciden</div></div>` +
+    `<div><div class="big">${rep.positiva} · ${rep.neutra} · ${rep.negativa}</div><div class="small">positivas · neutras · negativas según las estrellas</div></div>`;
+  let h = `<tr><th>texto \\ estrellas</th>${[1, 2, 3, 4, 5].map((e) => `<th class="num">${e}</th>`).join("")}</tr>`;
+  for (const p of ["positiva", "negativa", "mixta"]) {
+    h += `<tr><td><strong>${p}</strong></td>` + [1, 2, 3, 4, 5].map((e) => {
+      const v = (cruce[p] || {})[e] || 0;
+      const l = L.deEstrellas(e, pos, neg);
+      const ok = l === p || (l === "neutra" && p === "mixta");
+      const mx = Math.max(...["positiva", "negativa", "mixta"].flatMap((q) => [1, 2, 3, 4, 5].map((x) => (cruce[q] || {})[x] || 0)), 1);
+      return `<td class="num" style="font-size:1.3rem;font-weight:800;text-align:center;${v ? `background:${ok ? `rgba(46,125,50,${(0.15 + 0.75 * v / mx).toFixed(3)})` : `rgba(198,40,40,${(0.15 + 0.75 * v / mx).toFixed(3)})`};color:${v / mx > 0.5 ? "#fff" : "#1F2933"}` : "color:#CFD8DC"}">${v}</td>`;
+    }).join("") + "</tr>";
+  }
+  $("#est-cruce").innerHTML = h;
+  const dis = D.resenas.filter((r) => { const l = L.deEstrellas(+r.estrellas, pos, neg); return !(l === r.polaridad || (l === "neutra" && r.polaridad === "mixta")); });
+  $("#est-lista").innerHTML = `<tr><th>id</th><th class="num">estr.</th><th>según estrellas</th><th>texto</th><th>reseña</th></tr>` +
+    dis.map((r) => `<tr><td>${r.id}</td><td class="num">${r.estrellas}</td><td>${L.deEstrellas(+r.estrellas, pos, neg)}</td><td>${r.polaridad}</td><td>${esc(r.texto)}${r.nota ? `<div class="small">${esc(r.nota)}</div>` : ""}</td></tr>`).join("");
+}
+["#est-pos", "#est-neg"].forEach((s) => $(s).addEventListener("change", pintarEstrellas));
+
+// ---------------------------------------------------------------- 3 · léxico
+const EJ_LEX = ["El servicio no fue muy atento, pero la comida estaba deliciosa.", "La habitación era cómoda aunque algo ruidosa.",
+  "Muy amables, oye.", "No está nada mal.", "No es barato, pero lo vale.", "Si buscas un sitio limpio, este no es.",
+  "Esperamos cuarenta minutos para que nos tomaran nota.", "No es excelente.", "Ni tan bueno como dicen ni tan malo como lo pintan."];
+$("#lex-ejemplos").innerHTML = EJ_LEX.map((t, i) => `<button class="btn btn-gray" data-i="${i}">${esc(t.length > 34 ? t.slice(0, 32) + "…" : t)}</button>`).join("");
+$$("#lex-ejemplos button").forEach((b) => b.addEventListener("click", () => { $("#lex-txt").value = EJ_LEX[+b.dataset.i]; pintarLexico(); }));
+function opcionesLexico() {
+  return { usar_negacion: $("#lex-neg").checked, negacion: $("#lex-negmodo").value, usar_intensidad: $("#lex-int").checked,
+    usar_adversativos: $("#lex-adv").checked, usar_irrealidad: $("#lex-irr").checked };
+}
+function pintarLexico() {
+  const t = $("#lex-txt").value;
+  const r = L.puntuarTexto(t, D.lexico, D.modificadores, opcionesLexico());
+  const nPal = r.oraciones.reduce((a, o) => a + o.tokens.filter((x) => /\p{L}/u.test(x)).length, 0);
+  const enc = r.oraciones.reduce((a, o) => a + o.traza.length, 0);
+  const et = L.etiqueta(r.puntuacion);
+  $("#lex-stats").innerHTML = `<div><div class="big">${sgn(r.puntuacion)}</div><div class="small">puntuación p</div></div>` +
+    `<div><div class="big ${POLCLASE[et] || ""}">${et === "neutra" ? "sin decisión" : et}</div><div class="small">etiqueta (umbral 0)</div></div>` +
+    `<div><div class="big">${enc} de ${nPal}</div><div class="small">palabras encontradas en el léxico</div></div>`;
+  $("#lex-traza").innerHTML = r.oraciones.map((o) => {
+    const filas = o.traza.map((x) => `<tr><td class="mono">${esc(x.pasos[0])}</td><td>${x.pasos.slice(1).map(esc).join("<br>") || "—"}</td><td class="num">${sgn(x.valor)}</td></tr>`).join("");
+    const porPos = Object.fromEntries(o.traza.map((x) => [x.pos, x])), M = D.modificadores;
+    const esMod = (w) => M.negadores.includes(w) || w in M.intensificadores || w in M.atenuantes || M.adversativos_previo_debil.includes(w) || M.concesivos_clausula_debil.includes(w) || M.irrealidad.includes(w);
+    const tira = `<div class="tira">${o.tokens.map((w, i) => { const x = porPos[i];
+      if (x) { const a = Math.min(1, Math.abs(x.valor) / 3), c = x.valor >= 0 ? `rgba(46,125,50,${(0.2 + 0.7 * a).toFixed(3)})` : `rgba(198,40,40,${(0.2 + 0.7 * a).toFixed(3)})`;
+        return `<span style="background:${c};border-color:${x.valor >= 0 ? "#2E7D32" : "#C62828"};color:${a > 0.5 ? "#fff" : "#1F2933"}">${esc(w)}<small>${sgn(x.valor, 1)}</small></span>`; }
+      return `<span class="${esMod(w) ? "mod" : ""}">${esc(w)}<small>${esMod(w) ? "modifica" : "&nbsp;"}</small></span>`; }).join("")}</div>`;
+    return `<h3>«${esc(o.oracion)}» → ${sgn(o.puntuacion)}</h3>` + tira + (o.traza.length ? `<table><tr><th>palabra (valor)</th><th>pasos</th><th class="num">aporta</th></tr>${filas}</table>`
+      : `<div class="warnbox">Ninguna palabra de opinión: el léxico no puede decidir (¿es un hecho que implica una opinión?).</div>`);
+  }).join("") || `<p class="small">Escribe un texto.</p>`;
+}
+$("#lex-n").textContent = Object.keys(D.lexico).length;
+["#lex-txt"].forEach((s) => $(s).addEventListener("input", pintarLexico));
+["#lex-neg", "#lex-negmodo", "#lex-int", "#lex-adv", "#lex-irr"].forEach((s) => $(s).addEventListener("change", pintarLexico));
+
+// ---------------------------------------------------------------- 4 · negación
+function pintarNeg() {
+  const t = $("#neg-txt").value;
+  const es = L.marcarNegacion(t), nl = L.markNegationNltk(t);
+  $("#neg-es").innerHTML = es.split(" ").filter(Boolean).map((w) => `<span class="pill ${w.startsWith("NO_") ? "mask" : "esp"}">${esc(w)}</span>`).join(" ");
+  $("#neg-nltk").innerHTML = nl.split(" ").filter(Boolean).map((w) => `<span class="pill ${w.endsWith("_NEG") ? "mask" : "esp"}">${esc(w)}</span>`).join(" ");
+  const nEs = es.split(" ").filter((w) => w.startsWith("NO_")).length, nNl = nl.split(" ").filter((w) => w.endsWith("_NEG")).length;
+  const docsEs = D.resenas.filter((r) => L.marcarNegacion(r.texto).includes("NO_")).length;
+  const docsNl = D.resenas.filter((r) => L.markNegationNltk(r.texto).includes("_NEG")).length;
+  $("#neg-stats").innerHTML = `<div><div class="big">${nEs} · ${nNl}</div><div class="small">palabras marcadas en tu texto (española · NLTK)</div></div>` +
+    `<div><div class="big">${docsEs} · ${docsNl}</div><div class="small">reseñas del corpus con alguna marca (de ${D.resenas.length})</div></div>`;
+}
+$("#neg-txt").addEventListener("input", pintarNeg);
+
+// ---------------------------------------------------------------- 5 · comparar
+const MET = [["lexico_reglas", "léxico + reglas"], ["nb_palabras", "Naive Bayes"], ["nb_negacion", "NB + negación"], ["nb_negacion_nltk", "NB + NLTK"], ["beto_lr", "BETO + reg. log."]];
+const PRU = D.resenas.filter((r) => r.conjunto === "prueba" && r.polaridad !== "mixta");
+function pintarComparar() {
+  const fen = $("#com-fen").value, dom = $("#com-dom").value, soloErr = $("#com-err").checked;
+  let sub = PRU.filter((r) => (!fen || r.fenomenos.split(" ").includes(fen)) && (!dom || r.dominio === dom));
+  const P = D.predicciones_prueba;
+  $("#com-res").innerHTML = `<tr><th>método</th><th class="num">validación cruzada</th><th class="num">aciertos en la selección</th><th class="barcell">proporción</th></tr>` +
+    MET.map(([k, n]) => {
+      const a = sub.filter((r) => P[r.id][k] === r.polaridad).length;
+      const fr = sub.length ? a / sub.length : 0;
+      return `<tr><td>${n}</td><td class="num">${dec(D.metodos[k].cv, 3)}</td><td class="num">${a} de ${sub.length}</td><td class="barcell"><div class="bar" style="width:${(fr * 100).toFixed(0)}%;background:${k === "beto_lr" ? "var(--neuronal)" : k.startsWith("nb") ? "var(--estad)" : "var(--texto)"}"></div></td></tr>`;
+    }).join("");
+  $("#com-aviso").textContent = sub.length === 0 ? "Ninguna reseña en la selección." : sub.length === 1 ? "Solo 1 reseña en la selección: no permite concluir nada sobre este fenómeno." : sub.length < 10 ? `Solo ${sub.length} reseñas en la selección: no permiten concluir nada sobre este fenómeno.` : `${sub.length} reseñas en la selección; cada acierto vale ${dec(100 / sub.length, 1)} puntos.`;
+  if (soloErr) sub = sub.filter((r) => MET.some(([k]) => P[r.id][k] !== r.polaridad));
+  $("#com-lista").innerHTML = `<tr><th>id</th><th>real</th>${MET.map(([, n]) => `<th>${n}</th>`).join("")}<th>reseña</th></tr>` +
+    sub.map((r) => `<tr><td class="clic" tabindex="0" data-id="${r.id}">${r.id}</td><td>${r.polaridad}</td>` +
+      MET.map(([k]) => `<td class="${P[r.id][k] === r.polaridad ? "bueno" : "malo"}">${P[r.id][k] === "neutra" ? "—" : P[r.id][k].slice(0, 3)}</td>`).join("") +
+      `<td>${esc(r.texto.slice(0, 70))}…</td></tr>`).join("");
+  $$("#com-lista td.clic").forEach((td) => {
+    const f = () => detalleComparar(td.dataset.id);
+    td.addEventListener("click", f); td.addEventListener("keydown", (e) => { if (e.key === "Enter") f(); });
+  });
+}
+function detalleComparar(id) {
+  const r = RID[id], P = D.predicciones_prueba[id];
+  const lx = L.puntuarTexto(r.texto, D.lexico, D.modificadores);
+  $("#com-detalle").innerHTML = `<h3>${id} · ${r.dominio} · ${r.estrellas} estrellas · real: ${r.polaridad} · fenómenos: ${r.fenomenos.split(" ").filter(Boolean).map((x) => FENOM[x]).join(", ") || "ninguno"}</h3>` +
+    `<div class="doctext">${esc(r.texto)}</div><div class="row">${MET.map(([k, n]) => `<span class="pill ${P[k] === r.polaridad ? "igual" : "azar"}">${n}: ${P[k] === "neutra" ? "sin decisión" : P[k]}</span>`).join(" ")}</div>` +
+    `<div class="calc">Léxico: ${lx.oraciones.map((o) => `«${o.oracion}» ${sgn(o.puntuacion)}${o.traza.length ? " (" + o.traza.map((x) => x.token + " " + sgn(x.valor)).join(", ") + ")" : ""}`).join("\n")}\nTotal ${sgn(lx.puntuacion)}</div>`;
+}
+["#com-fen", "#com-dom", "#com-err"].forEach((s) => $(s).addEventListener("change", pintarComparar));
+
+// ---------------------------------------------------------------- 6 · frases
+const REGLAS = [["suma", "suma de P - 0,5"], ["mayoria", "mayoría"], ["ultima_frase", "última frase"], ["solo_subjetivas", "solo subjetivas"]];
+const DISC = PRU.filter((r) => new Set(REGLAS.map(([k]) => L.agregar(k, FD[r.id], D.frases_prueba_beto)).concat([D.predicciones_prueba[r.id].beto_lr])).size > 1);
+function pintarSelectorFrases() {
+  const lista = $("#fra-disc").checked ? DISC : PRU;
+  $("#fra-sel").innerHTML = lista.map((r) => `<option value="${r.id}">${r.id} · ${r.polaridad} · ${esc(r.texto.slice(0, 55))}…</option>`).join("");
+  pintarFrases();
+}
+function pintarFrases() {
+  const r = RID[$("#fra-sel").value];
+  if (!r) return;
+  const fr = FD[r.id], PB = D.frases_prueba_beto;
+  const barra = (p) => { const d = p - 0.5; return `<div class="div-barra"><i style="${d >= 0 ? `left:50%;width:${100 * d}%;background:#2E7D32` : `left:${50 + 100 * d}%;width:${-100 * d}%;background:#C62828`}"></i></div>`; };
+  $("#fra-tabla").innerHTML = `<div class="div-fila small"><span>frase (anotada · subjetividad predicha)</span><span style="display:flex;justify-content:space-between"><span>negativa</span><span>0,5</span><span>positiva</span></span><span>P(+)</span></div>` +
+    fr.map((f) => `<div class="div-fila"><span>${esc(f.texto)}<br><span class="small">${f.polaridad} · ${PB[f.id_frase][1]}</span></span>${barra(PB[f.id_frase][0])}<b>${dec(PB[f.id_frase][0], 2)}</b></div>`).join("");
+  const suma = fr.reduce((a, f) => a + PB[f.id_frase][0] - 0.5, 0);
+  $("#fra-reglas").innerHTML = `<div class="row">` + REGLAS.map(([k, n]) => {
+    const p = L.agregar(k, fr, PB);
+    return `<span class="pill ${p === r.polaridad ? "igual" : "azar"}">${n}: ${p}</span>`;
+  }).join(" ") + ` <span class="pill ${D.predicciones_prueba[r.id].beto_lr === r.polaridad ? "igual" : "azar"}">clasificador de documento: ${D.predicciones_prueba[r.id].beto_lr}</span></div>` +
+    `<div class="calc">suma = ${fr.map((f) => dec(PB[f.id_frase][0], 3)).join(" + ")} - ${dec(0.5 * fr.length, 1)} = ${sgn(suma, 3)} · real: ${r.polaridad}</div>`;
+}
+function pintarFrasesGlobal() {
+  const PB = D.frases_prueba_beto;
+  const filas = REGLAS.map(([k, n]) => [n, PRU.filter((r) => L.agregar(k, FD[r.id], PB) === r.polaridad).length]);
+  filas.unshift(["clasificador de documento (Clase 12)", D.agregacion_documento]);
+  $("#fra-global").innerHTML = `<table><tr><th>regla</th><th class="num">aciertos (de ${PRU.length})</th><th style="width:45%"></th></tr>` + filas.map(([n, a], i) => `<tr><td>${n}</td><td class="num"><b>${a}</b></td><td><span style="display:inline-block;height:1rem;border-radius:3px;width:${100 * a / PRU.length}%;background:${i === 0 ? "#8E24AA" : "#00897B"}"></span></td></tr>`).join("") + "</table>";
+}
+$("#fra-disc").addEventListener("change", pintarSelectorFrases);
+$("#fra-sel").addEventListener("change", pintarFrases);
+
+// ---------------------------------------------------------------- 7 · aspectos
+function pintarAspectos() {
+  const u = +$("#asp-u").value, dom = $("#asp-dom").value;
+  $("#asp-uval").textContent = u;
+  const a = L.aspectosUmbral(D, u);
+  const p = a.extraidos ? a.aciertos / a.extraidos : 0, r = a.oro ? a.aciertos / a.oro : 0;
+  $("#asp-stats").innerHTML = `<div><div class="big">${dec(p)}</div><div class="small">precisión (${a.aciertos} de ${a.extraidos} extraídos)</div></div>` +
+    `<div><div class="big">${dec(r)}</div><div class="small">exhaustividad (${a.aciertos} de ${a.oro} anotados)</div></div>` +
+    `<div><div class="big">${a.candidatos[dom]}</div><div class="small">candidatos en ${NOMBRE_DOM[dom]}</div></div>`;
+  $("#asp-cand").innerHTML = [...a.frecuentes[dom]].sort().map((n) => `<span class="pill">${esc(n)}</span>`).join(" ");
+  const det = a.detalle.filter((x) => x.f.dominio === dom);
+  $("#asp-frases").innerHTML = `<tr><th>frase de prueba</th><th>anotados</th><th>extraídos</th></tr>` + det.map((x) => {
+    const oro = new Set(x.oro);
+    return `<tr><td>${esc(x.f.texto)}</td><td>${x.oro.map(esc).join(", ") || "—"}</td><td>${x.pred.map((n) => `<span class="pill ${oro.has(n) ? "igual" : "azar"}">${esc(n)}</span>`).join(" ") || "—"}</td></tr>`;
+  }).join("");
+}
+function pintarResumen() {
+  let h = "";
+  for (const dom of ["restaurante", "alojamiento", "tecnologia", "compras"]) {
+    const c = {};
+    for (const f of D.frases.filter((x) => x.dominio === dom)) for (const a of f.aspectos.split(" ").filter(Boolean)) {
+      const t = a.slice(0, -1), s = a.slice(-1);
+      c[t] = c[t] || { "+": 0, "-": 0, "0": 0 }; c[t][s] += 1;
+    }
+    const top = Object.entries(c).sort((x, y) => (y[1]["+"] + y[1]["-"] + y[1]["0"]) - (x[1]["+"] + x[1]["-"] + x[1]["0"]) || x[0].localeCompare(y[0])).slice(0, 8);
+    const mx = Math.max(...top.map(([, v]) => Math.max(v["+"], v["-"])), 1);
+    h += `<div class="box"><h3>${NOMBRE_DOM[dom]}</h3><div class="asp-fila small"><span></span><span style="text-align:right">en contra</span><span>a favor</span></div>` +
+      top.map(([t, v]) => `<div class="asp-fila"><span>${esc(t)}</span><span class="neg">${v["-"] ? `<span style="margin-right:.3rem">${v["-"]}</span>` : ""}<b style="width:${100 * v["-"] / mx}%;background:#C62828"></b></span><span><b style="width:${100 * v["+"] / mx}%;background:#2E7D32"></b>${v["+"] ? ` ${v["+"]}` : ""}</span></div>`).join("") + "</div>";
+  }
+  $("#asp-resumen").innerHTML = `<div class="grid3">${h}</div>`;
+}
+["#asp-u", "#asp-dom"].forEach((s) => $(s).addEventListener("input", pintarAspectos));
+
+// ---------------------------------------------------------------- 8 · PMI
+function pintarPMI() {
+  const pos = $("#pmi-pos").value, neg = $("#pmi-neg").value;
+  const t = L.turney(D, pos, neg);
+  $("#pmi-stats").innerHTML = `<div><div class="big">${t.hits[0]} · ${t.hits[1]}</div><div class="small">reseñas de entrenamiento con «${esc(pos)}» · con «${esc(neg)}» (de 132)</div></div>` +
+    `<div><div class="big">${t.sin_coocurrencia} de ${t.frases}</div><div class="small">frases que nunca coinciden con ninguna referencia</div></div>` +
+    `<div><div class="big">${t.cubiertos} de 40</div><div class="small">reseñas de prueba con alguna frase útil</div></div>`;
+  $("#pmi-tabla").innerHTML = `<tr><th>frase</th><th class="num">reseñas</th><th class="num">con «${esc(pos)}»</th><th class="num">con «${esc(neg)}»</th><th class="num">SO</th></tr>` +
+    (t.utiles.length ? t.utiles.sort((a, b) => Math.abs(b.so) - Math.abs(a.so) || a.frase.localeCompare(b.frase)).map((x) =>
+      `<tr><td><b>${esc(x.frase)}</b></td><td class="num">${x.docs}</td><td class="num">${x.pos}</td><td class="num">${x.neg}</td><td class="num" style="color:${x.so >= 0 ? "#2E7D32" : "#C62828"};font-weight:800">${sgn(x.so)}</td></tr>`).join("")
+      : `<tr><td colspan="5">Ninguna frase coincide con las referencias.</td></tr>`);
+}
+["#pmi-pos", "#pmi-neg"].forEach((s) => $(s).addEventListener("change", pintarPMI));
+
+// ---------------------------------------------------------------- 9 · spam
+function rasgosSpam(t) {
+  const pal = L.tokens(t).filter((x) => /\p{L}/u.test(x));
+  return { enlace: /www\.|https?:\/\/|\d{3}\s?\d{3}\s?\d{3}/.test(t), pregunta: t.includes("?"), marca: pal.includes("marca"),
+    excl: (t.match(/!/g) || []).length, opin: pal.filter((x) => (D.lexico[x] || 0) > 0).length, neg: pal.filter((x) => (D.lexico[x] || 0) < 0).length };
+}
+function pintarSpam() {
+  const act = new Set($$(".spm-r").filter((c) => c.checked).map((c) => c.value));
+  $("#spm-tabla").innerHTML = `<tr><th>id</th><th>tipo (anotado)</th><th class="num">estr.</th><th>texto</th><th>rasgos</th><th>marcado</th></tr>` + D.spam.map((s) => {
+    const r = rasgosSpam(s.texto);
+    const cumple = { enlace: r.enlace, pregunta: r.pregunta, marca: r.marca, excl: r.excl >= 2, opin: r.opin >= 4 };
+    const motivos = [...act].filter((k) => cumple[k]);
+    return `<tr><td>${s.id}</td><td>${esc(s.tipo)}</td><td class="num">${s.estrellas}</td><td>${esc(s.texto)}</td>` +
+      `<td class="small">«!» ${r.excl} · enlace ${r.enlace ? "sí" : "no"} · «marca» ${r.marca ? "sí" : "no"} · opinión +${r.opin} -${r.neg}</td>` +
+      `<td class="${motivos.length ? "malo" : ""}">${motivos.length ? "sospechosa (" + motivos.join(", ") + ")" : "—"}</td></tr>`;
+  }).join("");
+}
+$$(".spm-r").forEach((c) => c.addEventListener("change", pintarSpam));
+
+// (El repaso del test está en repaso.html, fuera de la demo de clase.)
+
+// ---------------------------------------------------------------- 10 · emociones (apartado 7.2)
+const EMOCIONES = [["Amor", "#AD1457", "«Me encanta cómo nos trataron.»"], ["Alegría", "#2E7D32", "«¡Qué ilusión, por fin llegó el pedido!»"],
+  ["Sorpresa", "#1E88E5", "«No me esperaba un postre tan bueno.»"], ["Ira", "#C62828", "«Es indignante: dos horas esperando.»"],
+  ["Tristeza", "#52606D", "«Una pena, el sitio ya no es lo que era.»"], ["Miedo", "#6A1B9A", "«Me da miedo que vuelva a fallar la batería.»"]];
+const ESCALA = [[-2, "Negativo emocional", "#C62828"], [-1, "Negativo racional", "#EF9A9A"], [0, "Neutral", "#9AA5B1"], [1, "Positivo racional", "#A5D6A7"], [2, "Positivo emocional", "#2E7D32"]];
+const FRASES5 = [
+  ["«Este ordenador merece este precio.»", 1, "Valoración apoyada en la relación calidad-precio: racional (ejemplo del tema)."],
+  ["«La conexión 5G del teléfono funciona bien.»", 1, "Opinión racional sin emoción (ejemplo del tema)."],
+  ["«Adoro este móvil.»", 2, "Expresa un sentimiento hacia la entidad: emocional (como «Adoro los móviles Android» del tema)."],
+  ["«La batería dura menos de lo anunciado.»", -1, "Crítica basada en un hecho comprobable: negativo racional."],
+  ["«Odio este servicio, me pone de los nervios.»", -2, "Rechazo con carga emocional: negativo emocional."],
+  ["«El hotel está a diez minutos del centro.»", 0, "Información sin opinión: neutral."],
+];
+let escOculto = false;
+const escColocadas = new Set(FRASES5.map((_, i) => i));
+function pintarEscala(sel) {
+  const tarjeta = (i) => { const b = document.createElement("button"); b.type = "button"; b.className = "ej5"; b.innerHTML = esc(FRASES5[i][0]);
+    b.addEventListener("click", () => { escColocadas.add(i); pintarEscala(i); }); return b; };
+  const cont = $("#esc-niveles"); cont.innerHTML = "";
+  ESCALA.forEach(([v, n, c]) => { const d = document.createElement("div"); d.className = "nivel"; d.style.borderTopColor = c;
+    d.innerHTML = `<h3>${v > 0 ? "+" : ""}${v} · ${n}</h3>`; FRASES5.forEach((f, i) => { if (f[1] === v && escColocadas.has(i)) d.append(tarjeta(i)); }); cont.append(d); });
+  const b = $("#esc-bandeja"); b.innerHTML = ""; const pend = FRASES5.map((_, i) => i).filter((i) => !escColocadas.has(i));
+  b.hidden = !pend.length; pend.forEach((i) => b.append(tarjeta(i)));
+  if (sel !== undefined) $("#esc-msg").textContent = FRASES5[sel][0] + " " + FRASES5[sel][2];
+}
+function pintarEmociones() {
+  $("#emo-cards").innerHTML = EMOCIONES.map(([n, c, e]) => `<div style="background:${c}"><b>${n}</b><span>${esc(e)}</span></div>`).join("");
+  pintarEscala();
+  // Plano valencia (x) × excitación (y): cuadrantes con frases de ejemplo
+  const P = [["«¡El mejor concierto de mi vida!»", 0.8, 0.85], ["«Una tarde tranquila y agradable.»", 0.65, 0.18], ["«¡Es indignante, nos dejaron tirados!»", -0.8, 0.85],
+    ["«Me decepcionó un poco.»", -0.7, 0.3], ["«El paquete llegó el martes.»", 0.0, 0.08], ["«¡Por fin, qué alivio!»", 0.55, 0.6]];
+  const X = (v) => 450 + 390 * v, Y = (a) => 430 - 390 * a;
+  let g = `<rect x="60" y="40" width="780" height="390" fill="#F5F7FA" rx="8"/><line x1="450" y1="40" x2="450" y2="430" stroke="#CFD8DC" stroke-width="2"/><line x1="60" y1="235" x2="840" y2="235" stroke="#CFD8DC" stroke-width="2" stroke-dasharray="6 4"/>`;
+  g += `<text x="840" y="458" text-anchor="end" font-size="15" font-weight="700" fill="#2E7D32">valencia positiva →</text><text x="60" y="458" font-size="15" font-weight="700" fill="#C62828">← valencia negativa</text>`;
+  g += `<text x="458" y="30" font-size="15" font-weight="700" fill="#52606D">excitación alta ↑</text><text x="458" y="425" font-size="13" fill="#52606D">excitación baja</text>`;
+  P.forEach(([t, v, a]) => { const x = X(v), y = Y(a), c = v > 0.1 ? "#2E7D32" : v < -0.1 ? "#C62828" : "#52606D";
+    const dentro = v > 0.3 ? "end" : "start", dx = v > 0.3 ? -14 : 14;  // la etiqueta mira hacia el centro para no salirse
+    g += `<circle cx="${x}" cy="${y}" r="9" fill="${c}"/><text x="${x + dx}" y="${y + 5}" text-anchor="${dentro}" font-size="16" font-weight="600" fill="#1F2933">${esc(t)}</text>`; });
+  $("#emo-plano").innerHTML = g;
+}
+Clase.botonPregunta($("#esc-ctrl"), (oc) => { escColocadas.clear(); if (!oc) FRASES5.forEach((_, i) => escColocadas.add(i)); pintarEscala(); });
+
+// ---------------------------------------------------------------- inicio
+pintarSelectorNiveles(); pintarBenamara(); pintarEstrellas(); pintarLexico(); pintarNeg(); pintarComparar();
+pintarSelectorFrases(); pintarFrasesGlobal(); pintarAspectos(); pintarResumen(); pintarPMI(); pintarSpam(); pintarEmociones();
+</script>
+</body>
+</html>

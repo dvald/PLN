@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procesamiento del Lenguaje Natural · Demos visuales</title>
+<meta name="description" content="Ejemplos resueltos y visualizaciones para explicar en clase la asignatura Procesamiento del Lenguaje Natural del Grado en Ciencia de Datos (UNIR).">
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<style>
+  :root { --ink: #1F2933; --ink2: #52606D; --muted: #7B8794; --line: #E4E7EB; --soft: #F5F7FA; --bg: #F0F4F8; --dark: #0F1B2D; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16.5px; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
+  a { color: #1565C0; }
+  :focus-visible { outline: 3px solid #90CAF9; outline-offset: 2px; }
+
+  /* ---------- portada ---------- */
+  .portada { background: radial-gradient(ellipse at 50% 0%, #1B3150 0%, var(--dark) 72%); color: #fff; padding: 2.7rem 2rem 3.4rem; text-align: center; position: relative; overflow: hidden; }
+  .portada canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .62; }
+  .portada > :not(canvas) { position: relative; }
+  .portada h1 { font-size: 2.25rem; letter-spacing: -.01em; margin-bottom: .45rem; }
+  .portada p { color: #B9C6D3; max-width: 46rem; margin: 0 auto; }
+  .portada .sub { font-size: .92rem; color: #8FA3B8; margin-top: .3rem; }
+  .portada h1, .portada p { text-shadow: 0 1px 14px rgba(15,27,45,.95); }
+  .leyenda { display: flex; flex-wrap: wrap; gap: .5rem 1rem; justify-content: center; margin-top: 1.1rem; }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 700; padding: .14rem .62rem; border-radius: 999px; border: 1px solid; }
+  .tag.real { background: #E8F5E9; color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: #E3F2FD; color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: #FFF8E1; color: #7A5A00; border-color: #F0D78C; }
+
+  .content { max-width: 1200px; margin: 0 auto 2rem; padding: 0 1.2rem; }
+
+  /* ---------- ruta del curso ---------- */
+  .ruta { background: #fff; border-radius: 14px; box-shadow: 0 8px 26px rgba(15,27,45,.12); padding: .9rem 1.1rem .7rem; margin-top: -2rem; position: relative; }
+  .ruta h2 { font-size: .8rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--ink2); margin-bottom: .55rem; }
+  .ruta h2 small { font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--muted); margin-left: .5rem; font-size: .8rem; }
+  .ruta-barra, .ruta-sem { display: grid; grid-template-columns: repeat(16, minmax(0, 1fr)); gap: 4px; }
+  .ruta-barra > * { height: 3.3rem; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; text-decoration: none; background: var(--cf); padding: 0 .3rem; overflow: hidden; transition: transform .15s, box-shadow .15s; }
+  .ruta-barra b { font-size: 1.15rem; line-height: 1.1; }
+  .ruta-barra span { font-size: .68rem; font-weight: 600; opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .ruta-barra a:hover, .ruta-barra a:focus-visible { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(15,27,45,.22); }
+  .ruta-barra .corto span { display: none; }
+  .ruta-barra .examen span { display: block; }
+  .ruta-barra .examen { background: repeating-linear-gradient(135deg, #D5DBE1 0 7px, #E4E8EC 7px 14px); color: var(--ink2); }
+  .ruta-sem { margin-top: .3rem; font-size: .7rem; font-weight: 600; color: var(--muted); text-align: center; }
+
+  /* ---------- bloques y tarjetas ---------- */
+  .bloque { margin-top: 2.1rem; }
+  .bloque-titulo { display: flex; align-items: center; flex-wrap: wrap; gap: .3rem .6rem; font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--ink2); margin-bottom: .75rem; }
+  .bloque-titulo::before { content: ""; width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
+  .bloque-titulo small { font-size: .82rem; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--muted); }
+  .temas { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; align-items: start; }
+  .temas.uno { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  article.tema { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,.06); border-top: 5px solid var(--c); display: flex; flex-direction: column; transition: transform .15s, box-shadow .15s; }
+  article.tema:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,0,0,.11); }
+  .tema-enl { display: block; position: relative; padding: 1.05rem 4.8rem .6rem 1.25rem; text-decoration: none; color: inherit; border-radius: 12px 12px 0 0; }
+  .tema-glifo { position: absolute; top: 1rem; right: 1rem; width: 3.2rem; height: 3.2rem; border-radius: 12px; background: var(--cl); color: var(--c); display: grid; place-items: center; transition: transform .2s; }
+  .tema-glifo svg { width: 2.3rem; height: 2.3rem; }
+  article.tema:hover .tema-glifo { transform: rotate(-6deg) scale(1.06); }
+  .tema .n { font-weight: 800; color: var(--cf); font-size: .8rem; letter-spacing: .05em; }
+  .tema h3 { font-size: 1.1rem; line-height: 1.3; margin: .15rem 0 .35rem; color: var(--ink); }
+  .tema-enl:hover h3, .tema-enl:focus-visible h3 { color: var(--cf); }
+  .tema p { color: var(--ink2); font-size: .9rem; }
+  .pest { list-style: none; display: flex; flex-wrap: wrap; gap: .3rem; padding: .25rem 1.25rem .95rem; }
+  .pest a { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 600; color: var(--ink2); background: var(--soft); border: 1px solid var(--line); border-radius: 999px; padding: .1rem .6rem .1rem .18rem; text-decoration: none; transition: background .15s, border-color .15s; }
+  .pest b { display: inline-grid; place-items: center; min-width: 1.3rem; height: 1.3rem; padding: 0 .25rem; border-radius: 999px; background: var(--cf); color: #fff; font-size: .7rem; }
+  .pest a:hover, .pest a:focus-visible { background: var(--cl); border-color: var(--c); color: var(--ink); }
+  .tema-pie span:last-child:not(:first-child) { white-space: nowrap; }
+  .tema-pie { margin-top: auto; display: flex; justify-content: space-between; gap: .6rem; border-top: 1px solid var(--line); padding: .5rem 1.25rem; font-size: .8rem; color: var(--muted); }
+  .footer { text-align: center; padding: 2rem 1rem 2.5rem; color: var(--muted); font-size: .84rem; }
+
+  @media (max-width: 760px) {
+    html { font-size: 15px; }
+    .portada h1 { font-size: 1.6rem; }
+    .ruta-barra span { display: none; }
+    .ruta-sem { font-size: .55rem; }
+    .temas { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { article.tema, .ruta-barra > *, .tema-glifo { transition: none; } }
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <canvas id="fondo" aria-hidden="true"></canvas>
+  <h1>Procesamiento del Lenguaje Natural · Demos visuales</h1>
+  <p>Ejemplos resueltos y visualizaciones para explicar en clase cada tema de la asignatura, del texto como dato a la visualización de textos.</p>
+  <p class="sub">Grado en Ciencia de Datos · UNIR · curso 2026/27</p>
+  <div class="leyenda">
+    <span class="tag real" title="El resultado se recalcula al cambiar el ejemplo">Calculado en el navegador</span>
+    <span class="tag pre" title="Salidas reales de bibliotecas y modelos, guardadas con su versión">Precalculado con Python</span>
+    <span class="tag illus" title="Ejemplo construido para la clase: no son datos medidos">Ilustración</span>
+  </div>
+</header>
+
+<main class="content">
+  <!-- inicio:temas · generado por fuentes/generar_navegacion.mjs a partir de fuentes/temas_demos.mjs; no editar a mano -->
+  <section class="ruta" aria-label="Ruta del curso por semanas">
+    <h2>Ruta del curso <small>16 semanas · pulsa un tema para abrir su demo</small></h2>
+    <div class="ruta-barra">
+      <a href="01_introduccion.html" class="corto" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD;grid-column:span 1" title="Tema 1 · Introducción al PLN y la minería de textos (semana 1)"><b>1</b><span>Introducción</span></a>
+      <a href="02_texto_como_dato.html" class="corto" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD;grid-column:span 1" title="Tema 2 · El texto como dato (semanas 2 y 3)"><b>2</b><span>El texto como dato</span></a>
+      <a href="03_extraccion_informacion.html" class="corto" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD;grid-column:span 1" title="Tema 3 · Extracción de información de textos (semana 3)"><b>3</b><span>Extracción de información</span></a>
+      <a href="04_modelado_lenguaje.html" class="corto" style="--c:#00897B;--cf:#00897B;--cl:#E0F2F1;grid-column:span 1" title="Tema 4 · Modelado del lenguaje (semana 4)"><b>4</b><span>Modelado del lenguaje</span></a>
+      <a href="05_modelado_neuronal.html" style="--c:#8E24AA;--cf:#8E24AA;--cl:#F3E5F5;grid-column:span 2" title="Tema 5 · Modelado de lenguaje neuronal (I) (semanas 5 y 6)"><b>5</b><span>Modelado neuronal (I)</span></a>
+      <a href="06_topicos.html" style="--c:#00897B;--cf:#00897B;--cl:#E0F2F1;grid-column:span 2" title="Tema 6 · Análisis y modelado de tópicos (semanas 7 y 8)"><b>6</b><span>Tópicos</span></a>
+      <a href="07_sentimientos.html" class="corto" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0;grid-column:span 1" title="Tema 7 · Análisis de sentimientos y minería de opiniones (semana 9)"><b>7</b><span>Sentimientos</span></a>
+      <a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA;--cf:#8E24AA;--cl:#F3E5F5;grid-column:span 2" title="Tema 8 · Modelado de lenguaje neuronal (II) (semanas 10 y 11)"><b>8</b><span>Modelado neuronal (II)</span></a>
+      <a href="09_aplicaciones.html" class="corto" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0;grid-column:span 1" title="Tema 9 · Aplicaciones de procesamiento de lenguaje natural (semana 12)"><b>9</b><span>Aplicaciones</span></a>
+      <a href="10_visualizacion.html" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0;grid-column:span 3" title="Tema 10 · Visualización de textos (semanas 13 a 15)"><b>10</b><span>Visualización</span></a>
+      <span class="examen corto" title="Semana 16: exámenes"><span>Examen</span></span>
+    </div>
+    <div class="ruta-sem" aria-hidden="true"><span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>S7</span><span>S8</span><span>S9</span><span>S10</span><span>S11</span><span>S12</span><span>S13</span><span>S14</span><span>S15</span><span>S16</span></div>
+  </section>
+
+  <section class="bloque" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD">
+    <h2 class="bloque-titulo">Texto como dato y extracción <small>Temas 1, 2 y 3</small></h2>
+    <div class="temas">
+      <article class="tema" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD">
+        <a class="tema-enl" href="01_introduccion.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M9 8h30a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H21l-9 8v-8H9a5 5 0 0 1-5-5V13a5 5 0 0 1 5-5z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M12 16h24M12 24h15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="n">TEMA 1</span>
+          <h3>Introducción al PLN y la minería de textos</h3>
+          <p>Qué es el PLN y en qué se diferencia de la minería de textos, su historia, sus aplicaciones y por qué el lenguaje es difícil para una máquina.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 1">
+          <li><a href="01_introduccion.html#pron"><b>1</b>Contar pronombres</a></li>
+          <li><a href="01_introduccion.html#mineria"><b>2</b>PLN o minería de textos</a></li>
+          <li><a href="01_introduccion.html#hist"><b>3</b>Historia</a></li>
+          <li><a href="01_introduccion.html#apl"><b>4</b>Aplicaciones</a></li>
+          <li><a href="01_introduccion.html#niv"><b>5</b>Niveles de conocimiento</a></li>
+          <li><a href="01_introduccion.html#amb"><b>6</b>Ambigüedad</a></li>
+          <li><a href="01_introduccion.html#retos"><b>7</b>Seis fallos, seis retos</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 1 y 2 · semana 1</span><span>7 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD">
+        <a class="tema-enl" href="02_texto_como_dato.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="15" height="10" rx="3"/><rect x="20" y="5" width="9" height="10" rx="3"/><rect x="31" y="5" width="14" height="10" rx="3"/></g><g fill="currentColor"><rect x="5" y="20" width="6" height="23" rx="1.5"/><rect x="13" y="30" width="6" height="13" rx="1.5"/><rect x="21" y="35" width="6" height="8" rx="1.5"/><rect x="29" y="38" width="6" height="5" rx="1.5"/><rect x="37" y="39.5" width="6" height="3.5" rx="1.2"/></g></svg></span>
+          <span class="n">TEMA 2</span>
+          <h3>El texto como dato</h3>
+          <p>Cómo se convierte un texto en datos: frecuencias, morfología, tokenización, normalización, raíces y lemas, y los recursos en español.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 2">
+          <li><a href="02_texto_como_dato.html#dato"><b>1</b>El texto como dato</a></li>
+          <li><a href="02_texto_como_dato.html#morf"><b>2</b>Morfología</a></li>
+          <li><a href="02_texto_como_dato.html#tok"><b>3</b>Tokenizar</a></li>
+          <li><a href="02_texto_como_dato.html#norm"><b>4</b>Normalizar</a></li>
+          <li><a href="02_texto_como_dato.html#raiz"><b>5</b>Raíz o lema</a></li>
+          <li><a href="02_texto_como_dato.html#rec"><b>6</b>Recursos y corpus</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 3 y 4 · semanas 2 y 3</span><span>6 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#1E88E5;--cf:#1E88E5;--cl:#E3F2FD">
+        <a class="tema-enl" href="03_extraccion_informacion.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 12h13M4 19h9M4 26h13M4 33h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 22.5h7m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="29" y="8" width="15" height="30" rx="2.5" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M29 18h15M29 28h15M36.5 8v30" fill="none" stroke="currentColor" stroke-width="2"/></svg></span>
+          <span class="n">TEMA 3</span>
+          <h3>Extracción de información de textos</h3>
+          <p>De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 3">
+          <li><a href="03_extraccion_informacion.html#flujo"><b>1</b>Del texto a la tabla</a></li>
+          <li><a href="03_extraccion_informacion.html#pos"><b>2</b>Etiquetado gramatical</a></li>
+          <li><a href="03_extraccion_informacion.html#chunk"><b>3</b>Chunking</a></li>
+          <li><a href="03_extraccion_informacion.html#ner"><b>4</b>Entidades</a></li>
+          <li><a href="03_extraccion_informacion.html#rel"><b>5</b>Relaciones</a></li>
+          <li><a href="03_extraccion_informacion.html#raiz"><b>6</b>Raíz o lema (Clase 4)</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clase 4 · semana 3</span><span>6 pestañas</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" style="--c:#00897B;--cf:#00897B;--cl:#E0F2F1">
+    <h2 class="bloque-titulo">Modelado estadístico y tópicos <small>Temas 4 y 6</small></h2>
+    <div class="temas">
+      <article class="tema" style="--c:#00897B;--cf:#00897B;--cl:#E0F2F1">
+        <a class="tema-enl" href="04_modelado_lenguaje.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="2" y="18" width="12" height="11" rx="3"/><rect x="16" y="18" width="12" height="11" rx="3"/></g><path d="M29.5 23.5h4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><rect x="36" y="11" width="10" height="5" rx="1.5"/><rect x="36" y="21" width="7" height="5" rx="1.5" fill-opacity=".7"/><rect x="36" y="31" width="4" height="5" rx="1.5" fill-opacity=".45"/></g></svg></span>
+          <span class="n">TEMA 4</span>
+          <h3>Modelado del lenguaje</h3>
+          <p>Contar para representar y para predecir: bolsa de palabras, TF-IDF, n-gramas, suavizado, perplejidad y generación con el Quijote.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 4">
+          <li><a href="04_modelado_lenguaje.html#uso"><b>1</b>Predecir o describir</a></li>
+          <li><a href="04_modelado_lenguaje.html#bow"><b>2</b>Bolsa de palabras</a></li>
+          <li><a href="04_modelado_lenguaje.html#quijote"><b>3</b>Quijote</a></li>
+          <li><a href="04_modelado_lenguaje.html#ngramas"><b>4</b>N-gramas</a></li>
+          <li><a href="04_modelado_lenguaje.html#suav"><b>5</b>Suavizado</a></li>
+          <li><a href="04_modelado_lenguaje.html#backoff"><b>6</b>Backoff e interpolación</a></li>
+          <li><a href="04_modelado_lenguaje.html#eval"><b>7</b>Perplejidad y generación</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 5 y 6 · semana 4</span><span>7 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#00897B;--cf:#00897B;--cl:#E0F2F1">
+        <a class="tema-enl" href="06_topicos.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="10" cy="12" r="3.6"/><circle cx="17" cy="9" r="3.6"/><circle cx="15" cy="17" r="3.6"/><circle cx="34" cy="13" r="3.6" fill-opacity=".55"/><circle cx="40" cy="18" r="3.6" fill-opacity=".55"/><circle cx="33" cy="21" r="3.6" fill-opacity=".55"/><circle cx="20" cy="35" r="3.6" fill-opacity=".3"/><circle cx="27" cy="39" r="3.6" fill-opacity=".3"/><circle cx="28" cy="31" r="3.6" fill-opacity=".3"/></g><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3"><circle cx="14" cy="13" r="10"/><circle cx="36" cy="17" r="10"/><circle cx="25" cy="35" r="10"/></g></svg></span>
+          <span class="n">TEMA 6</span>
+          <h3>Análisis y modelado de tópicos</h3>
+          <p>Clasificar, agrupar y descubrir temas: n-gramas, Naive Bayes, LSA, NMF y LDA con noticias y el Quijote, y entidades con spaCy.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 6">
+          <li><a href="06_topicos.html#enf"><b>1</b>Enfoques</a></li>
+          <li><a href="06_topicos.html#ng"><b>2</b>N-gramas</a></li>
+          <li><a href="06_topicos.html#nb"><b>3</b>Naive Bayes</a></li>
+          <li><a href="06_topicos.html#lsa"><b>4</b>LSA</a></li>
+          <li><a href="06_topicos.html#nmf"><b>5</b>NMF</a></li>
+          <li><a href="06_topicos.html#lda"><b>6</b>LDA paso a paso</a></li>
+          <li><a href="06_topicos.html#top"><b>7</b>Tópicos reales</a></li>
+          <li><a href="06_topicos.html#int"><b>8</b>Intruso</a></li>
+          <li><a href="06_topicos.html#ent"><b>9</b>Entidades</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 9, 10 y 11 y laboratorio · semanas 7 y 8</span><span>9 pestañas</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" style="--c:#8E24AA;--cf:#8E24AA;--cl:#F3E5F5">
+    <h2 class="bloque-titulo">Modelos neuronales: embeddings, Transformers y LLM <small>Temas 5 y 8</small></h2>
+    <div class="temas">
+      <article class="tema" style="--c:#8E24AA;--cf:#8E24AA;--cl:#F3E5F5">
+        <a class="tema-enl" href="05_modelado_neuronal.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 42V6M6 42h36" fill="none" stroke="currentColor" stroke-width="2" stroke-opacity=".45" stroke-linecap="round"/><path d="M6 42 35 14M6 42 40 23M6 42 15 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><circle cx="35" cy="14" r="4"/><circle cx="40" cy="23" r="4"/><circle cx="15" cy="9" r="4" fill-opacity=".55"/></g></svg></span>
+          <span class="n">TEMA 5</span>
+          <h3>Modelado de lenguaje neuronal (I)</h3>
+          <p>De contar a aprender vectores: skip-gram y CBOW, FastText, redes recurrentes, atención, el bloque Transformer y BERT.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 5">
+          <li><a href="05_modelado_neuronal.html#ven"><b>1</b>Ventanas</a></li>
+          <li><a href="05_modelado_neuronal.html#vec"><b>2</b>Vecinos</a></li>
+          <li><a href="05_modelado_neuronal.html#bus"><b>3</b>Buscar</a></li>
+          <li><a href="05_modelado_neuronal.html#ft"><b>4</b>FastText</a></li>
+          <li><a href="05_modelado_neuronal.html#rnn"><b>5</b>Red recurrente</a></li>
+          <li><a href="05_modelado_neuronal.html#at"><b>6</b>Atención</a></li>
+          <li><a href="05_modelado_neuronal.html#tr"><b>7</b>Bloque Transformer</a></li>
+          <li><a href="05_modelado_neuronal.html#mlm"><b>8</b>Enmascarado de BERT</a></li>
+          <li><a href="05_modelado_neuronal.html#bert"><b>9</b>BETO</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 7 y 8 · semanas 5 y 6</span><span>9 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#8E24AA;--cf:#8E24AA;--cl:#F3E5F5">
+        <a class="tema-enl" href="08_modelado_neuronal_ii.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M12 14Q18 3 24 14M24 14Q30 3 36 14M12 14Q24-4 36 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="6" y="17" width="36" height="9" rx="2.5"/><rect x="6" y="29" width="36" height="9" rx="2.5"/></g><g fill="currentColor"><circle cx="12" cy="43" r="2.6"/><circle cx="24" cy="43" r="2.6"/><circle cx="36" cy="43" r="2.6"/></g></svg></span>
+          <span class="n">TEMA 8</span>
+          <h3>Modelado de lenguaje neuronal (II)</h3>
+          <p>Los Transformers por dentro y en uso: máscaras, generación, huecos, subpalabras, ajuste fino frente a prompts, destilación y alineación.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 8">
+          <li><a href="08_modelado_neuronal_ii.html#mas"><b>1</b>Tres máscaras</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#sig"><b>2</b>Siguiente palabra</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#rel"><b>3</b>Rellenar huecos</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#fun"><b>4</b>Modelo fundacional</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#sub"><b>5</b>Subpalabras y etiquetas</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#fra"><b>6</b>Fragmentos</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#aju"><b>7</b>¿Ajustar o preguntar?</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#pro"><b>8</b>Prompts</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#des"><b>9</b>Destilación</a></li>
+          <li><a href="08_modelado_neuronal_ii.html#ali"><b>10</b>Ajuste y alineación</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 14 y 15 · semanas 10 y 11</span><span>10 pestañas</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0">
+    <h2 class="bloque-titulo">Aplicaciones, sentimientos y visualización <small>Temas 7, 9 y 10</small></h2>
+    <div class="temas">
+      <article class="tema" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0">
+        <a class="tema-enl" href="07_sentimientos.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M7 34a17 17 0 0 1 34 0" fill="none" stroke="currentColor" stroke-width="6" stroke-opacity=".22" stroke-linecap="round"/><path d="M28.5 17.6A17 17 0 0 1 41 34" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M24 34 33 22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/><circle cx="24" cy="34" r="4" fill="currentColor"/><path d="M8 42h8M32 42h8M36 38v8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="n">TEMA 7</span>
+          <h3>Análisis de sentimientos y minería de opiniones</h3>
+          <p>Qué opina un texto y sobre qué: niveles, léxico con negación, Naive Bayes frente a BETO, aspectos, PMI, spam y emociones.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 7">
+          <li><a href="07_sentimientos.html#niv"><b>1</b>Niveles</a></li>
+          <li><a href="07_sentimientos.html#est"><b>2</b>Estrellas</a></li>
+          <li><a href="07_sentimientos.html#lex"><b>3</b>Léxico paso a paso</a></li>
+          <li><a href="07_sentimientos.html#neg"><b>4</b>Negación como rasgo</a></li>
+          <li><a href="07_sentimientos.html#com"><b>5</b>Comparar métodos</a></li>
+          <li><a href="07_sentimientos.html#fra"><b>6</b>Frases y agregación</a></li>
+          <li><a href="07_sentimientos.html#asp"><b>7</b>Aspectos</a></li>
+          <li><a href="07_sentimientos.html#pmi"><b>8</b>PMI de Turney</a></li>
+          <li><a href="07_sentimientos.html#spm"><b>9</b>Spam</a></li>
+          <li><a href="07_sentimientos.html#emo"><b>10</b>Emociones</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 12 y 13 · semana 9</span><span>10 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0">
+        <a class="tema-enl" href="09_aplicaciones.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 5h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H13l-6 5v-5H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M24 22h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-1v5l-6-5H24a3 3 0 0 1-3-3V25a3 3 0 0 1 3-3z" fill="currentColor" stroke="currentColor" stroke-width="2.2"/><path d="M8 11h11M8 16h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 28h14M26 33h9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span class="n">TEMA 9</span>
+          <h3>Aplicaciones de procesamiento de lenguaje natural</h3>
+          <p>Traducción, resumen, agentes, búsqueda, preguntas y respuestas y voz, con salidas reales de modelos y sus métricas.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 9">
+          <li><a href="09_aplicaciones.html#tra"><b>1</b>Traducción</a></li>
+          <li><a href="09_aplicaciones.html#ate"><b>2</b>Atención</a></li>
+          <li><a href="09_aplicaciones.html#chr"><b>3</b>chrF</a></li>
+          <li><a href="09_aplicaciones.html#ses"><b>4</b>Sesgo</a></li>
+          <li><a href="09_aplicaciones.html#res"><b>5</b>Resumen</a></li>
+          <li><a href="09_aplicaciones.html#age"><b>6</b>Agente</a></li>
+          <li><a href="09_aplicaciones.html#bus"><b>7</b>Búsqueda</a></li>
+          <li><a href="09_aplicaciones.html#lec"><b>8</b>Lector</a></li>
+          <li><a href="09_aplicaciones.html#voz"><b>9</b>Voz</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clase 16 · semana 12</span><span>9 pestañas</span></div>
+      </article>
+      <article class="tema" style="--c:#F57C00;--cf:#E65100;--cl:#FFF3E0">
+        <a class="tema-enl" href="10_visualizacion.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><rect x="4" y="8" width="21" height="9" rx="2.5"/><rect x="28" y="10" width="15" height="6" rx="2" fill-opacity=".6"/><rect x="8" y="21" width="34" height="11" rx="2.5"/><rect x="4" y="36" width="11" height="5" rx="2" fill-opacity=".45"/><rect x="18" y="35" width="20" height="7" rx="2" fill-opacity=".75"/></g></svg></span>
+          <span class="n">TEMA 10</span>
+          <h3>Visualización de textos</h3>
+          <p>Ver los textos: mapas de documentos, tópicos, nubes de palabras, coocurrencias, árboles de palabras, gramática y huellas de estilo.</p>
+        </a>
+        <ol class="pest" aria-label="Pestañas del Tema 10">
+          <li><a href="10_visualizacion.html#mapa"><b>1</b>El tema</a></li>
+          <li><a href="10_visualizacion.html#cerca"><b>2</b>¿Cerca = parecido?</a></li>
+          <li><a href="10_visualizacion.html#proy"><b>3</b>Proyecciones</a></li>
+          <li><a href="10_visualizacion.html#pca"><b>4</b>PCA a mano</a></li>
+          <li><a href="10_visualizacion.html#top"><b>5</b>Tópicos</a></li>
+          <li><a href="10_visualizacion.html#nube"><b>6</b>Nube de palabras</a></li>
+          <li><a href="10_visualizacion.html#tend"><b>7</b>Dos nubes y tendencias</a></li>
+          <li><a href="10_visualizacion.html#cooc"><b>8</b>Coocurrencias</a></li>
+          <li><a href="10_visualizacion.html#arbol"><b>9</b>Árbol de palabras</a></li>
+          <li><a href="10_visualizacion.html#gram"><b>10</b>Gramática y entidades</a></li>
+          <li><a href="10_visualizacion.html#huella"><b>11</b>Huellas y firmas</a></li>
+        </ol>
+        <div class="tema-pie"><span>Clases 17, 19 y 20 · semanas 13 a 15</span><span>11 pestañas</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="bloque" style="--c:#9AA5B1;--cf:#52606D;--cl:#F5F7FA">
+    <h2 class="bloque-titulo">Fuera de las clases</h2>
+    <div class="temas uno">
+      <article class="tema" style="--c:#9AA5B1;--cf:#52606D;--cl:#F5F7FA">
+        <a class="tema-enl" href="repaso.html">
+          <span class="tema-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect x="7" y="5" width="34" height="39" rx="4" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M13 16l3 3 6-6M13 28l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 17h9M27 29h9M13 38h23" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="n">REPASO</span>
+          <h3>Repaso de los tests · estudio autónomo</h3>
+          <p>Las preguntas de repaso de los Temas 5 a 10, con su explicación al responder. No se usan en las clases en directo: son para que cada estudiante compruebe lo que ha estudiado.</p>
+        </a>
+        <div class="tema-pie"><span>Temas 5 a 10 · sin puntuación</span></div>
+      </article>
+    </div>
+  </section>
+  <!-- fin:temas -->
+</main>
+
+<footer class="footer">Procesamiento del Lenguaje Natural · Grado en Ciencia de Datos · UNIR · curso 2026/27</footer>
+
+<script>
+(function () {
+  "use strict";
+  // Fondo animado de la portada (decorativo): las palabras de una frase entran en una red por capas
+  // y sus señales la recorren hasta la salida. No representa ningún modelo ni ningún dato.
+  const cv = document.getElementById("fondo");
+  const ctx = cv.getContext("2d");
+  const PALABRAS = ["En", "un", "lugar", "de", "la", "Mancha"];
+  const CAPAS = [PALABRAS.length, 7, 7, 5, 3];
+  const COLORES = ["#64B5F6", "#4DB6AC", "#CE93D8", "#FFB74D"];
+  const quieto = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function azar(s) { return function () { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const r = azar(11);
+  let W = 0, H = 0, nodos = [], pesos = new Map(), pulsos = [], luz = new Map(), fichas = true;
+
+  function montar() {
+    const dpr = window.devicePixelRatio || 1;
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fichas = W > 760;
+    const g = azar(5);
+    nodos = CAPAS.map(function (n, l) {
+      const x = W * (0.085 + 0.83 * l / (CAPAS.length - 1));
+      return Array.from({ length: n }, function (_, j) {
+        return { x: x + (l ? (g() - 0.5) * 34 : 0), y: H * (j + 1) / (n + 1) + (l ? (g() - 0.5) * 18 : 0), l: l, j: j };
+      });
+    });
+    for (let l = 0; l < CAPAS.length - 1; l++) nodos[l].forEach(function (a) { nodos[l + 1].forEach(function (b) { const k = l + "-" + a.j + "-" + b.j; if (!pesos.has(k)) pesos.set(k, g() * 2 - 1); }); });
+    dibujar();
+  }
+  function alfa(hex, a) { const n = parseInt(hex.slice(1), 16); return "rgba(" + (n >> 16) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")"; }
+  function dibujar() {
+    ctx.clearRect(0, 0, W, H);
+    for (let l = 0; l < CAPAS.length - 1; l++) nodos[l].forEach(function (a) { nodos[l + 1].forEach(function (b) {
+      const w = pesos.get(l + "-" + a.j + "-" + b.j);
+      ctx.strokeStyle = alfa(w > 0 ? "#64B5F6" : "#FFA270", 0.08 + 0.22 * Math.abs(w));
+      ctx.lineWidth = 0.6 + 1.5 * Math.abs(w);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }); });
+    pulsos.forEach(function (p) {
+      const a = p.ruta[p.tramo], b = p.ruta[p.tramo + 1];
+      const x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
+      ctx.fillStyle = alfa(p.color, 0.25); ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill();
+      ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(x, y, 3, 0, 7); ctx.fill();
+    });
+    ctx.font = "600 14px system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    nodos.forEach(function (col) { col.forEach(function (n) {
+      const k = n.l + "-" + n.j, b = luz.get(k) || 0;
+      const borde = b > 0 ? luz.get(k + "c") : "#4F86C6";
+      if (n.l === 0 && fichas) {
+        const tw = ctx.measureText(PALABRAS[n.j]).width + 20, th = 24;
+        ctx.fillStyle = b > 0 ? alfa(borde, 0.25 + 0.5 * b) : "#16263B";
+        ctx.strokeStyle = borde; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.roundRect(n.x - tw / 2, n.y - th / 2, tw, th, 7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = "#DDE6F0"; ctx.fillText(PALABRAS[n.j], n.x, n.y + 1);
+      } else {
+        ctx.fillStyle = b > 0 ? alfa(borde, 0.3 + 0.6 * b) : "#16263B";
+        ctx.strokeStyle = borde; ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.arc(n.x, n.y, 6 + 2 * b, 0, 7); ctx.fill(); ctx.stroke();
+      }
+    }); });
+  }
+  let palabra = 0;
+  function lanzar() {
+    const ruta = [nodos[0][palabra]];
+    palabra = (palabra + 1) % PALABRAS.length;
+    for (let l = 1; l < CAPAS.length; l++) ruta.push(nodos[l][Math.floor(r() * CAPAS[l])]);
+    const color = COLORES[Math.floor(r() * COLORES.length)];
+    pulsos.push({ ruta: ruta, tramo: 0, t: 0, v: 0.9 + r() * 0.5, color: color });
+    encender(ruta[0], color);
+  }
+  function encender(n, color) { luz.set(n.l + "-" + n.j, 1); luz.set(n.l + "-" + n.j + "c", color); }
+
+  new ResizeObserver(montar).observe(cv);
+  if (!quieto) {
+    let ultimo = performance.now(), acum = 0;
+    (function paso(ahora) {
+      const dt = Math.min(0.05, (ahora - ultimo) / 1000); ultimo = ahora;
+      if (!nodos.length) { requestAnimationFrame(paso); return; } // aún sin medir el lienzo
+      acum += dt;
+      if (acum > 0.45) { acum = 0; lanzar(); }
+      pulsos.forEach(function (p) {
+        p.t += dt * p.v * 1.6;
+        if (p.t >= 1) { p.t = 0; p.tramo++; encender(p.ruta[p.tramo], p.color); }
+      });
+      pulsos = pulsos.filter(function (p) { return p.tramo < p.ruta.length - 1; });
+      luz.forEach(function (v, k) { if (typeof v === "number") luz.set(k, Math.max(0, v - dt * 1.4)); });
+      dibujar();
+      requestAnimationFrame(paso);
+    })(ultimo);
+  }
+})();
+</script>
+</body>
+</html>

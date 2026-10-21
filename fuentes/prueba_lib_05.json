@@ -1,0 +1,42 @@
+{
+ "fecha": "2026-10-12T12:04:12.238Z",
+ "node": "v22.22.0",
+ "tolerancia_relativa": 1e-9,
+ "ngramas": {
+  "casos": 36,
+  "fallos": [],
+  "rocin_igual": true,
+  "compartidos_dulsinea_dulcinea": true
+ },
+ "skipgram": {
+  "casos": 12,
+  "fallos": []
+ },
+ "atencion": {
+  "casos": 20,
+  "fallos": []
+ },
+ "leer_matriz": {
+  "casos": 5,
+  "fallos": []
+ },
+ "busqueda": {
+  "metodos": 4,
+  "fallos": []
+ },
+ "coseno": {
+  "casos": 5,
+  "fallos": 0
+ },
+ "simulacion_mlm": {
+  "repeticiones": 20000,
+  "porcentajes": {
+   "elegidos": 15.06,
+   "mask": 80.11,
+   "azar": 9.99,
+   "igual": 9.9
+  },
+  "ok": true
+ },
+ "resultado": "OK"
+}

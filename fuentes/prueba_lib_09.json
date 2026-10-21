@@ -1,0 +1,50 @@
+{
+ "fecha": "2026-10-12T12:04:12.464Z",
+ "node": "v22.22.0",
+ "chrf": {
+  "ok": true,
+  "casos_frase": 600,
+  "casos_corpus": 3,
+  "fallos": []
+ },
+ "tfidf": {
+  "ok": true,
+  "documentos": 92,
+  "terminos_idf": 200,
+  "preguntas": 22,
+  "fallos": []
+ },
+ "resumen": {
+  "ok": true,
+  "noticias": 12,
+  "fallos": []
+ },
+ "agente": {
+  "ok": true,
+  "enunciados": 39,
+  "turnos": 10,
+  "evaluacion": {
+   "sin_regla": {
+    "desarrollo": 12,
+    "prueba": 18
+   },
+   "con_regla": {
+    "desarrollo": 12,
+    "prueba": 19
+   }
+  },
+  "fallos": []
+ },
+ "verbalizar": {
+  "ok": true,
+  "frases": 17,
+  "cardinales": 29,
+  "fallos": []
+ },
+ "wer": {
+  "ok": true,
+  "casos": 96,
+  "fallos": []
+ },
+ "resultado": "OK"
+}

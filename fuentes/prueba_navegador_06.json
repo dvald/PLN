@@ -1,0 +1,29 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/06_topicos.html (+ 06_topicos_lib.js y 06_topicos_datos.js)",
+ "navegador": "Navegador integrado de la aplicación Claude (Chromium) con servidor local temporal http://127.0.0.1:8796; y Google Chrome sin interfaz (--headless=new --virtual-time-budget=5000 --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Ocho situaciones con tres opciones (clasificación supervisada, clustering, modelado de tópicos); retroalimentación por respuesta y recuento",
+  "pestaña_2": "Frase de la Clase 9 en unigramas, bigramas y trigramas; con «quitar palabras vacías» aparecen bigramas que no están en el texto (tipos interés, interés frenan…); estadísticas con las 60 noticias de entrenamiento: n = 2 → 2363 columnas, 98,06 % de ceros, 91,2 % en un solo documento (columnas 1108 / 2363 / 2731 = scikit-learn); chi-cuadrado de economía: mayor parte 9,47 (3 de 15 frente a 0 de 45)",
+  "pestaña_3": "Naive Bayes entrenado en el navegador con palabras: 14 de 20 aciertos en prueba con alfa = 1 (la página avisa de que la Clase 10 eligió lemas de contenido: 15 de 20); seis ejemplos clasificados con ln P(c), suma de ln P(w|c), probabilidad a posteriori y contribución de cada palabra; matriz de confusión; cambiar alfa y quitar palabras vacías recalcula",
+  "pestaña_4": "SVD por Jacobi de la matriz de la Figura 8: Σ = 8,425 · 3,261 · 0,988 · 0,574 · 0,272 · 0,000 (= numpy); error de reconstrucción k = 2: 1,1747; k = 3: 0,6355; invertir el signo del tópico 1 no cambia la reconstrucción; editar una celda recalcula y «Restaurar» vuelve a la matriz del tema",
+  "pestaña_5": "NMF con actualizaciones multiplicativas: k = 2, semilla 1, 2000 iteraciones → error 1,1793 (scikit-learn con NNDSVDA llega al mismo error con otra escala) frente a 1,1747 de la SVD; normalizar como la Figura 12; matriz compartida con la pestaña LSA",
+  "pestaña_6": "Gibbs colapsado: asignación inicial, 1 y 20 barridos; estado «Barridos realizados: 20. K = 2, α = 0,5; β = 0,1.»; al pulsar una palabra se muestran sus probabilidades por tópico; θ y φ legibles; mismos resultados que la implementación de Python con la misma semilla (probar_lib_06.js, 4 casos)",
+  "pestaña_7": "Seis vistas precalculadas (noticias NMF/LSA/LDA/k-means; Quijote NMF/LDA); NMF k = 4: ARI 0,49 y cultura repartida (10 noticias en el tópico 4); tabla de proporciones de las noticias mixtas",
+  "pestaña_8": "Siete listas con intrusa de otro tópico (4 de noticias, 3 del Quijote); al pulsar «ganar» en noticias · tópico 1 → «✓ «ganar» es la intrusa: viene de otro tópico.»; «Empezar de nuevo» reinicia",
+  "pestaña_9": "Selector con 27 noticias (8 de desarrollo, 16 de evaluación y 3 sin referencia para anotar, entre ellas c04); entidades de referencia, modelo y reglas v1 / v2 resaltadas; medidas en evaluación (16 noticias, 53 entidades): modelo F1 exacta 0,48, reglas v1 0,62, reglas v2 0,69 (= resultados_lab.json); reglas clínicas sobre notas ficticias (n1, n2…) editables",
+  "pestaña_10": "Diez preguntas del test del tema (pp. 57-60) razonadas, con retroalimentación y recuento",
+  "teclado": "Flechas izquierda y derecha cambian de pestaña (de «1 · Enfoques», dos pulsaciones → «3 · Naive Bayes» con el foco en la pestaña)",
+  "indice": "Demos/index.html tiene la tarjeta del Tema 6 (clic probado) y la demo enlaza el índice; las seis demos responden 200",
+  "consola": "Sin errores tras recargar y recorrer las diez pestañas",
+  "formato": "Sin decimales con punto en la página salvo versiones (1.9.1, 3.8.16), apartados (6.3) y un titular del corpus («9.000 millones»)",
+  "defectos_corregidos": [
+   "Cabeceras de la tabla θ ilegibles: ahora texto plano «tópico k»",
+   "Estado de LDA con punto decimal (α = 0.5): ahora coma",
+   "Cierre del contenedor de tarjetas perdido al insertar la tarjeta del Tema 6 en el índice (detectado con un analizador HTML y corregido)"
+  ]
+ },
+ "prueba_file": "DOM volcado con file:// tras ejecutar los scripts (después del último cambio): 10 pestañas, 2363 columnas y 98,06 % en n-gramas, 14 de 20 y aviso de 15 de 20 en Naive Bayes, errores 1,1747 y 1,1793 en LSA/NMF, estado inicial de LDA con coma decimal",
+ "biblioteca": "node Demos/fuentes/probar_lib_06.js → Demos/fuentes/prueba_lib_06.json con resultado OK: PRNG mulberry32 igual que Python, tokenización (3 casos), columnas de n-gramas y n-gramas distintivos, Naive Bayes (4 variantes), SVD, NMF (3 casos), Gibbs (4 casos), reglas clínicas, medidas de entidades y Jaccard, comparados con Demos/fuentes/referencia_python_06.json (numpy, scikit-learn 1.9.1, spaCy 3.8.16)",
+ "limites": "No probado en Safari, Firefox ni Edge, ni en móvil. Los tópicos de noticias y Quijote, el k-means y las entidades del modelo están precalculados en Python (la página no ejecuta scikit-learn ni spaCy). La LDA de la pestaña 6 usa Gibbs y no coincide numéricamente con la LDA variacional de scikit-learn. El Naive Bayes de la página usa palabras, no lemas."
+}

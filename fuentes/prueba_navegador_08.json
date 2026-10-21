@@ -1,0 +1,23 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/08_modelado_neuronal_ii.html",
+ "navegador": "Navegador integrado de la aplicación Claude (Chromium) con servidor local temporal http://127.0.0.1:8798; y Google Chrome sin interfaz (--headless=new --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Codificador: 36 de 36 casillas; decodificador: 21 de 36 (n(n+1)/2 = 21); fila «Sporting» → puede atender a El, Real, Sporting; atención cruzada con «<s> El Real»: 18 de 18 y fila de salida visible solo en este modo (defecto corregido: la fila aparecía también con el codificador porque .row anulaba el atributo hidden); una palabra → 3 de 3; frase vacía → aviso; comprobación real: Qwen 0,0 exacto, BETO 0,149 y 0,493",
+  "pestaña_2": "Primer texto: «partido» 0,205 sobre todo el vocabulario y 0,350 entre las 20 (columna añadida tras la prueba para que coincida con la diapositiva); entropía 3,55 bits y 58,7 % de la masa; T = 0,3 → 0,20 bits y «partido» 0,980; T = 2,5 → 4,23 bits; voraz «partido»; muestreo y 200 muestras con 20 subpalabras distintas; P(« acordarme») = 0,0015 × 0,523 × 0,921 = 0,000744; generaciones grabadas solo para los dos textos con aviso en los demás",
+  "pestaña_3": "BETO: partido 0,626, encuentro 0,280; «precios»: porcentaje 0,176, euros 0,130, [UNK] 0,104; BARTO: partido, «de Gijón sigue» (3 palabras), enero, atiende y aviso de hueco borrado en la frase del Quijote; atención cruzada con 14 pasos: «partido» → <mask> 0,37, <s> 0,17, el 0,15; «ganó» → <mask> 0,26, ganó 0,18; tokenizadores 12/18/12 piezas y vocabularios 31 002, 151 665 y 50 264 (formato corregido: el navegador ponía 31.002)",
+  "pestaña_4": "Naive Bayes 15/20 (0,53-0,89) y BETO congelado 19/20 (0,76-0,99), iguales a la diapositiva; matriz de confusión igual a Python; 92 puntos (32 sin los de entrenamiento); el punto de t11 muestra «ERROR de BETO congelado»; varianza 28 % (17,9 + 9,9)",
+  "pestaña_5": "Frase de Valdeluna: 14 subpalabras, 5 con -100 y decodificación exacta; con «copiar a todas»: Val B-LOC, ##del I-LOC, ##una I-LOC y 2 con -100; frase de la Dra.: «Dra» + «.» de la misma palabra; cambiar una etiqueta a B-MISC actualiza la tabla",
+  "pestaña_6": "Frase de la clase: 24 fragmentos con L = 3 y 45 = 9·10/2; L = 9 → 45; pesos de «Observatorio Económico del Ebro»: 0,25 × 4 (correcto) frente a 0,20 × 5 desde «El» (fórmula del tema); fragmento «Ebro»: 1,00 frente a 0,20; frase de dos palabras → 3 fragmentos y selectores ajustados",
+  "pestaña_7": "Resumen igual a las diapositivas (15; 19; 19·19·19·18·19; 19 × 5; 9; 7; 11; 7; 14; 18) con sus intervalos; comparación BETO congelado frente a Qwen 0,5B: 12 noticias donde alguno falla; matriz de Qwen 0,5B con un ejemplo: 10 respuestas fuera de formato señaladas; cultura: 0 de 12 y 10 de 12, prueba con cinco etiquetas 10 y 12",
+  "pestaña_8": "Cuatro componentes del prompt real; 152 y 694 subpalabras; noticia s01 («Las listas de espera quirúrgica bajan en Andalucía») con un ejemplo: «medicina» (fuera de formato) frente a «salud» (1,5B); votos de autoconsistencia; base frente a instruido en las tres peticiones",
+  "pestaña_9": "T = 1: entropía 1,52 bits, partido 0,628 y encuentro 0,281 entre las 30 (99,6 % de la masa); T = 4: 4,59 bits, 0,133 y 0,109",
+  "pestaña_10": "8 preguntas con la respuesta correcta en posiciones distintas; retroalimentación y recuento «8 de 8 correctas»",
+  "teclado": "Flechas izquierda y derecha cambian de pestaña con vuelta al principio (1 ← → 10)",
+  "indice": "Demos/index.html enlaza la demo (clic probado) y la demo enlaza el índice (clic probado); el índice lista las demos de los Temas 1 a 8",
+  "consola": "Sin errores tras recargar y recorrer las diez pestañas"
+ },
+ "prueba_file": "DOM volcado con file:// tras ejecutar los scripts: 36 casillas de la máscara, 92 puntos del mapa, tabla de subpalabras con 5 etiquetas -100, 10 filas del resumen de métodos, 8 preguntas, vocabulario «31 002», fila de la atención cruzada de «partido», «10 de 12» en cultura y 24 fragmentos",
+ "biblioteca": "node Demos/fuentes/probar_lib_08.js: 23 casos de softmax con temperatura y entropía, 22 intervalos de Wilson, 10 alineaciones con la tokenización real de BETO, 180 recuentos de fragmentos y 4 casos de pesos de la media iguales a Python; máscaras 21/36/24; muestreo reproducible; datos coherentes con las diapositivas (Demos/fuentes/prueba_lib_08.json)",
+ "limites": "No probado en Safari ni Firefox ni en pantallas de móvil reales (solo panel estrecho). Todas las salidas de BETO, BARTO y Qwen2.5 están precalculadas o grabadas; la página no ejecuta ningún modelo. Las probabilidades de las pestañas 2 y 9 se renormalizan entre las 20 o 30 subpalabras guardadas, lo que la página indica."
+}

@@ -1,0 +1,18 @@
+{
+ "fecha": "2026-10-11",
+ "pagina": "Demos/02_texto_como_dato.html",
+ "navegador": "Google Chrome (extensión Claude in Chrome) con servidor local temporal http://127.0.0.1:8793 sirviendo la raíz del proyecto; y Chrome sin interfaz (--headless=new --dump-dom) abriendo file:///…/Demos/02_texto_como_dato.html",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Bolsa de palabras: «idénticas: 7 palabras»; secuencia: 4 posiciones marcadas; Zipf: predicción comprobada (51,9 %), 30 barras con 5 grises al mover el control, curva log-log dibujada; cuestionario «banco» 3 de 3",
+  "pestaña_2": "Raíz Snowball de las 8 palabras (mujeres>mujer, mujer>muj, cantábamos>cant, perros>perr, jugaron>jug, juego>jueg, piénsalo>piensal, ingenieras>ingen); agrupación libre: cas = casa, casar, casado / sol = sol, solo, soler",
+  "pestaña_3": "Ejemplo 1: espacios 19, regex 29, reglas 21, NLTK 22, spaCy 21 tokens; comparación espacios frente a spaCy resalta 08:30; EE. UU. ¿Me dices?; segmentación 1/2/1; notas clínicas 9/12/12; texto libre: NLTK y spaCy desactivados con aviso y reglas calculadas en vivo; predicción comprobada",
+  "pestaña_4": "Reseña: 14→12 tokens; con palabras vacías 14→5 y aviso de negación (No, nada, no) marcada en rojo; conservando la negación 14→8 sin aviso; raíz y lema aplicados; Estrella: aviso de confusión en minúsculas y lista de PROPN; tabla del Quijote con 7 filas",
+  "pestaña_5": "6 preguntas de lema construidas y corregidas (retroalimentación con lema de spaCy y raíz Snowball); sobrerradicación e infrarradicación con raíces calculadas",
+  "pestaña_6": "Cuestionario de recursos 6 de 6",
+  "indice": "Demos/index.html enlaza 01_introduccion.html (200) y 02_texto_como_dato.html (200); el enlace abre la demo",
+  "consola": "Sin errores de la página (solo avisos de otra extensión del navegador)",
+  "defectos_corregidos": ["Excepción al construir la pestaña 5 (búsqueda de la segunda «fui») que impedía construir las pestañas 5 y 6", "Etiqueta de la línea discontinua cortada en el gráfico log-log", "Separador de miles poco visible; ahora espacio de no separación y sin separador en cifras de cuatro dígitos (RAE)"]
+ },
+ "prueba_file": "DOM volcado tras ejecutar los scripts: estadísticas de Zipf rellenas (383 640; 22 950; 48,6 %), 30 fichas de tokens, 15 preguntas de cuestionario y pie con versiones",
+ "limites": "No probado en Safari ni Firefox; la prueba con extensión no puede abrir file://, por eso se usó Chrome sin interfaz"
+}

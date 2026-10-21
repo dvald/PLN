@@ -1,0 +1,156 @@
+{
+ "fecha": "2026-10-12T12:04:12.576Z",
+ "node": "v22.22.0",
+ "mulberry32": {
+  "ok": true
+ },
+ "tokens": {
+  "ok": true,
+  "casos": 3,
+  "fallos": []
+ },
+ "coseno_y_vecinos": {
+  "ok": true,
+  "fallos": [],
+  "peor_par": [
+   "d15",
+   "e13",
+   0,
+   33
+  ]
+ },
+ "radviz": {
+  "ok": true
+ },
+ "pca_mano": {
+  "ok": true,
+  "varianza_js": [
+   0.43460097608692994,
+   0.3836954181461427
+  ],
+  "varianza_py": [
+   0.4346009760869302,
+   0.3836954181461426
+  ]
+ },
+ "opiniones_top_positivas": {
+  "ok": true,
+  "js": [
+   [
+    "no",
+    29
+   ],
+   [
+    "bien",
+    15
+   ],
+   [
+    "móvil",
+    6
+   ],
+   [
+    "noche",
+    5
+   ]
+  ]
+ },
+ "tamanos_wordcloud": {
+  "ok": true,
+  "rs05": [
+   [
+    "don",
+    200
+   ],
+   [
+    "sancho",
+    183
+   ],
+   [
+    "quijote",
+    181
+   ],
+   [
+    "respondió",
+    137
+   ]
+  ]
+ },
+ "dos_partes": {
+  "ok": true,
+  "comunes": 69,
+  "primeras_I": [
+   "camila",
+   "lotario",
+   "anselmo"
+  ],
+  "primeras_II": [
+   "vuesa",
+   "duquesa",
+   "teresa"
+  ]
+ },
+ "tendencias": {
+  "ok": true
+ },
+ "coocurrencias_ej8": {
+  "ok": true,
+  "tema": [
+   "azul",
+   "nocturno",
+   "nublado"
+  ],
+  "ventana": [
+   [
+    "nocturno",
+    2
+   ],
+   [
+    "despejado",
+    1
+   ],
+   [
+    "sol",
+    1
+   ]
+  ]
+ },
+ "pmi_dulcinea": {
+  "ok": true,
+  "js": [
+   "desencanto",
+   "desencantada",
+   "toboso",
+   "aldonza"
+  ]
+ },
+ "arboles": {
+  "ok": true,
+  "vuestra_merced": [
+   "señor 64",
+   "que 39",
+   "dice 27",
+   "se 24"
+  ]
+ },
+ "ttr_mattr": {
+  "ok": true,
+  "js": [
+   0.3357562202963377,
+   0.5266010396361228
+  ]
+ },
+ "firmas_cng": {
+  "ok": true,
+  "combinaciones": 12,
+  "fallos": []
+ },
+ "relevancia": {
+  "ok": true,
+  "fallos": [],
+  "empates_numericos": [
+   "0.6/3: artificial = inteligencia",
+   "0.0/3: artificial = inteligencia"
+  ]
+ },
+ "resultado": "OK"
+}

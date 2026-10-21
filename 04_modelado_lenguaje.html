@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 4 · Modelado del lenguaje — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1rem; font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--estad); }
+  .content { max-width: 1120px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--estad-l); border-left: 4px solid var(--estad); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #004D40; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: var(--estad); color: #fff; }
+  .btn-main:hover { background: #00695C; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible, td.clic:focus-visible { outline: 3px solid #80CBC4; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; font-family: Menlo, Consolas, monospace; font-size: .92rem; }
+  input[type=text] { min-width: 18rem; }
+  input[type=range] { width: 12rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .4rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.clic { cursor: pointer; }
+  td.clic:hover { background: var(--estad-l); }
+  td.sel { background: #FFE082 !important; font-weight: 700; }
+  tr.hl td { background: var(--warn-l); }
+  td.cero { color: var(--muted); }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  .scroll { overflow-x: auto; max-height: 28rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .calc { font-family: Menlo, Consolas, monospace; font-size: .9rem; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: .7rem .9rem; white-space: pre-wrap; margin: .5rem 0; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .path { display: flex; flex-direction: column; gap: .3rem; margin: .6rem 0; }
+  .lvl { border: 2px solid var(--line); border-radius: 10px; padding: .6rem .9rem; background: #fff; }
+  .lvl.usado { border-color: var(--ok); background: var(--ok-l); }
+  .lvl.saltado { border-color: #EF9A9A; background: var(--bad-l); }
+  .lvl.no { opacity: .55; }
+  .arrow { text-align: center; color: var(--ink2); font-size: 1.2rem; line-height: 1; }
+  .pill { display: inline-block; padding: .05rem .45rem; border-radius: 6px; background: var(--estad-l); border: 1px solid #80CBC4; font-family: Menlo, Consolas, monospace; font-size: .88rem; margin: .1rem; }
+  .pill.unk { background: var(--warn-l); border-color: #F0D78C; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  footer { max-width: 1120px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .6rem; font-size: .85rem; } input[type=text] { min-width: 0; width: 100%; } }
+  /* modo clase */
+  .tablero2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: .6rem; }
+  .col2 { border-radius: 12px; padding: .7rem; background: var(--soft); border-top: 6px solid; min-height: 9rem; }
+  .col2 h4 { margin: 0 0 .5rem; font-size: 1.05rem; }
+  .caso2 { font: inherit; text-align: left; display: block; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .7rem; margin-bottom: .45rem; cursor: pointer; }
+  .caso2 small { display: block; color: var(--ink2); margin-top: .2rem; }
+  .caso2:hover { border-color: var(--estad); }
+  .bandeja2 { display: flex; flex-wrap: wrap; gap: .5rem; padding: .6rem; border: 2px dashed #F0D78C; border-radius: 10px; background: var(--warn-l); margin-top: .6rem; }
+  .bandeja2[hidden] { display: none; }
+  .bandeja2 .caso2 { width: auto; max-width: 24rem; margin: 0; }
+  .barra-c { display: inline-block; height: .9rem; border-radius: 3px; background: var(--estad); vertical-align: middle; margin-right: .4rem; }
+  td.barcell { width: 40%; }
+  .masa { width: 100%; height: auto; display: block; }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-estad">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje" aria-current="page">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="03_extraccion_informacion.html">‹ Tema 3 · Extracción de información</a><a class="sig" href="05_modelado_neuronal.html">Tema 5 · Modelado neuronal (I) ›</a></nav>
+  <h1><span class="num-tema">TEMA 4</span>Modelado del lenguaje</h1>
+  <p>Contar para representar y para predecir: bolsa de palabras, TF-IDF, n-gramas, suavizado, perplejidad y generación con el Quijote. <span class="cuando">Clases 5 y 6 · semana 4</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="2" y="18" width="12" height="11" rx="3"/><rect x="16" y="18" width="12" height="11" rx="3"/></g><path d="M29.5 23.5h4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="currentColor"><rect x="36" y="11" width="10" height="5" rx="1.5"/><rect x="36" y="21" width="7" height="5" rx="1.5" fill-opacity=".7"/><rect x="36" y="31" width="4" height="5" rx="1.5" fill-opacity=".45"/></g></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-uso" aria-controls="p-uso" aria-selected="true"><span class="tab-n">1</span> Predecir o describir</button>
+  <button class="tab" role="tab" id="t-bow" aria-controls="p-bow" aria-selected="false"><span class="tab-n">2</span> Bolsa de palabras</button>
+  <button class="tab" role="tab" id="t-quijote" aria-controls="p-quijote" aria-selected="false"><span class="tab-n">3</span> Quijote</button>
+  <button class="tab" role="tab" id="t-ngramas" aria-controls="p-ngramas" aria-selected="false"><span class="tab-n">4</span> N-gramas</button>
+  <button class="tab" role="tab" id="t-suav" aria-controls="p-suav" aria-selected="false"><span class="tab-n">5</span> Suavizado</button>
+  <button class="tab" role="tab" id="t-backoff" aria-controls="p-backoff" aria-selected="false"><span class="tab-n">6</span> Backoff e interpolación</button>
+  <button class="tab" role="tab" id="t-eval" aria-controls="p-eval" aria-selected="false"><span class="tab-n">7</span> Perplejidad y generación</button>
+</div>
+<div class="content">
+
+<!-- ============================================================ 1 -->
+<section class="panel active" id="p-uso" role="tabpanel" aria-labelledby="t-uso">
+  <div class="card">
+    <h2>Contar para predecir o contar para describir</h2>
+    <div class="meta"><span class="tag real">Bolsas calculadas en el navegador</span><span class="tag pre">Perplejidades precalculadas en Python</span></div>
+    <p>Un <strong>modelo del lenguaje</strong> (apartados 4.2-4.4) cuenta palabras para predecir la siguiente: necesita el orden y conserva las palabras vacías. Una <strong>bolsa de palabras</strong> (apartado 4.5) cuenta palabras para describir un documento: el orden se pierde. Escribe dos frases y comprueba si tienen la misma bolsa.</p>
+    <div class="grid2">
+      <div><label for="uso-a" class="small">Frase A</label><input type="text" id="uso-a" value="dijo don quijote a sancho" style="width:100%"></div>
+      <div><label for="uso-b" class="small">Frase B</label><input type="text" id="uso-b" value="quijote don sancho a dijo" style="width:100%"></div>
+    </div>
+    <div id="uso-res"></div>
+    <h3>Lo que dice un modelo del lenguaje del Quijote</h3>
+    <p class="small">Trigrama interpolado entrenado con 101 capítulos (Clase 6). Menor perplejidad = frase más esperable.</p>
+    <table id="uso-pp"><thead><tr><th>frase</th><th class="num">log<sub>10</sub> P</th><th class="num">perplejidad</th><th class="barcell"></th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Predecir la siguiente palabra con bigramas del Quijote</h3>
+    <div class="meta"><span class="tag pre">Precalculado con la obra completa</span></div>
+    <div class="grid3" id="uso-pred"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">¿Modelo del lenguaje o bolsa de palabras?</h3>
+    <div class="meta"><span class="tag illus">Casos escritos para la clase</span></div>
+    <p>Si el orden importa (puntuar o predecir secuencias), modelo del lenguaje; si basta con describir o comparar documentos, bolsa de palabras.</p>
+    <div class="row" id="uso-ctrl"></div>
+    <div class="bandeja2" id="uso-bandeja" hidden></div>
+    <div class="tablero2" id="uso-tablero"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="panel" id="p-bow" role="tabpanel" aria-labelledby="t-bow">
+  <div class="card">
+    <h2>Bolsa de palabras: binaria, TF, WTF y TF-IDF</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a Python y scikit-learn 1.9.1)</span></div>
+    <p>Un documento por línea. Tokenización: minúsculas y letras del español. Pulsa una celda para ver su cálculo.</p>
+    <textarea id="bow-docs" aria-label="Documentos, uno por línea"></textarea>
+    <div class="row">
+      <button class="btn btn-gray" id="bow-reset">Volver a las reseñas</button>
+      <label class="inline"><input type="checkbox" id="bow-vacias"> Quitar palabras vacías (lista española de NLTK, 313 palabras)</label>
+    </div>
+    <div class="seggroup" role="group" aria-label="Representación" id="bow-modo">
+      <button class="seg" data-modo="binaria" aria-pressed="false">Binaria</button>
+      <button class="seg" data-modo="tf" aria-pressed="true">TF</button>
+      <button class="seg" data-modo="wtf" aria-pressed="false">WTF</button>
+      <button class="seg" data-modo="tfidf" aria-pressed="false">TF-IDF (tema, p. 24)</button>
+      <button class="seg" data-modo="sklearn" aria-pressed="false">TF-IDF de scikit-learn por defecto</button>
+    </div>
+    <div class="grid2">
+      <div><div class="scroll"><table id="bow-tabla"></table></div></div>
+      <div>
+        <div class="calc" id="bow-calc">Pulsa una celda de la tabla.</div>
+        <div id="bow-formula" class="info"></div>
+        <h3>Similitud coseno entre documentos</h3>
+        <table id="bow-cos"></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="panel" id="p-quijote" role="tabpanel" aria-labelledby="t-quijote">
+  <div class="card">
+    <h2>El Quijote capítulo a capítulo</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador con la matriz de los 126 capítulos</span></div>
+    <div class="stats" id="q-stats"></div>
+    <div class="row"><label for="q-cap" class="small">Capítulo</label><select id="q-cap"></select></div>
+    <p class="small" id="q-titulo"></p>
+    <div class="grid3">
+      <div class="box"><h3>TF (más frecuentes)</h3><table id="q-tf"></table></div>
+      <div class="box"><h3>TF-IDF (fórmula del tema)</h3><table id="q-tfidf"></table></div>
+      <div class="box"><h3>TF-IDF de scikit-learn por defecto</h3><table id="q-sk"></table></div>
+    </div>
+    <p class="small">Sin palabras vacías de NLTK. En scikit-learn el orden dentro de un capítulo no depende de la normalización, solo del idf suavizado (ln((1+N)/(1+df)) + 1).</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Buscar capítulos con una consulta (similitud coseno)</h3>
+    <div class="row">
+      <input type="text" id="q-consulta" value="don quijote molinos" aria-label="Consulta">
+      <button class="btn btn-main" id="q-buscar">Buscar</button>
+      <span class="small">Prueba: <a href="#" data-q="molinos viento gigantes">molinos viento gigantes</a> · <a href="#" data-q="yelmo mambrino">yelmo mambrino</a> · <a href="#" data-q="sancho ínsula gobierno">sancho ínsula gobierno</a></span>
+    </div>
+    <div id="q-aviso"></div>
+    <div class="grid2">
+      <div><h3>Con TF</h3><table id="q-r-tf"></table></div>
+      <div><h3>Con TF-IDF</h3><table id="q-r-tfidf"></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Separar antes de ajustar</h3>
+    <div class="meta"><span class="tag pre">Precalculado en Python (scikit-learn)</span></div>
+    <div class="stats" id="q-sep"></div>
+    <p>El vocabulario y el idf se aprenden. Si después hay evaluación, se ajustan solo con el entrenamiento (<code>fit</code>) y se aplican a validación y prueba (<code>transform</code>).</p>
+  </div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="panel" id="p-ngramas" role="tabpanel" aria-labelledby="t-ngramas">
+  <div class="card">
+    <h2>N-gramas: contar y dividir</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a ngramas.py)</span></div>
+    <p>Corpus de entrenamiento (frases separadas por punto). Cada frase lleva <code>&lt;s&gt;</code> al principio y <code>&lt;/s&gt;</code> al final; no se quita ninguna palabra. Este corpus se usa también en las pestañas 5 y 6.</p>
+    <div class="row">
+      <button class="btn btn-gray" data-corpus="resenas">Tres reseñas</button>
+      <button class="btn btn-gray" data-corpus="cap1">Quijote, capítulo I-I</button>
+      <span class="small">o escribe el tuyo:</span>
+    </div>
+    <textarea id="ng-corpus" aria-label="Corpus de entrenamiento"></textarea>
+    <div class="row">
+      <span class="small">Orden:</span>
+      <div class="seggroup" role="group" aria-label="Orden del n-grama" id="ng-orden" style="margin:0">
+        <button class="seg" data-n="2" aria-pressed="true">Bigramas</button>
+        <button class="seg" data-n="3" aria-pressed="false">Trigramas</button>
+      </div>
+    </div>
+    <div class="stats" id="ng-stats"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">¿Qué viene después de…?</h3>
+    <div class="row"><label for="ng-hist" class="small">Historia</label><select id="ng-hist"></select></div>
+    <div class="scroll" style="max-height:18rem"><table id="ng-sig"></table></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Probabilidad de una frase (regla de la cadena + Markov + máxima verosimilitud)</h3>
+    <div class="row"><input type="text" id="ng-frase" value="El café es malo." aria-label="Frase de prueba"><button class="btn btn-main" id="ng-calc">Calcular</button></div>
+    <div id="ng-res"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section class="panel" id="p-suav" role="tabpanel" aria-labelledby="t-suav">
+  <div class="card">
+    <h2>Suavizado: cada técnica, paso a paso</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (comprobado frente a ngramas.py)</span></div>
+    <p class="small" id="sv-corpusinfo"></p>
+    <div class="seggroup" role="group" aria-label="Técnica" id="sv-metodo">
+      <button class="seg" data-m="mle" aria-pressed="false">MLE</button>
+      <button class="seg" data-m="laplace" aria-pressed="true">Laplace</button>
+      <button class="seg" data-m="addk" aria-pressed="false">add-k</button>
+      <button class="seg" data-m="interp" aria-pressed="false">Interpolación</button>
+      <button class="seg" data-m="backoff" aria-pressed="false">Backoff con descuento</button>
+      <button class="seg" data-m="kn" aria-pressed="false">Kneser-Ney</button>
+      <button class="seg" data-m="stupid" aria-pressed="false">Stupid backoff</button>
+    </div>
+    <div class="row" id="sv-params"></div>
+    <div class="row"><input type="text" id="sv-frase" value="El café es malo." aria-label="Frase de prueba"><button class="btn btn-main" id="sv-calc">Calcular</button></div>
+    <div id="sv-res"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">El suavizado quita probabilidad a lo visto y se la da a lo no visto</h3>
+    <div class="meta"><span class="tag">Apartado 4.4 · Figuras 2 y 3 del tema</span><span class="tag real">Calculado en el navegador con el corpus de la pestaña 4</span></div>
+    <div class="row"><label for="sv-h" class="small">Historia h</label><select id="sv-h"></select> <span class="small">(técnica: la elegida arriba)</span></div>
+    <svg id="sv-masa" class="masa" role="img" aria-label="Probabilidad de cada palabra tras la historia, sin suavizar y suavizada"></svg>
+    <div class="info" id="sv-masa-msg"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">¿Es una distribución? Suma de P(w | h) sobre todo el vocabulario</h3>
+    <table id="sv-sumas"></table>
+    <p class="small">Una técnica correcta suma 1 para cualquier historia, vista o no. El backoff sin descuento y stupid backoff no lo hacen.</p>
+  </div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section class="panel" id="p-backoff" role="tabpanel" aria-labelledby="t-backoff">
+  <div class="card">
+    <h2>Backoff: se acorta la historia, la palabra predicha no cambia</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador con trigramas del corpus de la pestaña 4</span></div>
+    <div class="row">
+      <span class="small">P(</span><input type="text" id="bo-w" value="malo" style="min-width:7rem" aria-label="Palabra predicha w">
+      <span class="small">|</span><input type="text" id="bo-u" value="café" style="min-width:7rem" aria-label="Palabra u (más antigua)">
+      <input type="text" id="bo-v" value="es" style="min-width:7rem" aria-label="Palabra v (anterior)"><span class="small">)</span>
+      <label class="small" for="bo-d">descuento d</label><input type="range" id="bo-d" min="0.05" max="0.95" step="0.05" value="0.5"><span id="bo-dv" class="mono">0,50</span>
+      <button class="btn btn-main" id="bo-calc">Calcular</button>
+    </div>
+    <div class="grid2">
+      <div><h3>Backoff con descuento (correcto)</h3><div class="path" id="bo-path"></div></div>
+      <div>
+        <h3>Lo que hacía la presentación antigua</h3>
+        <div class="badbox" id="bo-mal"></div>
+        <h3>Comparación</h3>
+        <table id="bo-tabla"></table>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Interpolación lineal de la misma probabilidad</h3>
+    <div class="row">
+      <label class="small" for="in-l1">λ1 (unigrama)</label><input type="range" id="in-l1" min="0" max="1" step="0.05" value="0.1">
+      <label class="small" for="in-l2">λ2 (bigrama)</label><input type="range" id="in-l2" min="0" max="1" step="0.05" value="0.3">
+      <span class="small" id="in-l3"></span>
+    </div>
+    <div class="calc" id="in-calc"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section class="panel" id="p-eval" role="tabpanel" aria-labelledby="t-eval">
+  <div class="card">
+    <h2>El Quijote: entrenamiento, validación y prueba</h2>
+    <div class="meta"><span class="tag pre">Precalculado en Python (analisis_ngramas.py)</span></div>
+    <div class="stats" id="ev-part"></div>
+    <p id="ev-voc"></p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Elegir k con la validación (add-k)</h3>
+    <svg id="ev-rejilla" class="chart" viewBox="0 0 900 340" role="img" aria-label="Perplejidad de validación según k"></svg>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Perplejidad en la prueba (una sola evaluación)</h3>
+    <svg id="ev-barras" class="chart" viewBox="0 0 900 380" role="img" aria-label="Perplejidad en la prueba por modelo"></svg>
+    <div class="badbox" id="ev-cont"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Kneser-Ney: ¿en cuántos contextos aparece cada palabra?</h3>
+    <table id="ev-kn"></table>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Generar texto con n-gramas (como la Figura 1 del tema)</h3>
+    <div class="meta"><span class="tag pre">Frases generadas en Python con semillas fijas; aquí solo se muestran</span></div>
+    <div class="seggroup" role="group" aria-label="Orden" id="ev-gen-orden">
+      <button class="seg" data-k="1" aria-pressed="false">Unigramas</button>
+      <button class="seg" data-k="2" aria-pressed="false">Bigramas</button>
+      <button class="seg" data-k="3" aria-pressed="false">Trigramas</button>
+      <button class="seg" data-k="4" aria-pressed="true">4-gramas</button>
+    </div>
+    <div id="ev-gen"></div>
+  </div>
+</section>
+</div>
+<footer>
+  Cálculos: <code>04_modelado_lenguaje_lib.js</code>, comprobado frente a <code>ngramas.py</code>, <code>analisis_bow.py</code> y scikit-learn 1.9.1 (<code>Demos/fuentes/prueba_lib_04.json</code>). Datos: tres reseñas (sesión de refuerzo 2025/26) y <em>Don Quijote</em> (Project Gutenberg, ebook 2000, dominio público). Referencias: Jurafsky y Martin, <em>Speech and Language Processing</em>, cap. 3 (borrador del 19/08/2026 y ed. del 7/1/2023); Tema 4 de la asignatura. Funciona sin conexión y no envía datos.
+</footer>
+
+<script src="04_modelado_lenguaje_lib.js"></script>
+<script src="04_modelado_lenguaje_datos.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const L = window.LM04, D = window.DATOS04;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (x, d = 4) => (x === null || x === undefined) ? "—" : (x === Infinity ? "infinita" : x.toFixed(d).replace(".", ","));
+const fmtN = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+const fmtM = (x, d = 1) => { const [e, f] = x.toFixed(d).split("."); return fmtN(e) + (f ? "," + f : ""); };
+const pfmt = (p) => p === null ? "indefinida (historia no vista)" : (p === 0 ? "0" : (p >= 0.001 ? fmt(p, 4) : p.toExponential(3).replace(".", ",")));
+const hTxt = (h) => h.length ? h.join(" ") : "∅";
+
+// ---------------------------------------------------------------- pestañas
+$$(".tab").forEach((t) => t.addEventListener("click", () => {
+  $$(".tab").forEach((x) => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+  $$(".panel").forEach((p) => p.classList.toggle("active", p.id === t.getAttribute("aria-controls")));
+  if (t.id === "t-suav") pintarSuav();
+  if (t.id === "t-backoff") pintarBackoff();
+}));
+$$(".tab").forEach((t, i, arr) => t.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    const j = (i + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length;
+    arr[j].focus(); arr[j].click();
+  }
+}));
+function segmentado(grupo, cb) {
+  $$(grupo + " .seg").forEach((b) => b.addEventListener("click", () => {
+    $$(grupo + " .seg").forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    cb(b);
+  }));
+}
+
+// ================================================================ 1
+function bolsaTexto(t) {
+  const c = new Map();
+  for (const w of L.tokens(t)) c.set(w, (c.get(w) || 0) + 1);
+  return [...c.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+}
+function pintarUso() {
+  const a = bolsaTexto($("#uso-a").value), b = bolsaTexto($("#uso-b").value);
+  const igual = JSON.stringify(a) === JSON.stringify(b);
+  const fila = (x) => x.map(([w, n]) => `<span class="pill">${esc(w)}${n > 1 ? " ×" + n : ""}</span>`).join(" ");
+  $("#uso-res").innerHTML = `<div class="grid2" style="margin-top:.6rem"><div class="box"><b>Bolsa de A</b><br>${fila(a) || "—"}</div><div class="box"><b>Bolsa de B</b><br>${fila(b) || "—"}</div></div>` +
+    (igual ? `<div class="info"><b>Misma bolsa de palabras.</b> Para binaria, TF, WTF o TF-IDF son el mismo vector, aunque las frases sean distintas.</div>`
+           : `<div class="warnbox">Las bolsas son distintas: cambia alguna palabra o reordénalas para obtener la misma.</div>`);
+}
+$("#uso-a").addEventListener("input", pintarUso);
+$("#uso-b").addEventListener("input", pintarUso);
+const maxPP = Math.max(...D.lm.mismo_bow_distinto_orden.map((o) => o.PP));
+$("#uso-pp tbody").innerHTML = D.lm.mismo_bow_distinto_orden.map((o) =>
+  `<tr><td>«${esc(o.frase)}»</td><td class="num">${fmt(o.log10_P, 2)}</td><td class="num"><b>${fmt(o.PP, 1)}</b></td><td class="barcell"><span class="barra-c" style="width:${100 * o.PP / maxPP}%;background:${o.PP === maxPP ? "var(--bad)" : "var(--estad)"}"></span></td></tr>`).join("");
+$("#uso-pred").innerHTML = Object.entries(D.lm.prediccion_bigramas_obra_completa).map(([ctx, r]) =>
+  `<div class="box"><h3>tras «${esc(ctx)}» <span class="small">(${fmtN(r.C_historia)} veces)</span></h3><table>${r.siguientes.map(([w, c, p]) =>
+    `<tr><td style="font-size:1.1rem"><b>${esc(w)}</b></td><td class="barcell"><span class="barra-c" style="width:${Math.max(2, 100 * p / r.siguientes[0][2])}%"></span></td><td class="num">${fmt(p, 3)}</td></tr>`).join("")}</table></div>`).join("");
+const CASOS1 = [
+  ["Un corrector que elige entre «haber» y «a ver» según la frase", "lm", "Hay que puntuar secuencias."],
+  ["Un buscador que ordena los capítulos según una consulta", "bow", "Compara vectores de documentos (TF-IDF)."],
+  ["Un teclado que sugiere «merced» tras «vuestra»", "lm", "Predice la palabra siguiente."],
+  ["Encontrar las palabras que caracterizan un capítulo", "bow", "Describe un documento (TF-IDF)."],
+  ["Decidir cuál de dos transcripciones de voz es más natural", "lm", "El ejemplo «depilar / de Pilar» del tema (p. 6)."],
+];
+let usoOculto = false;
+const usoColocados = new Set(CASOS1.map((_, i) => i));
+function pintarTablero1() {
+  const tarjeta = (i) => { const [q, , e] = CASOS1[i], b = document.createElement("button");
+    b.type = "button"; b.className = "caso2"; b.innerHTML = esc(q) + (usoColocados.has(i) ? `<small>${esc(e)}</small>` : "");
+    b.addEventListener("click", () => { if (!usoColocados.has(i)) { usoColocados.add(i); pintarTablero1(); } }); return b; };
+  const t = $("#uso-tablero"); t.innerHTML = "";
+  [["lm", "Modelo del lenguaje · el orden importa", "#00897B"], ["bow", "Bolsa de palabras · describir o comparar", "#1E88E5"]].forEach(([k, tit, c]) => {
+    const col = document.createElement("div"); col.className = "col2"; col.style.borderTopColor = c;
+    col.innerHTML = `<h4 style="color:${c}">${tit}</h4>`;
+    CASOS1.forEach((x, i) => { if (x[1] === k && usoColocados.has(i)) col.append(tarjeta(i)); });
+    t.append(col);
+  });
+  const b = $("#uso-bandeja"); b.innerHTML = "";
+  const pend = CASOS1.map((_, i) => i).filter((i) => !usoColocados.has(i));
+  b.hidden = !pend.length;
+  pend.forEach((i) => b.append(tarjeta(i)));
+}
+Clase.botonPregunta($("#uso-ctrl"), (oc) => { usoColocados.clear(); if (!oc) CASOS1.forEach((_, i) => usoColocados.add(i)); pintarTablero1(); });
+pintarTablero1();
+pintarUso();
+
+// ================================================================ 2
+const VACIAS = new Set(D.vacias);
+let bowModo = "tf", bowSel = null;
+$("#bow-docs").value = D.resenas;
+function bowDocs() {
+  const quitar = $("#bow-vacias").checked;
+  const lineas = $("#bow-docs").value.split("\n").filter((l) => l.trim());
+  return { lineas, docs: lineas.map((l) => L.tokens(l).filter((w) => !(quitar && VACIAS.has(w)))) };
+}
+const FORMULAS = {
+  binaria: "Binaria: 1 si la palabra aparece en el documento y 0 si no (tema, p. 23).",
+  tf: "TF: número de veces que aparece la palabra en el documento (tema, p. 23).",
+  wtf: "WTF: frecuencia dividida entre el número de palabras del documento (tema, p. 23).",
+  tfidf: "TF-IDF del tema (p. 24): f × ln(N / df). Logaritmo natural; una palabra presente en todos los documentos pesa 0.",
+  sklearn: "TfidfVectorizer de scikit-learn 1.9.1 por defecto: f × (ln((1+N)/(1+df)) + 1) y después cada fila se divide por su norma euclídea.",
+};
+function pintarBow() {
+  const { docs } = bowDocs();
+  const voc = L.vocabulario(docs);
+  const N = docs.length;
+  const dfv = L.df(docs, voc), idfT = L.idfTema(docs, voc), idfS = L.idfSklearn(docs, voc);
+  const filas = docs.map((d) => {
+    if (bowModo === "binaria") return L.binaria(d, voc);
+    if (bowModo === "tf") return L.tf(d, voc);
+    if (bowModo === "wtf") return L.wtf(d, voc);
+    if (bowModo === "tfidf") return L.tfidf(d, idfT, voc);
+    return L.normaL2(L.tfidf(d, idfS, voc));
+  });
+  const dec = bowModo === "binaria" || bowModo === "tf" ? 0 : 3;
+  const extra = bowModo === "tfidf" || bowModo === "sklearn";
+  let h = `<thead><tr><th>palabra</th>${extra ? '<th class="num">df</th><th class="num">idf</th>' : ""}${docs.map((_, j) => `<th class="num">d${j + 1}</th>`).join("")}</tr></thead><tbody>`;
+  voc.forEach((w, i) => {
+    const idf = bowModo === "tfidf" ? idfT[i] : idfS[i];
+    h += `<tr${extra && dfv[i] === N ? ' class="hl"' : ""}><td>${esc(w)}</td>${extra ? `<td class="num">${dfv[i]}</td><td class="num">${fmt(idf, 3)}</td>` : ""}` +
+      docs.map((_, j) => { const v = filas[j][i]; const sel = bowSel && bowSel[0] === i && bowSel[1] === j;
+        return `<td class="num clic${v === 0 ? " cero" : ""}${sel ? " sel" : ""}" tabindex="0" data-i="${i}" data-j="${j}">${dec ? fmt(v, dec) : v}</td>`; }).join("") + "</tr>";
+  });
+  $("#bow-tabla").innerHTML = h + "</tbody>";
+  // mapa de calor: intensidad proporcional al valor de la celda
+  const maxV = Math.max(...filas.flat(), 1e-12);
+  $$("#bow-tabla td.clic").forEach((td) => { const v = filas[+td.dataset.j][+td.dataset.i]; if (v > 0 && !td.classList.contains("sel")) td.style.background = `rgba(0,137,123,${(0.12 + 0.6 * v / maxV).toFixed(3)})`; });
+  $$("#bow-tabla td.clic").forEach((td) => {
+    const act = () => { bowSel = [+td.dataset.i, +td.dataset.j]; pintarBow(); };
+    td.addEventListener("click", act);
+    td.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
+  });
+  $("#bow-formula").textContent = FORMULAS[bowModo];
+  if (bowSel && bowSel[0] < voc.length && bowSel[1] < N) {
+    const [i, j] = bowSel, w = voc[i], f = L.tf(docs[j], voc)[i], n = docs[j].length;
+    let t = `«${w}» en d${j + 1} (${n} palabras): aparece ${f} ${f === 1 ? "vez" : "veces"}; está en ${dfv[i]} de ${N} documentos.\n`;
+    if (bowModo === "binaria") t += `binaria = ${f > 0 ? 1 : 0}`;
+    else if (bowModo === "tf") t += `TF = ${f}`;
+    else if (bowModo === "wtf") t += `WTF = ${f} / ${n} = ${fmt(f / n, 4)}`;
+    else if (bowModo === "tfidf") t += `idf = ln(${N} / ${dfv[i]}) = ${fmt(idfT[i], 4)}\nTF-IDF = ${f} × ${fmt(idfT[i], 4)} = ${fmt(f * idfT[i], 4)}`;
+    else { const bruto = L.tfidf(docs[j], idfS, voc); const nrm = Math.sqrt(bruto.reduce((a, x) => a + x * x, 0));
+      t += `idf = ln((1 + ${N}) / (1 + ${dfv[i]})) + 1 = ${fmt(idfS[i], 4)}\nf × idf = ${fmt(f * idfS[i], 4)}\nnorma de la fila d${j + 1} = ${fmt(nrm, 4)}\nvalor = ${fmt(f * idfS[i], 4)} / ${fmt(nrm, 4)} = ${fmt(nrm ? f * idfS[i] / nrm : 0, 4)}`; }
+    $("#bow-calc").textContent = t;
+  } else $("#bow-calc").textContent = "Pulsa una celda de la tabla.";
+  const vecs = docs.map((d) => bowModo === "binaria" ? L.binaria(d, voc) : bowModo === "tf" ? L.tf(d, voc) : bowModo === "wtf" ? L.wtf(d, voc) : bowModo === "tfidf" ? L.tfidf(d, idfT, voc) : L.tfidf(d, idfS, voc));
+  $("#bow-cos").innerHTML = `<thead><tr><th></th>${docs.map((_, j) => `<th class="num">d${j + 1}</th>`).join("")}</tr></thead><tbody>` +
+    docs.map((_, a) => `<tr><td><b>d${a + 1}</b></td>${docs.map((_, b) => { const c = L.coseno(vecs[a], vecs[b]); return `<td class="num" style="background:rgba(30,136,229,${(0.08 + 0.65 * c).toFixed(3)});${a === b ? "color:#fff;" : ""}font-weight:700">${fmt(c, 3)}</td>`; }).join("")}</tr>`).join("") + "</tbody>";
+}
+segmentado("#bow-modo", (b) => { bowModo = b.dataset.modo; pintarBow(); });
+$("#bow-docs").addEventListener("input", () => { bowSel = null; pintarBow(); });
+$("#bow-vacias").addEventListener("change", () => { bowSel = null; pintarBow(); });
+$("#bow-reset").addEventListener("click", () => { $("#bow-docs").value = D.resenas; bowSel = null; pintarBow(); });
+pintarBow();
+
+// ================================================================ 3
+const Q = D.quijote, QI = L.quijoteIndice(Q), BR = D.bow_resumen;
+$("#q-stats").innerHTML = [[fmtN(Q.nombres.length), "capítulos (documentos)"], [fmtN(Q.vocab.length), "palabras distintas sin vacías"],
+  [fmt(BR.celdas_cero_pct, 1) + " %", "de celdas a cero"], [BR.en_todos_los_capitulos.map((w) => "«" + w + "»").join(", "), "en los 126 capítulos"]]
+  .map(([a, b]) => `<div><div class="big">${a}</div><div class="small">${b}</div></div>`).join("");
+$("#q-cap").innerHTML = Q.nombres.map((n, i) => `<option value="${i}">${n} · ${esc(Q.titulos[i].slice(0, 80))}${Q.titulos[i].length > 80 ? "…" : ""}</option>`).join("");
+$("#q-cap").value = String(Q.nombres.indexOf("I-VIII"));
+function pesosCap(i, modo, k) {
+  const lista = L.topCapitulo(Q, QI, i, modo, k);
+  const [idx, cnt] = Q.caps[i];
+  const f = new Map(idx.map((j, t) => [Q.vocab[j], [cnt[t], QI.dfq[j]]]));
+  return lista.map((w) => { const [c, d] = f.get(w);
+    const peso = modo === "tf" ? c : modo === "tfidf" ? c * Math.log(QI.N / d) : c * (Math.log((1 + QI.N) / (1 + d)) + 1);
+    return [w, c, d, peso]; });
+}
+function pintarCap() {
+  const i = +$("#q-cap").value;
+  $("#q-titulo").textContent = `${Q.nombres[i]}. ${Q.titulos[i]}`;
+  const tabla = (modo) => { const filas = pesosCap(i, modo, 10), max = Math.max(...filas.map((x) => modo === "tf" ? x[1] : x[3]));
+    return `<thead><tr><th>palabra</th><th class="barcell"></th><th class="num">f</th><th class="num">df</th>${modo === "tf" ? "" : '<th class="num">peso</th>'}</tr></thead><tbody>` +
+    filas.map(([w, c, d, p]) => `<tr><td><b>${esc(w)}</b></td><td class="barcell"><span class="barra-c" style="width:${100 * (modo === "tf" ? c : p) / max}%;background:${modo === "tf" ? "#9AA5B1" : "var(--estad)"}"></span></td><td class="num">${c}</td><td class="num">${d}</td>${modo === "tf" ? "" : `<td class="num">${fmt(p, 1)}</td>`}</tr>`).join("") + "</tbody>"; };
+  $("#q-tf").innerHTML = tabla("tf"); $("#q-tfidf").innerHTML = tabla("tfidf"); $("#q-sk").innerHTML = tabla("sklearn");
+}
+$("#q-cap").addEventListener("change", pintarCap);
+function pintarBusqueda() {
+  const c = $("#q-consulta").value;
+  const pinta = (pond, sel) => { const r = L.buscar(Q, QI, c, pond, 8);
+    const mx = Math.max(...r.orden.map((i) => r.s[i]), 1e-12);
+    $(sel).innerHTML = `<thead><tr><th>capítulo</th><th class="barcell"></th><th class="num">coseno</th></tr></thead><tbody>` + r.orden.map((i) =>
+      `<tr><td><a href="#" data-cap="${i}">${Q.nombres[i]}</a> <span class="small">${esc(Q.titulos[i].slice(0, 50))}…</span></td><td class="barcell"><span class="barra-c" style="width:${100 * r.s[i] / mx}%;background:${pond ? "var(--estad)" : "#9AA5B1"}"></span></td><td class="num">${fmt(r.s[i], 3)}</td></tr>`).join("") + "</tbody>";
+    return r; };
+  const r = pinta(false, "#q-r-tf"); pinta(true, "#q-r-tfidf");
+  const vacias = L.tokens(c).filter((w) => VACIAS.has(w));
+  $("#q-aviso").innerHTML = (r.desconocidas.length ? `<div class="warnbox">No están en el vocabulario y se ignoran: ${r.desconocidas.map((w) => "«" + esc(w) + "»").join(", ")}${vacias.length ? " (las palabras vacías se quitaron de los capítulos)" : ""}.</div>` : "");
+  $$("#p-quijote a[data-cap]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $("#q-cap").value = a.dataset.cap; pintarCap(); $("#q-cap").scrollIntoView({ behavior: "smooth", block: "center" }); }));
+}
+$("#q-buscar").addEventListener("click", pintarBusqueda);
+$("#q-consulta").addEventListener("keydown", (e) => { if (e.key === "Enter") pintarBusqueda(); });
+$$("#p-quijote a[data-q]").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); $("#q-consulta").value = a.dataset.q; pintarBusqueda(); }));
+const SP = BR.separacion;
+$("#q-sep").innerHTML = [[fmtN(SP.vocabulario_ajustado_con_entrenamiento), "palabras ajustando con 101 capítulos de entrenamiento"],
+  [fmtN(SP.vocabulario_ajustado_con_todo), "palabras ajustando con los 126 (incluida la prueba)"],
+  [fmt(SP.tokens_de_prueba_perdidos_pct, 1) + " %", "de palabras de prueba desconocidas (p. ej., " + SP.ejemplos_solo_en_prueba.slice(0, 3).map((w) => "«" + w + "»").join(", ") + ")"]]
+  .map(([a, b]) => `<div style="max-width:20rem"><div class="big">${a}</div><div class="small">${b}</div></div>`).join("");
+pintarCap(); pintarBusqueda();
+
+// ================================================================ 4
+let ngN = 2, ngModelo = null;
+const CORPUS = { resenas: D.resenas, cap1: D.capitulo_I_I };
+$("#ng-corpus").value = D.resenas;
+function modeloActual(n) {
+  return L.modeloDemo($("#ng-corpus").value, n);
+}
+function pintarNg() {
+  ngModelo = modeloActual(ngN);
+  const R = ngModelo.R;
+  $("#ng-stats").innerHTML = [[ngModelo.F.length, "frases"], [R.N, "palabras predichas N (con &lt;/s&gt;)"], [R.tipos.length, "tipos predecibles |V|"],
+    [R.ch[ngN].size, "historias distintas"]].map(([a, b]) => `<div><div class="big">${fmtN(a)}</div><div class="small">${b}</div></div>`).join("");
+  const hist = [...R.ch[ngN].entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1)).slice(0, 300);
+  const prev = $("#ng-hist").value;
+  $("#ng-hist").innerHTML = hist.map(([k, c]) => `<option value="${esc(k)}">${esc(k.split("\u0001").join(" "))} (${c})</option>`).join("");
+  if (hist.some(([k]) => k === prev)) $("#ng-hist").value = prev;
+  pintarSiguientes(); calcularFrase();
+  $("#sv-corpusinfo").textContent = `Corpus de la pestaña 4: ${ngModelo.F.length} frases, N = ${R.N}, |V| = ${R.tipos.length}. Orden: ${ngN === 2 ? "bigramas" : "trigramas"}.`;
+}
+function pintarSiguientes() {
+  const R = ngModelo.R, k = $("#ng-hist").value, h = k === "" ? [] : k.split("\u0001");
+  const total = R.CH(ngN, h);
+  const filas = [...R.vistas(ngN, h)].map((w) => [w, R.C(ngN, h, w)]).sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+  $("#ng-sig").innerHTML = `<thead><tr><th>palabra siguiente w</th><th class="num">C(h w)</th><th class="num">P(w | h) = C(h w) / C(h)</th></tr></thead><tbody>` +
+    filas.map(([w, c]) => `<tr><td>${esc(w)}</td><td class="num">${c}</td><td class="num">${c} / ${total} = ${fmt(c / total, 4)}</td></tr>`).join("") + "</tbody>";
+}
+function calcularFrase() {
+  const R = ngModelo.R, { P, oov } = L.prepararPrueba(R, $("#ng-frase").value);
+  if (!R.N || !P.length) {
+    $("#ng-res").innerHTML = `<div class="warnbox">${!R.N ? "Introduce un corpus con palabras antes de calcular probabilidades." : "Introduce una frase con palabras para calcular su probabilidad."}</div>`;
+    return;
+  }
+  let prod = 1, filas = "";
+  for (const [h, w] of L.eventos(P, ngN)) {
+    const hk = L.recorta(h, ngN), c = R.C(ngN, hk, w), ch = R.CH(ngN, hk);
+    const p = ch ? c / ch : null;
+    prod *= p || 0;
+    filas += `<tr><td>P(${esc(w)} | ${esc(hTxt(hk))})</td><td class="num">${c} / ${ch}</td><td class="num ${!p ? "malo" : ""}">${pfmt(p)}</td></tr>`;
+  }
+  $("#ng-res").innerHTML = (oov.length ? `<div class="warnbox">Palabras no vistas en el entrenamiento (pasan a &lt;UNK&gt;): ${oov.map((w) => "«" + esc(w) + "»").join(", ")}.</div>` : "") +
+    `<table><thead><tr><th>factor</th><th class="num">C(h w) / C(h)</th><th class="num">probabilidad</th></tr></thead><tbody>${filas}</tbody></table>` +
+    `<div class="${prod > 0 ? "info" : "badbox"}"><b>P(frase) = ${prod > 0 ? pfmt(prod) : "0"}</b>${prod > 0 ? "" : " — basta un bigrama no visto para anular la frase. Lo resuelve el suavizado (pestaña 5)."}</div>`;
+}
+segmentado("#ng-orden", (b) => { ngN = +b.dataset.n; pintarNg(); });
+$$("#p-ngramas [data-corpus]").forEach((b) => b.addEventListener("click", () => { $("#ng-corpus").value = CORPUS[b.dataset.corpus];
+  $("#ng-frase").value = b.dataset.corpus === "cap1" ? "En un lugar de la Mancha vivía un hidalgo." : "El café es malo."; pintarNg(); }));
+$("#ng-corpus").addEventListener("change", pintarNg);
+$("#ng-hist").addEventListener("change", pintarSiguientes);
+$("#ng-calc").addEventListener("click", calcularFrase);
+$("#ng-frase").addEventListener("keydown", (e) => { if (e.key === "Enter") calcularFrase(); });
+pintarNg();
+
+// ================================================================ 5
+let svM = "laplace";
+const svPar = { k: 0.1, l1: 0.3, l2: 0.3, d: 0.5, dkn: 0.75 };
+function lambdasActuales(n) {
+  if (n === 2) return [svPar.l1, +(1 - svPar.l1).toFixed(10)];
+  const l1 = svPar.l1, l2 = Math.min(svPar.l2, 1 - l1);
+  return [l1, l2, +(1 - l1 - l2).toFixed(10)];
+}
+function pintarParams() {
+  const p = $("#sv-params");
+  if (svM === "addk") p.innerHTML = `<label class="small" for="sv-k">k (escala logarítmica)</label><input type="range" id="sv-k" min="-3" max="0" step="0.1" value="${Math.log10(svPar.k)}"><span class="mono" id="sv-kv">${fmt(svPar.k, 3)}</span>`;
+  else if (svM === "interp") p.innerHTML = `<label class="small" for="sv-l1">λ1 (unigrama)</label><input type="range" id="sv-l1" min="0" max="1" step="0.05" value="${svPar.l1}">` +
+    (ngN === 3 ? `<label class="small" for="sv-l2">λ2 (bigrama)</label><input type="range" id="sv-l2" min="0" max="1" step="0.05" value="${svPar.l2}">` : "") + `<span class="mono" id="sv-lv"></span>`;
+  else if (svM === "backoff") p.innerHTML = `<label class="small" for="sv-d">descuento d</label><input type="range" id="sv-d" min="0.05" max="0.95" step="0.05" value="${svPar.d}"><span class="mono" id="sv-dv">${fmt(svPar.d, 2)}</span>`;
+  else if (svM === "kn") p.innerHTML = `<label class="small" for="sv-dkn">descuento d</label><input type="range" id="sv-dkn" min="0.05" max="0.95" step="0.05" value="${svPar.dkn}"><span class="mono" id="sv-dknv">${fmt(svPar.dkn, 2)}</span>`;
+  else p.innerHTML = svM === "stupid" ? `<span class="warnbox" style="margin:0">Stupid backoff da puntuaciones, no probabilidades: no tiene sentido calcular su perplejidad.</span>` : "";
+  const on = (id, fn) => { const el = $(id); if (el) el.addEventListener("input", () => { fn(+el.value); pintarSuav(); }); };
+  on("#sv-k", (v) => { svPar.k = +Math.pow(10, v).toPrecision(3); });
+  on("#sv-l1", (v) => { svPar.l1 = v; });
+  on("#sv-l2", (v) => { svPar.l2 = v; });
+  on("#sv-d", (v) => { svPar.d = v; });
+  on("#sv-dkn", (v) => { svPar.dkn = v; });
+}
+function parMetodo(n) { return { k: svPar.k, lambdas: lambdasActuales(n), d: svM === "kn" ? svPar.dkn : svPar.d }; }
+function explicaPaso(R, metodo, par, V, w, h, p, n) {
+  const hk = L.recorta(h, n), c = R.C(n, hk, w), ch = R.CH(n, hk), H = hTxt(hk);
+  switch (metodo) {
+    case "mle": return ch ? `${c} / ${ch}` : `C(${H}) = 0: indefinida`;
+    case "laplace": return `(${c} + 1) / (${ch} + ${V})`;
+    case "addk": return `(${c} + ${fmt(par.k, 3)}) / (${ch} + ${fmt(par.k, 3)} × ${V})`;
+    case "interp": { const ps = par.lambdas.map((l, i) => { const k = i + 1; if (k === 1) return `${fmt(l, 2)} × ${R.C(1, [], w)}/${R.N}`;
+        const hh = L.recorta(h, k), cc = R.CH(k, hh); return `${fmt(l, 2)} × ${cc ? R.C(k, hh, w) + "/" + cc : "(historia no vista)"}`; });
+      return ps.join(" + "); }
+    case "backoff": {
+      for (let k = n; k >= 1; k--) {
+        const hh = L.recorta(h, k);
+        if (k === 1) return `unigrama: ${R.C(1, [], w)} / ${R.N}` + (n > 1 ? " × α de las historias más largas" : "");
+        const cc = R.CH(k, hh); if (!cc) continue;
+        const cw = R.C(k, hh, w);
+        if (cw > 0) return `(${cw} − ${fmt(par.d, 2)}) / ${cc}` + (k < n ? ` (orden ${k}) × α` : "");
+        return `C(${hTxt(hh)} ${w}) = 0 → α(${hTxt(hh)}) = ${fmt(L.alfaBackoff(R, hh, par.d, k, new Map()), 4)} × P_BO(${w} | ${hTxt(hh.slice(1))})`;
+      }
+      return "";
+    }
+    case "kn": return `max(${c} − ${fmt(par.d, 2)}, 0) / ${ch || "0"} + λ × P_KN(orden inferior)`;
+    case "stupid": return c > 0 ? `${c} / ${ch}` : `0,4 × S(${w} | ${hTxt(hk.slice(1))})`;
+  }
+  return "";
+}
+function pintarSuav() {
+  if (!ngModelo) return;
+  pintarParams();
+  const R = ngModelo.R, n = ngN, { P, V, oov } = L.prepararPrueba(R, $("#sv-frase").value);
+  if (!R.N || !P.length) {
+    $("#sv-res").innerHTML = `<div class="warnbox">${!R.N ? "Introduce un corpus con palabras en la pestaña N-gramas antes de calcular probabilidades o perplejidad." : "Introduce una frase con palabras: la perplejidad no está definida con N = 0."}</div>`;
+    ["#sv-h", "#sv-sumas", "#sv-masa", "#sv-masa-msg"].forEach((id) => { $(id).textContent = ""; });
+    return;
+  }
+  const par = parMetodo(n);
+  if (svM === "interp") { const lv = $("#sv-lv"); if (lv) lv.textContent = "λ = (" + par.lambdas.map((x) => fmt(x, 2)).join("; ") + ")"; }
+  const f = L.funcionProb(R, svM, par, V);
+  let filas = "";
+  for (const [h, w] of L.eventos(P, n)) {
+    const p = f(w, h);
+    filas += `<tr><td>P(${esc(w)} | ${esc(hTxt(L.recorta(h, n)))})</td><td class="mono">${esc(explicaPaso(R, svM, par, V, w, h, p, n))}</td><td class="num ${!p ? "malo" : ""}">${pfmt(p)}</td></tr>`;
+  }
+  const pp = L.perplejidad(f, P, n);
+  $("#sv-res").innerHTML = (oov.length ? `<div class="warnbox">No vistas en el entrenamiento, pasan a &lt;UNK&gt; y |V| = ${V}: ${oov.map((w) => "«" + esc(w) + "»").join(", ")}. MLE, interpolación y backoff dan 0 a &lt;UNK&gt; porque no aparece en el entrenamiento.</div>` : "") +
+    `<table><thead><tr><th>factor</th><th>sustitución</th><th class="num">valor</th></tr></thead><tbody>${filas}</tbody></table>` +
+    (svM === "stupid" ? `<div class="warnbox">Puntuaciones de stupid backoff (Brants et al., 2007): sirven para ordenar candidatos, no para calcular perplejidad.</div>`
+      : `<div class="${pp.PP === Infinity ? "badbox" : "info"}"><b>Perplejidad = ${fmt(pp.PP, 2)}</b> con N = ${pp.N} (palabras y &lt;/s&gt;)${pp.ceros ? ` · ${pp.ceros} probabilidad(es) nula(s)` : ""}.</div>`);
+  // sumas
+  const hs = [...R.ch[n].keys()].sort();
+  const prev = $("#sv-h").value;
+  const extra = ["xx\u0001yy".split("\u0001").slice(2 - (n - 1)).join("\u0001")];
+  $("#sv-h").innerHTML = hs.concat(extra).map((k) => `<option value="${esc(k)}">${esc(k === extra[0] ? hTxt(k.split("\u0001")) + " (historia no vista)" : hTxt(k.split("\u0001")))}</option>`).join("");
+  if (hs.concat(extra).includes(prev)) $("#sv-h").value = prev; else $("#sv-h").value = hs.includes("café") ? "café" : hs[0];
+  pintarSumas();
+}
+function pintarSumas() {
+  const R = ngModelo.R, n = ngN, k = $("#sv-h").value, h = k === "" ? [] : k.split("\u0001");
+  const V = R.tipos.length, par = parMetodo(n);
+  const filas = [["Laplace", "laplace"], ["add-k (k = " + fmt(par.k, 3) + ")", "addk"], ["Interpolación", "interp"], ["Backoff con descuento (d = " + fmt(svPar.d, 2) + ")", "backoff"],
+    ["Kneser-Ney (d = " + fmt(svPar.dkn, 2) + ")", "kn"], ["Backoff sin descuento (ingenuo)", "ingenuo"], ["Stupid backoff (0,4)", "stupid"]].map(([nom, m]) => {
+    let f;
+    if (m === "ingenuo") f = (w, hh) => { const p = L.pMle(R, w, hh); return p ? p : (n === 3 ? (L.pMle(R, w, hh, 2) || R.C(1, [], w) / R.N) : R.C(1, [], w) / R.N); };
+    else f = L.funcionProb(R, m, { k: par.k, lambdas: par.lambdas, d: m === "kn" ? svPar.dkn : svPar.d }, V);
+    let s = 0; for (const w of R.tipos) s += f(w, h) || 0;
+    return [nom, s];
+  });
+  $("#sv-sumas").innerHTML = `<thead><tr><th>técnica</th><th class="num">Σ P(w | ${esc(hTxt(h))})</th></tr></thead><tbody>` +
+    filas.map(([nom, s]) => `<tr><td>${nom}</td><td class="num ${Math.abs(s - 1) < 1e-9 ? "bueno" : "malo"}">${fmt(s, 4)}</td></tr>`).join("") + "</tbody>";
+  pintarMasa(R, n, h, V, par);
+}
+// Barras de P(w | h): gris sin suavizar (MLE), color con la técnica elegida; las no vistas se agrupan si son muchas
+function pintarMasa(R, n, h, V, par) {
+  const svg = $("#sv-masa"), metodo = ["mle", "stupid"].includes(svM) ? "laplace" : svM;
+  const f = L.funcionProb(R, metodo, { k: par.k, lambdas: par.lambdas, d: metodo === "kn" ? svPar.dkn : svPar.d }, V);
+  const hk = L.recorta(h, n), ch = R.CH(n, hk);
+  const filas = R.tipos.map((w) => ({ w, c: R.C(n, hk, w), mle: ch ? R.C(n, hk, w) / ch : 0, s: f(w, h) || 0 }))
+    .sort((a, b) => b.c - a.c || b.s - a.s || (a.w < b.w ? -1 : 1));
+  const vistas = filas.filter((x) => x.c > 0), noVistas = filas.filter((x) => x.c === 0);
+  let mostrar = vistas.concat(noVistas.slice(0, 4));
+  const resto = noVistas.slice(4);
+  if (resto.length) mostrar = mostrar.concat([{ w: `otras ${resto.length} no vistas (juntas)`, c: 0, mle: 0, s: resto.reduce((a, x) => a + x.s, 0), grupo: true }]);
+  const max = Math.max(...mostrar.map((x) => Math.max(x.mle, x.s)), 1e-12), fila = 30, W = 1000, x0 = 260, ancho = 620;
+  let g = `<text x="${x0}" y="16" font-size="14" fill="#7B8794">gris: sin suavizar (MLE)</text><text x="${x0 + 220}" y="16" font-size="14" font-weight="700" fill="#00897B">verde: ${esc($("#sv-metodo .seg[aria-pressed=true]").textContent)}${metodo !== svM ? " (se muestra Laplace)" : ""}</text>`;
+  mostrar.forEach((x, i) => {
+    const y = 28 + i * fila;
+    g += `<text x="${x0 - 10}" y="${y + 18}" text-anchor="end" font-size="15" font-weight="${x.c > 0 ? 700 : 400}" fill="${x.c > 0 ? "#1F2933" : "#7B8794"}">${esc(x.w)}${x.c > 0 ? " (" + x.c + ")" : ""}</text>`;
+    g += `<rect x="${x0}" y="${y + 3}" width="${ancho * x.mle / max}" height="10" rx="2" fill="#9AA5B1"/>`;
+    g += `<rect x="${x0}" y="${y + 14}" width="${ancho * x.s / max}" height="10" rx="2" fill="${x.c > 0 ? "#00897B" : "#F57C00"}"/>`;
+    g += `<text x="${x0 + ancho * Math.max(x.mle, x.s) / max + 8}" y="${y + 22}" font-size="13" fill="#1F2933">${pfmt(x.mle)} → ${pfmt(x.s)}</text>`;
+  });
+  svg.setAttribute("viewBox", `0 0 ${W} ${36 + mostrar.length * fila}`);
+  svg.innerHTML = g;
+  const masaNo = noVistas.reduce((a, x) => a + x.s, 0);
+  $("#sv-masa-msg").innerHTML = ch
+    ? `Tras «${esc(hTxt(hk))}» se vieron ${vistas.length} palabras distintas (${ch} veces). Sin suavizar, las otras ${noVistas.length} tienen probabilidad 0; con la técnica elegida reciben en total un <b>${fmt(100 * masaNo, 1)} %</b> de la probabilidad, que sale de las palabras vistas (barras naranjas).`
+    : `La historia «${esc(hTxt(hk))}» no se vio nunca: sin suavizar no hay probabilidad definida; la técnica la reparte entre todo el vocabulario.`;
+}
+segmentado("#sv-metodo", (b) => { svM = b.dataset.m; pintarSuav(); });
+$("#sv-calc").addEventListener("click", pintarSuav);
+$("#sv-frase").addEventListener("keydown", (e) => { if (e.key === "Enter") pintarSuav(); });
+$("#sv-h").addEventListener("change", pintarSumas);
+
+// ================================================================ 6
+function pintarBackoff() {
+  const { R } = modeloActual(3);
+  if (!R.N) {
+    $("#bo-path").innerHTML = '<div class="warnbox">Introduce un corpus con palabras en la pestaña N-gramas antes de calcular el backoff.</div>';
+    ["#bo-mal", "#bo-tabla", "#in-calc"].forEach((id) => { $(id).textContent = ""; });
+    return;
+  }
+  const w = $("#bo-w").value.trim().toLowerCase(), u = $("#bo-u").value.trim().toLowerCase(), v = $("#bo-v").value.trim().toLowerCase();
+  const d = +$("#bo-d").value; $("#bo-dv").textContent = fmt(d, 2);
+  const cache = new Map(), h = [u, v];
+  const niveles = [];
+  let usado = null;
+  for (let k = 3; k >= 1; k--) {
+    const hh = L.recorta(h, k), ch = k > 1 ? R.CH(k, hh) : R.N, c = k > 1 ? R.C(k, hh, w) : R.C(1, [], w);
+    let estado, nota;
+    if (usado !== null) { estado = "no"; nota = "no hace falta"; }
+    else if (k > 1 && ch === 0) { estado = "saltado"; nota = `C(${hTxt(hh)}) = 0: historia no vista, se acorta sin α`; }
+    else if (k > 1 && c === 0) { estado = "saltado"; nota = `C(${hTxt(hh)} ${w}) = 0 → se multiplica por α(${hTxt(hh)}) = ${fmt(L.alfaBackoff(R, hh, d, k, cache), 4)} y se baja de orden`; }
+    else { estado = "usado"; usado = k; nota = k > 1 ? `(${c} − ${fmt(d, 2)}) / ${ch} = ${fmt((c - d) / ch, 4)}` : `${c} / ${ch} = ${fmt(c / ch, 4)}`; }
+    niveles.push(`<div class="lvl ${estado}"><b>${["", "Unigrama", "Bigrama", "Trigrama"][k]}:</b> P(${esc(w)}${hh.length ? " | " + esc(hTxt(hh)) : ""})<div class="small">${esc(nota)}</div></div>`);
+  }
+  $("#bo-path").innerHTML = niveles.join('<div class="arrow">↓</div>') +
+    `<div class="info"><b>P_BO(${esc(w)} | ${esc(u)} ${esc(v)}) = ${pfmt(L.pBackoff(R, w, h, d, 3, cache))}</b>. La palabra predicha es «${esc(w)}» en todos los niveles.</div>` +
+    (R.tipos.includes(w) ? "" : `<div class="warnbox">«${esc(w)}» no aparece en el corpus: su unigrama es 0.</div>`);
+  $("#bo-mal").innerHTML = `Para estimar P(${esc(w)} | ${esc(u)} ${esc(v)}) usaba P(${esc(v)} | ${esc(u)}) = ${pfmt(L.pMle(R, v, [u], 2))} y después P(${esc(u)}) = ${pfmt(R.C(1, [], u) / R.N)}. <b>Son probabilidades de otras palabras</b> («${esc(v)}», «${esc(u)}»), no de «${esc(w)}». Mismo error que la pregunta 8 del test, que usa la frecuencia de «buen» para estimar P(amigo | buen).`;
+  const ingenuo = (() => { const p3 = L.pMle(R, w, h, 3); if (p3) return p3; const p2 = L.pMle(R, w, h, 2); if (p2) return p2; return R.C(1, [], w) / R.N; })();
+  const V = R.tipos.length;
+  const filas = [["Backoff con descuento (Katz con d fijo)", L.pBackoff(R, w, h, d, 3, cache), "sí"], ["Backoff sin descuento (ingenuo)", ingenuo, "no"],
+    ["Stupid backoff (0,4)", L.sStupid(R, w, h, 0.4, 3), "no (puntuación)"], ["Kneser-Ney (d = 0,75)", L.pKn(R, w, h, V, 0.75), "sí"], ["Laplace (trigramas)", L.pAddk(R, w, h, 1, V, 3), "sí"]];
+  $("#bo-tabla").innerHTML = `<thead><tr><th>técnica</th><th class="num">valor</th><th>¿distribución?</th></tr></thead><tbody>` +
+    filas.map(([a, b, c]) => `<tr><td>${a}</td><td class="num">${pfmt(b)}</td><td>${c}</td></tr>`).join("") + "</tbody>";
+  pintarInterp(R, w, h);
+}
+function pintarInterp(R, w, h) {
+  let l1 = +$("#in-l1").value, l2 = +$("#in-l2").value;
+  if (l1 + l2 > 1) { l2 = +(1 - l1).toFixed(2); $("#in-l2").value = l2; }
+  const l3 = +(1 - l1 - l2).toFixed(10);
+  $("#in-l3").textContent = `λ3 (trigrama) = ${fmt(l3, 2)}`;
+  const p1 = R.C(1, [], w) / R.N, p2 = L.pMle(R, w, h, 2), p3 = L.pMle(R, w, h, 3);
+  const p = L.pInterp(R, w, h, [l1, l2, l3]);
+  $("#in-calc").textContent = `P(${w}) = ${fmt(p1, 4)}\nP(${w} | ${h[1]}) = ${p2 === null ? "indefinida (historia no vista)" : fmt(p2, 4)}\nP(${w} | ${h.join(" ")}) = ${p3 === null ? "indefinida (historia no vista: su peso pasa a los órdenes inferiores)" : fmt(p3, 4)}\n\n` +
+    `P_interp = ${fmt(l1, 2)} × P(${w}) + ${fmt(l2, 2)} × P(${w} | ${h[1]}) + ${fmt(l3, 2)} × P(${w} | ${h.join(" ")}) = ${pfmt(p)}`;
+}
+$("#bo-calc").addEventListener("click", pintarBackoff);
+["#bo-w", "#bo-u", "#bo-v"].forEach((s) => $(s).addEventListener("keydown", (e) => { if (e.key === "Enter") pintarBackoff(); }));
+$("#bo-d").addEventListener("input", pintarBackoff);
+["#in-l1", "#in-l2"].forEach((s) => $(s).addEventListener("input", pintarBackoff));
+
+// ================================================================ 7
+const LM = D.lm;
+$("#ev-part").innerHTML = [["entrenamiento", "#00897B"], ["validacion", "#1E88E5"], ["prueba", "#F57C00"]].map(([k, col]) => { const p = LM.particion[k];
+  return `<div style="border-left:5px solid ${col};padding-left:.6rem"><div class="big">${p.capitulos}</div><div class="small">capítulos de ${k === "validacion" ? "validación" : k} · ${fmtN(p.palabras)} palabras</div></div>`; }).join("");
+$("#ev-voc").innerHTML = `Separación por número de capítulo antes de contar nada (validación: índice acabado en 4; prueba: en 9). Vocabulario solo de entrenamiento: ${fmtN(LM.vocabulario.tipos_entrenamiento)} tipos, de los que se conservan ${fmtN(LM.vocabulario.con_al_menos_2)} (al menos 2 apariciones); el resto pasa a &lt;UNK&gt;. |V| = ${fmtN(LM.vocabulario.V_predecible)}. En la prueba, el ${fmt(LM.prueba_2gramas_no_vistos_pct, 1)} % de los bigramas y el ${fmt(LM.prueba_3gramas_no_vistos_pct, 1)} % de los trigramas no aparecen en el entrenamiento.`;
+function svgLinea() {
+  const ks = [1, 0.5, 0.1, 0.05, 0.01, 0.005, 0.001], W = 900, H = 340, m = { l: 70, r: 170, t: 20, b: 50 };
+  const x = (k) => m.l + (Math.log10(k) + 3) / 3 * (W - m.l - m.r);
+  const y = (v) => H - m.b - (Math.log10(v) - Math.log10(200)) / (Math.log10(6000) - Math.log10(200)) * (H - m.t - m.b);
+  let s = "";
+  [200, 300, 500, 1000, 2000, 5000].forEach((v) => { s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="#E4E7EB"/><text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="#52606D">${v}</text>`; });
+  ks.forEach((k) => { s += `<text x="${x(k)}" y="${H - m.b + 18}" text-anchor="middle" font-size="12" fill="#52606D">${String(k).replace(".", ",")}</text>`; });
+  s += `<text x="${(m.l + W - m.r) / 2}" y="${H - 8}" text-anchor="middle" font-size="13" fill="#1F2933">k (escala logarítmica)</text>`;
+  const uni = LM.tabla_perplejidad["Unigrama (MLE)"].validacion;
+  s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(uni)}" y2="${y(uni)}" stroke="#9AA5B1" stroke-dasharray="6 4"/><text x="${W - m.r + 6}" y="${y(uni) + 4}" font-size="12" fill="#52606D">unigrama ${fmt(uni, 1)}</text>`;
+  [["2", "#00897B", "bigrama add-k"], ["3", "#1E88E5", "trigrama add-k"]].forEach(([n, col, nom]) => {
+    const pts = ks.map((k) => [x(k), y(LM.rejilla_addk[n][String(k)])]);
+    s += `<polyline fill="none" stroke="${col}" stroke-width="3" points="${pts.map((p) => p.join(",")).join(" ")}"/>`;
+    pts.forEach((p, i) => { s += `<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${col}"><title>${nom}, k = ${ks[i]}: ${fmtM(LM.rejilla_addk[n][String(ks[i])], 1)}</title></circle>`; });
+    const mejor = ks.reduce((a, b) => (LM.rejilla_addk[n][String(b)] < LM.rejilla_addk[n][String(a)] ? b : a));
+    s += `<text x="${W - m.r + 6}" y="${pts[0][1] + 4}" font-size="12" fill="${col}" font-weight="700">${nom}</text><text x="${W - m.r + 6}" y="${pts[0][1] + 19}" font-size="12" fill="${col}">mínimo ${fmtM(LM.rejilla_addk[n][String(mejor)], 1)} (k = ${String(mejor).replace(".", ",")})</text>`;
+  });
+  $("#ev-rejilla").innerHTML = s;
+}
+function svgBarras() {
+  const T = LM.tabla_perplejidad, W = 900, H = 380, m = { l: 330, r: 80, t: 10, b: 40 }, tope = 1600;
+  const filas = [["Unigrama (MLE)", "Unigrama (MLE)"], ["Bigrama (MLE)", "Bigrama (MLE)"], ["Bigrama Laplace (k = 1)", "Bigrama Laplace"],
+    ["Bigrama add-k (k = 0.005 elegido en validación)", "Bigrama add-k (k = 0,005)"], ["Trigrama add-k (k = 0.005 elegido en validación)", "Trigrama add-k (k = 0,005)"],
+    ["Trigrama interpolado (λ elegidos en validación)", "Trigrama interpolado"], ["Trigrama con backoff y descuento (d elegido en validación)", "Trigrama backoff con descuento"],
+    ["Trigrama Kneser-Ney interpolado (d elegido en validación)", "Trigrama Kneser-Ney"]];
+  const bh = (H - m.t - m.b) / filas.length, x = (v) => m.l + v / tope * (W - m.l - m.r);
+  let s = "";
+  [0, 400, 800, 1200, 1600].forEach((v) => { s += `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${H - m.b}" stroke="#E4E7EB"/><text x="${x(v)}" y="${H - m.b + 16}" text-anchor="middle" font-size="12" fill="#52606D">${v}</text>`; });
+  filas.forEach(([k, nom], i) => {
+    const v = T[k].prueba, yy = m.t + i * bh + bh * 0.18, verde = i >= 5;
+    s += `<text x="${m.l - 10}" y="${yy + bh * 0.42}" text-anchor="end" font-size="13" fill="#1F2933">${nom}</text>`;
+    if (v === "inf") s += `<rect x="${x(0)}" y="${yy}" width="${x(tope) - x(0)}" height="${bh * 0.64}" fill="#fff" stroke="#9AA5B1" stroke-dasharray="5 4"/><text x="${(x(0) + x(tope)) / 2}" y="${yy + bh * 0.42}" text-anchor="middle" font-size="12" fill="#C62828">infinita: ${fmtN(T[k].ceros_prueba)} probabilidades nulas</text>`;
+    else s += `<rect x="${x(0)}" y="${yy}" width="${x(v) - x(0)}" height="${bh * 0.64}" fill="${verde ? "#00897B" : "#9AA5B1"}"><title>${nom}: ${fmtM(v, 1)}</title></rect><text x="${x(v) + 6}" y="${yy + bh * 0.42}" font-size="13" font-weight="700" fill="#1F2933">${fmtM(v, 1)}</text>`;
+  });
+  s += `<text x="${(m.l + W - m.r) / 2}" y="${H - 4}" text-anchor="middle" font-size="13" fill="#1F2933">perplejidad en la prueba (menor es mejor)</text>`;
+  $("#ev-barras").innerHTML = s;
+  $("#ev-cont").innerHTML = `<b>Contaminación:</b> si los capítulos de prueba se añaden al entrenamiento, la perplejidad del trigrama interpolado baja de ${fmt(LM.contaminacion.prueba_sin_contaminar, 1)} a ${fmt(LM.contaminacion.prueba_entrenando_con_prueba, 1)}. No es un modelo mejor: ha memorizado la prueba.`;
+}
+$("#ev-kn").innerHTML = `<thead><tr><th>palabra</th><th class="num">apariciones</th><th class="num">palabras previas distintas</th><th>previa más frecuente</th></tr></thead><tbody>` +
+  LM.kn_continuacion.map((f) => `<tr><td>${esc(f.palabra)}</td><td class="num">${fmtN(f.recuento)}</td><td class="num">${f.contextos_distintos}</td><td>${esc(f.previa_mas_frecuente)} (${fmt(f.pct_tras_esa_previa, 1)} %)</td></tr>`).join("") + "</tbody>";
+function pintarGen(k) {
+  $("#ev-gen").innerHTML = D.generacion[k].map((m) => `<div class="box" style="margin-bottom:.5rem"><span class="small">semilla ${m.semilla} · ${m.palabras} palabras · fragmento copiado más largo: ${m.copiado}${m.copiado === m.palabras ? " (la frase entera está en el original)" : ""}</span><div>${esc(m.frase)}</div></div>`).join("") +
+    `<p class="small">Modelos de máxima verosimilitud de orden ${k} entrenados con la obra completa; frases de hasta 25 palabras. Ilustración: no es una evaluación.</p>`;
+}
+segmentado("#ev-gen-orden", (b) => pintarGen(b.dataset.k));
+svgLinea(); svgBarras(); pintarGen("4");
+</script>
+</body>
+</html>

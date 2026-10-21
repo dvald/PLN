@@ -1,0 +1,98 @@
+/* Modo clase: capa común de las demos de PLN para proyectar en la clase en directo.
+   Se enlaza después del <style> de cada página para sobrescribir tamaños y anchos. */
+:root { --escala: 1; }
+html { font-size: calc(19px * var(--escala)); }
+body { line-height: 1.5; }
+.content, footer { max-width: min(96vw, 1680px) !important; }
+.tabs { position: sticky; top: 0; z-index: 20; }
+.card { scroll-margin-top: 4rem; }
+
+/* Color de cada bloque de temas (lo pone generar_navegacion.mjs en <body>) */
+body { --acento: #1E88E5; --acento-f: #1E88E5; --acento-tab: #64B5F6; }
+body.bloque-texto { --acento: #1E88E5; --acento-f: #1E88E5; --acento-tab: #64B5F6; }
+body.bloque-estad { --acento: #00897B; --acento-f: #00897B; --acento-tab: #4DB6AC; }
+body.bloque-neuronal { --acento: #8E24AA; --acento-f: #8E24AA; --acento-tab: #CE93D8; }
+body.bloque-aplic { --acento: #F57C00; --acento-f: #E65100; --acento-tab: #FFB74D; }
+body.bloque-repaso { --acento: #9AA5B1; --acento-f: #52606D; --acento-tab: #B0BEC5; }
+
+/* Cabecera: menú entre temas, número del tema y su icono */
+.header { position: relative; padding: 1rem 15rem 1.05rem 2rem !important; background: linear-gradient(115deg, #0F1B2D 0%, #13233A 55%, #1A2E4A 100%) !important; }
+.header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, var(--acento-tab), transparent 70%); opacity: .7; }
+.header .migas { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem 1.1rem; font-size: .8rem; margin-bottom: .55rem; position: relative; z-index: 1; }
+.header .migas a { color: #9ECBFF; text-decoration: none; font-weight: 600; }
+.header .migas a:hover, .header .migas a:focus-visible { color: #fff; text-decoration: underline; outline: none; }
+.header .migas .chips { display: inline-flex; flex-wrap: nowrap; gap: .22rem; margin: 0; }
+.header .migas .chips a { display: inline-grid; place-items: center; min-width: 1.65rem; height: 1.65rem; padding: 0 .2rem; border-radius: 6px; font-size: .72rem; font-weight: 800; color: #C9D6E3; border: 1px solid #34506F; background: #17283F; text-decoration: none; transition: background .15s, border-color .15s; }
+.header .migas .chips a:hover, .header .migas .chips a:focus-visible { background: var(--c); border-color: var(--c); color: #fff; text-decoration: none; }
+.header .migas .chips a[aria-current="page"] { background: var(--c); border-color: #fff; color: #fff; box-shadow: 0 0 0 2px rgba(255,255,255,.18); }
+.header h1 { display: flex; align-items: center; flex-wrap: wrap; gap: .25rem .65rem; font-size: 1.62rem !important; line-height: 1.25; margin-bottom: .3rem !important; position: relative; z-index: 1; }
+.header .num-tema { display: inline-block; background: var(--acento-f); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .07em; padding: .2rem .65rem; border-radius: 999px; }
+.header p { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; color: #B9C6D3 !important; font-size: .9rem !important; max-width: 64rem; position: relative; z-index: 1; }
+.header .cuando { display: inline-block; padding: .02rem .55rem; border-radius: 999px; border: 1px solid #34506F; color: #9FB3C8; font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.header-glifo { position: absolute; right: 10rem; top: 50%; transform: translateY(-50%) rotate(-8deg); width: 6.2rem; height: 6.2rem; color: var(--acento-tab); opacity: .22; pointer-events: none; }
+.header-glifo svg { width: 100%; height: 100%; }
+
+/* Barra de pestañas: número en círculo (tecla para ir a ella) y color del bloque */
+.tabs { background: #1A2940 !important; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.tab { white-space: nowrap; }
+.tab .tab-n { display: inline-grid; place-items: center; min-width: 1.45em; height: 1.45em; padding: 0 .3em; margin-right: .2em; border-radius: 999px; background: rgba(255,255,255,.1); color: #C9D6E3; font-size: .78em; font-weight: 800; transition: background .15s, color .15s; }
+.tab:hover .tab-n { background: rgba(255,255,255,.2); }
+body[class*="bloque-"] .tab[aria-selected="true"] { border-bottom-color: var(--acento-tab); }
+.tab[aria-selected="true"] .tab-n { background: var(--acento-tab); color: #0F1B2D; }
+.tabs:has(> .tab:nth-child(9)) .tab { padding-left: .7rem; padding-right: .7rem; }
+.tabs:has(> .tab:nth-child(10)) .tab { padding-left: .6rem; padding-right: .6rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .panel.active { animation: clase-aparecer .25s ease-out; }
+  @keyframes clase-aparecer { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+
+/* Controles del profesor (tamaño de letra y ayuda de teclado) */
+.clase-ctrl { position: absolute; top: .9rem; right: 1.2rem; display: flex; gap: .3rem; align-items: center; z-index: 2; }
+.clase-ctrl button { font: inherit; font-size: .78rem; font-weight: 700; min-width: 2.1rem; padding: .25rem .5rem; border-radius: 6px; border: 1px solid #34506F; background: #24364F; color: #DDE6F0; cursor: pointer; }
+.clase-ctrl button:hover, .clase-ctrl button:focus-visible { background: #34506F; outline: none; }
+.clase-ayuda { position: absolute; top: 3.2rem; right: 1.2rem; z-index: 30; background: #fff; color: #1F2933; border-radius: 10px; box-shadow: 0 6px 24px rgba(0,0,0,.25); padding: .9rem 1.1rem; font-size: .82rem; width: 22rem; }
+.clase-ayuda[hidden] { display: none; }
+.clase-ayuda kbd { font-family: Menlo, Consolas, monospace; background: #F5F7FA; border: 1px solid #CFD8DC; border-bottom-width: 2px; border-radius: 4px; padding: 0 .3rem; font-size: .78rem; }
+.clase-ayuda dl { display: grid; grid-template-columns: auto 1fr; gap: .3rem .7rem; margin-top: .4rem; }
+.clase-ayuda dt { white-space: nowrap; }
+
+/* Procedencia plegada: las etiquetas de fuente se ven al pulsar «i»; las de ilustración siempre */
+.meta:not(.abierta) > .tag:not(.illus) { display: none; }
+.meta .fuentes-btn { font: inherit; font-size: .72rem; font-weight: 800; font-style: italic; width: 1.45rem; height: 1.45rem; border-radius: 50%; border: 1px solid #CFD8DC; background: #fff; color: #52606D; cursor: pointer; line-height: 1; }
+.meta .fuentes-btn:hover, .meta.abierta .fuentes-btn { background: #52606D; color: #fff; }
+
+/* Pasos que avanza el profesor (botones, flechas del teclado o mando de presentación) */
+.pasos-ctrl { display: inline-flex; gap: .5rem; align-items: center; margin: .6rem 0; flex-wrap: wrap; }
+.pasos-ctrl button { font: inherit; font-weight: 700; font-size: .9rem; padding: .4rem .9rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; color: #1F2933; cursor: pointer; }
+.pasos-ctrl button:hover:not(:disabled) { background: #F5F7FA; }
+.pasos-ctrl button:disabled { opacity: .35; cursor: default; }
+.pasos-ctrl .pasos-ind { font-weight: 700; color: #52606D; min-width: 4.5rem; text-align: center; }
+
+/* Interruptor «ocultar soluciones» para preguntar a la clase antes de enseñar el caso resuelto */
+.btn-pregunta { font: inherit; font-weight: 700; font-size: .85rem; padding: .4rem .9rem; border-radius: 999px; border: 1px dashed #8D6E00; background: #FFF8E1; color: #6B5300; cursor: pointer; }
+.btn-pregunta[aria-pressed="true"] { border-style: solid; background: #8D6E00; color: #fff; }
+
+/* Animaciones suaves, desactivables por el sistema */
+@media (prefers-reduced-motion: no-preference) {
+  .anima { transition: transform .55s ease, opacity .4s ease, fill .3s ease, background-color .3s ease, width .5s ease, height .5s ease; }
+}
+@media (max-width: 900px) { .header { padding-right: 1.2rem !important; } .header-glifo { display: none; } .clase-ctrl { position: static; margin-top: .6rem; } }
+@media (max-width: 720px) {
+  .header { padding: .9rem 1rem !important; }
+  .header h1 { font-size: 1.3rem !important; }
+  .tabs { flex-wrap: nowrap !important; overflow-x: auto; scrollbar-width: none; padding: 0 .4rem !important; }
+  .tab { flex: none; }
+}
+@media print { .clase-ctrl, .pasos-ctrl, .fuentes-btn, .btn-pregunta { display: none !important; } .tabs { position: static; } }
+
+/* Mantener la página dentro del móvil y desplazar solo los contenidos anchos. */
+@media (max-width: 720px) {
+  .header .migas .chips { flex-wrap: wrap; }
+  .content, .panel, .card { min-width: 0; }
+  .card { overflow-x: auto; }
+  .card > *, .grid2 > *, .grid3 > *, .row > * { min-width: 0; max-width: 100%; }
+  select, textarea, input:not([type=checkbox]):not([type=radio]) { min-width: 0; max-width: 100%; box-sizing: border-box; }
+  pre { max-width: 100%; overflow-x: auto; }
+  .clase-ayuda { width: min(22rem, calc(100vw - 2.4rem)); }
+  footer { overflow-wrap: anywhere; }
+}

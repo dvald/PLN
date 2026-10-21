@@ -1,0 +1,20 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/04_modelado_lenguaje.html",
+ "navegador": "Google Chrome (extensión Claude in Chrome) con servidor local temporal http://127.0.0.1:8794; y Chrome sin interfaz (--headless=new --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Bolsas de «dijo don quijote a sancho» y «quijote don sancho a dijo» iguales (mensaje «Misma bolsa»); al añadir «y» a B, mensaje de bolsas distintas; perplejidades precalculadas 19,1 / 19,4 / 245,7; predicción tras «don» (quijote 0,814), «vuestra» (merced 0,729) y «sancho» (que 0,133); cuestionario de 5 preguntas con retroalimentación y recuento de aciertos",
+  "pestaña_2": "Matriz TF de las reseñas (el en d2 = 2); TF-IDF con cálculo de «malo» en d3: idf = ln(3/1) = 1,0986; coseno TF-IDF d1-d2 0,185 y d1-d3 0,234 (iguales a Python); scikit-learn: «malo» en d3 = 1,6931 / 3,4867 = 0,4856; WTF sin palabras vacías (6 palabras, 1/3 y 1/4)",
+  "pestaña_3": "126 capítulos, 22 040 palabras, 96,2 % de ceros; I-VIII: TF-IDF coche, vizcaíno, molinos…; scikit-learn incluye quijote, don y sancho; búsqueda «don quijote molinos»: TF II-LXXII 0,618 y TF-IDF I-VIII 0,172; consulta con «el», «de» y «xyzw»: aviso de palabras ignoradas; enlaces de ejemplo y enlace del resultado al selector de capítulo funcionan; separación 19 616 / 22 040 / 8,0 %",
+  "pestaña_4": "Reseñas: 3 frases, N = 27, |V| = 14; tras «café»: de y está 1/2; «El café es malo.»: P(es | café) = 0/2 y P(frase) = 0 con aviso; trigramas: 19 historias distintas; botón del capítulo I-I carga el corpus",
+  "pestaña_5": "Perplejidades de «El café es malo.»: Laplace 7,55; add-k 0,1 3,84; interpolación (0,3; 0,7) 3,61; backoff d = 0,5 3,58; Kneser-Ney 3,94 (iguales a las diapositivas); MLE infinita; stupid backoff sin perplejidad y con aviso; deslizadores de k, λ y d recalculan; «El té es malo.» marca «té» como <UNK> y |V| = 15; sumas tras «café»: 1 en las técnicas correctas, 1,8519 en el backoff ingenuo y 1,3407 en stupid backoff; con historia no vista, 1 (stupid 0,4); modo trigrama recalcula",
+  "pestaña_6": "P(malo | café es) con d = 0,5: trigrama saltado (historia no vista), bigrama (1 - 0,5)/2 = 0,25, unigrama no necesario; texto del error antiguo con P(es | café) y P(café); tabla comparativa (ingenuo 0,5; stupid 0,2; Kneser-Ney 0,1607; Laplace 0,0714); P(lento | servicio es) usa el trigrama; interpolación con λ = (0,1; 0,3; 0,6) y límite λ1 + λ2 ≤ 1",
+  "pestaña_7": "Separación 101/13/12 capítulos; rejilla de k con 14 puntos y 2 líneas; 8 barras de perplejidad en prueba (452,3 … 157,1) y barra infinita del bigrama MLE; contaminación 175,7 → 20,0; tabla de Kneser-Ney; generación con 6 frases por orden y botones de orden",
+  "indice": "Demos/index.html enlaza la demo (clic probado) y la demo enlaza el índice; los cuatro archivos del Tema 4 y las demos de los Temas 1-3 responden 200",
+  "consola": "Sin errores en la página tras recargar y recorrer las siete pestañas",
+  "defectos_corregidos": ["La etiqueta «(con </s>)» de la pestaña 4 se interpretaba como HTML y desaparecía; ahora se escapa", "El nivel de unigrama del backoff mostraba «P(w | ∅)»; ahora «P(w)»", "Formato de miles en los gráficos de la pestaña 7 («1 094,0», como en las diapositivas)"]
+ },
+ "prueba_file": "DOM volcado con file:// tras ejecutar los scripts: 14 filas en la tabla de bolsa de palabras, 11 en TF-IDF del capítulo, 9 en la búsqueda, 8 barras, 14 puntos de la rejilla, 6 frases generadas y la tabla de Kneser-Ney",
+ "biblioteca": "node Demos/fuentes/probar_lib_04.js: 144 casos y 1008 probabilidades de n-gramas, bolsa de palabras con y sin palabras vacías, 378 listas de palabras características y 8 búsquedas iguales a Python (Demos/fuentes/prueba_lib_04.json)",
+ "limites": "No probado en Safari ni Firefox. Las perplejidades del Quijote, las rejillas y las frases generadas están precalculadas en Python; la página no entrena modelos con la obra completa en el navegador."
+}

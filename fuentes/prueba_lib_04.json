@@ -1,0 +1,20 @@
+{
+ "fecha": "2026-10-12T12:04:11.929Z",
+ "node": "v22.22.0",
+ "tolerancia_relativa": 1e-9,
+ "ngramas": {
+  "casos": 144,
+  "probabilidades_comparadas": 1008,
+  "fallos": []
+ },
+ "bolsa": {
+  "fallos": []
+ },
+ "quijote": {
+  "capitulos": 126,
+  "listas_comparadas": 378,
+  "busquedas_comparadas": 8,
+  "fallos": []
+ },
+ "resultado": "OK"
+}

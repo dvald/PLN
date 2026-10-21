@@ -1,0 +1,50 @@
+{
+ "fecha": "2026-10-12T12:04:12.380Z",
+ "node": "v22.22.0",
+ "tokens_y_oraciones": {
+  "ok": true,
+  "frases_prueba": 13,
+  "resenas": 180,
+  "fallos": []
+ },
+ "lexico": {
+  "ok": true,
+  "casos": 1674,
+  "fallos": []
+ },
+ "trazas": {
+  "ok": true,
+  "casos": 91,
+  "fallos": []
+ },
+ "negacion": {
+  "ok": true,
+  "casos": 386,
+  "fallos": []
+ },
+ "estrellas": {
+  "ok": true,
+  "umbrales": 6,
+  "fallos": []
+ },
+ "agregacion": {
+  "ok": true,
+  "js": {
+   "suma": 31,
+   "mayoria": 32,
+   "ultima_frase": 31,
+   "solo_subjetivas": 29
+  }
+ },
+ "aspectos": {
+  "ok": true,
+  "umbrales": 4,
+  "fallos": []
+ },
+ "turney": {
+  "ok": true,
+  "pares": 4,
+  "fallos": []
+ },
+ "resultado": "OK"
+}

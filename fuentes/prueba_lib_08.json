@@ -1,0 +1,55 @@
+{
+ "fecha": "2026-10-12T12:04:12.429Z",
+ "node": "v22.22.0",
+ "tolerancia_relativa": 1e-9,
+ "softmax": {
+  "casos": 23,
+  "fallos": []
+ },
+ "wilson": {
+  "casos": 22,
+  "fallos": []
+ },
+ "alineacion": {
+  "casos": 10,
+  "fallos": [],
+  "decodificacion_fallos": []
+ },
+ "spans": {
+  "casos": 180,
+  "fallos": [],
+  "media_fallos": [],
+  "formula_T_T1_2": true,
+  "frase_clase": true
+ },
+ "mascaras": {
+  "causal_6": 21,
+  "bidireccional_6": 36,
+  "cruzada_4x6": 24
+ },
+ "muestreo": {
+  "muestras": 20000,
+  "max_diferencia_frecuencia": 0.0044
+ },
+ "datos": {
+  "fallos": [],
+  "ajuste_todo": [
+   19,
+   19,
+   19,
+   18,
+   19
+  ],
+  "ajuste_parcial": [
+   19,
+   19,
+   19,
+   19,
+   19
+  ],
+  "confusion_beto_igual_python": true,
+  "cultura_q05": 0,
+  "cultura_q15": 10
+ },
+ "resultado": "OK"
+}

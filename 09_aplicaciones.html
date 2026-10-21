@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 9 · Aplicaciones de procesamiento de lenguaje natural — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --aplic-t: #A85200;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem .9rem; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: #FFB74D; }
+  .content { max-width: 1120px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--estad-l); border-left: 4px solid var(--estad); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #004D40; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: var(--aplic-t); color: #fff; }
+  .btn-main:hover { background: #8A4300; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid #FFCC80; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 3.2rem; resize: vertical; font-size: .95rem; }
+  input[type=text] { min-width: 18rem; flex: 1; }
+  input[type=range] { width: 14rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; font-size: 1rem; }
+  .big { font-size: 1.7rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .4rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  tr.hl td { background: var(--warn-l); }
+  .scroll { overflow-x: auto; max-height: 30rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .salida { border: 1px solid var(--line); border-radius: 8px; padding: .6rem .8rem; margin: .4rem 0; background: #fff; }
+  .salida b { color: var(--aplic-t); }
+  .heat { border-collapse: separate; border-spacing: 2px; width: auto; }
+  .heat td, .heat th { text-align: center; font-size: .78rem; padding: .25rem .3rem; border: none; min-width: 2.6rem; }
+  .heat th { background: none; color: var(--ink); font-weight: 600; font-family: Menlo, Consolas, monospace; }
+  .heat th.fila { text-align: right; }
+  .heat td.max { outline: 2px solid var(--aplic); }
+  .ops span { display: inline-block; margin: .15rem; padding: .1rem .4rem; border-radius: 6px; font-family: Menlo, Consolas, monospace; font-size: .88rem; border: 1px solid var(--line); }
+  .ops .eq { background: var(--ok-l); border-color: #A5D6A7; }
+  .ops .S { background: var(--bad-l); border-color: #EF9A9A; }
+  .ops .D { background: #ECEFF1; border-color: #B0BEC5; text-decoration: line-through; }
+  .ops .I { background: var(--warn-l); border-color: #F0D78C; }
+  .chat { border: 1px solid var(--line); border-radius: 10px; padding: .8rem; height: 22rem; overflow-y: auto; background: var(--soft); }
+  .msg { max-width: 80%; margin: .35rem 0; padding: .5rem .8rem; border-radius: 12px; }
+  .msg.u { margin-left: auto; background: var(--texto-l); }
+  .msg.a { background: #fff; border: 1px solid var(--line); }
+  .msg .nlu { display: block; font-size: .75rem; color: var(--ink2); margin-top: .2rem; font-family: Menlo, Consolas, monospace; }
+  .chips { display: flex; flex-wrap: wrap; gap: .35rem; margin: .5rem 0; }
+  .chip { font: inherit; font-size: .82rem; padding: .25rem .65rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; }
+  .chip:hover { background: var(--soft); }
+  .doc { line-height: 1.9; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .8rem 1rem; }
+  .pred { background: #FFE082; border-radius: 4px; padding: 0 .1rem; }
+  .oro { border-bottom: 3px solid var(--ok); }
+  .barra { height: .9rem; background: var(--aplic); border-radius: 3px; display: inline-block; vertical-align: middle; }
+  .barra.neu { background: var(--neuronal); }
+  .barra.est { background: var(--estad); }
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-direction: column; gap: .35rem; }
+  .opt { font: inherit; font-size: .9rem; text-align: left; padding: .4rem .8rem; border-radius: 8px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  footer { max-width: 1120px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .5rem; font-size: .82rem; } input[type=text] { min-width: 0; width: 100%; } }
+  /* modo clase */
+  .esquema { width: 100%; height: auto; display: block; }
+  .rejilla { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin-top: .6rem; }
+  .sonda { border-radius: 10px; padding: .55rem .7rem; border: 2px solid var(--line); background: #fff; cursor: pointer; }
+  .sonda .en { font-weight: 700; }
+  .sonda .es { font-size: .92rem; margin-top: .2rem; }
+  .sonda .g { display: inline-block; margin-top: .3rem; font-size: .75rem; font-weight: 800; color: #fff; padding: 0 .5rem; border-radius: 999px; }
+  .sonda.oculto { border-color: var(--line) !important; }
+  .sonda.oculto .es, .sonda.oculto .g { visibility: hidden; }
+  .ngr { display: flex; flex-wrap: wrap; gap: .25rem; margin: .3rem 0 .6rem; }
+  .ngr span { font-family: Menlo, Consolas, monospace; padding: .1rem .35rem; border-radius: 4px; border: 1px solid; font-size: .95rem; }
+  .ngr .si { background: var(--ok-l); border-color: var(--ok); }
+  .ngr .no { background: var(--bad-l); border-color: var(--bad); }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-aplic">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones" aria-current="page">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="08_modelado_neuronal_ii.html">‹ Tema 8 · Modelado neuronal (II)</a><a class="sig" href="10_visualizacion.html">Tema 10 · Visualización ›</a></nav>
+  <h1><span class="num-tema">TEMA 9</span>Aplicaciones de procesamiento de lenguaje natural</h1>
+  <p>Traducción, resumen, agentes, búsqueda, preguntas y respuestas y voz, con salidas reales de modelos y sus métricas. <span class="cuando">Clase 16 · semana 12</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M6 5h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H13l-6 5v-5H6a3 3 0 0 1-3-3V8a3 3 0 0 1 3-3z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M24 22h18a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3h-1v5l-6-5H24a3 3 0 0 1-3-3V25a3 3 0 0 1 3-3z" fill="currentColor" stroke="currentColor" stroke-width="2.2"/><path d="M8 11h11M8 16h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 28h14M26 33h9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-tra" aria-controls="p-tra" aria-selected="true"><span class="tab-n">1</span> Traducción</button>
+  <button class="tab" role="tab" id="t-ate" aria-controls="p-ate" aria-selected="false"><span class="tab-n">2</span> Atención</button>
+  <button class="tab" role="tab" id="t-chr" aria-controls="p-chr" aria-selected="false"><span class="tab-n">3</span> chrF</button>
+  <button class="tab" role="tab" id="t-ses" aria-controls="p-ses" aria-selected="false"><span class="tab-n">4</span> Sesgo</button>
+  <button class="tab" role="tab" id="t-res" aria-controls="p-res" aria-selected="false"><span class="tab-n">5</span> Resumen</button>
+  <button class="tab" role="tab" id="t-age" aria-controls="p-age" aria-selected="false"><span class="tab-n">6</span> Agente</button>
+  <button class="tab" role="tab" id="t-bus" aria-controls="p-bus" aria-selected="false"><span class="tab-n">7</span> Búsqueda</button>
+  <button class="tab" role="tab" id="t-lec" aria-controls="p-lec" aria-selected="false"><span class="tab-n">8</span> Lector</button>
+  <button class="tab" role="tab" id="t-voz" aria-controls="p-voz" aria-selected="false"><span class="tab-n">9</span> Voz</button>
+</div>
+
+<div class="content">
+
+<!-- 1 · Traducción -->
+<section class="panel active" id="p-tra" role="tabpanel" aria-labelledby="t-tra">
+  <div class="card">
+    <h2>Palabra a palabra, voraz y en haz</h2>
+    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas (12/10/2026)</span><span class="tag real">chrF2 calculado en el navegador</span><span class="tag">Clase 16 · apartado 9.2</span></div>
+    <p>48 pares inglés-español <strong>escritos para la asignatura</strong> (16 de desarrollo y 32 de prueba). Para cada frase, tres traducciones reales del mismo modelo, <code>Helsinki-NLP/opus-mt-en-es</code>: cada palabra por separado, frase entera con decodificación voraz y frase entera con haz 2 (el elegido en desarrollo).</p>
+    <div class="row">
+      <label class="inline">Partición <select id="tra-par"><option value="">todas</option><option>desarrollo</option><option>prueba</option></select></label>
+      <label class="inline">Fenómeno <select id="tra-fen"><option value="">todos</option></select></label>
+      <label class="inline">Frase <select id="tra-sel"></select></label>
+    </div>
+    <div id="tra-frase"></div>
+    <div class="info">🔮 Antes de mirar las salidas, piensa qué fallará al traducir palabra a palabra. Después compara el chrF2 de las tres.</div>
+  </div>
+  <div class="card">
+    <h2>La búsqueda en haz, paso a paso</h2>
+    <div class="meta"><span class="tag">Apartado 9.2</span><span class="tag pre">Probabilidades reales de MarianMT (opus-mt-en-es, revisión 5bc4493), precalculadas; coincide con generate(num_beams = 2)</span></div>
+    <p>En cada paso cada hipótesis viva se amplía con sus 3 subpalabras más probables; de todas las candidatas se quedan las 2 de mayor log-probabilidad acumulada (en morado). Las grises se descartan. Debajo de cada pieza, la log-probabilidad acumulada.</p>
+    <div class="row"><label class="inline">Frase <select id="haz-sel"></select></label></div>
+    <div id="haz-pasos"></div>
+    <div style="overflow-x:auto"><svg id="haz-svg" class="esquema" viewBox="0 0 1200 330" role="img" aria-label="Árbol de la búsqueda en haz"></svg></div>
+    <div class="info" id="haz-msg"></div>
+  </div>
+  <div class="card">
+    <h2>Desarrollo para decidir, prueba para medir</h2>
+    <div class="meta"><span class="tag pre">chrF2 y BLEU de sacrebleu 2.6.0</span><span class="tag real">chrF2 de corpus recalculado en el navegador</span></div>
+    <div class="grid2">
+      <div><h3>Desarrollo (16 frases)</h3><table id="tra-dev"></table></div>
+      <div><h3>Prueba (32 frases)</h3><table id="tra-pru"></table></div>
+    </div>
+    <p class="small" id="tra-nota"></p>
+    <h3>Prueba por fenómeno (chrF2)</h3>
+    <div class="scroll"><table id="tra-fenomeno"></table></div>
+    <div class="warnbox">Con 16 y 32 frases, diferencias de un punto no son fiables: el haz elegido en desarrollo pierde un punto en prueba. Se informa del sistema elegido; elegir mirando la prueba la invalidaría.</div>
+  </div>
+  <div class="card">
+    <h2>Forzado del profesor</h2>
+    <div class="meta"><span class="tag pre">Probabilidades reales de MarianMT precalculadas</span><span class="tag">pp. 10-11</span></div>
+    <p>Al entrenar, cada paso del decodificador recibe la pieza correcta de la referencia, aunque el modelo prefiera otra. La tabla muestra la probabilidad que da el modelo a cada pieza correcta y la pieza que él habría elegido.</p>
+    <div class="row"><label class="inline">Ejemplo <select id="for-sel"></select></label></div>
+    <div id="for-tabla"></div>
+  </div>
+  <div class="card">
+    <h2>Comprobar las particiones de un corpus público</h2>
+    <div class="meta"><span class="tag pre">Resultado real con datasets 5.1.0</span></div>
+    <div id="tra-opus"></div>
+  </div>
+</section>
+
+<!-- 2 · Atención -->
+<section class="panel" id="p-ate" role="tabpanel" aria-labelledby="t-ate">
+  <div class="card">
+    <h2>Atención cruzada real de MarianMT</h2>
+    <div class="meta"><span class="tag pre">Pesos reales precalculados (media de 8 cabezas)</span><span class="tag">Clase 16 · pp. 11-15</span></div>
+    <p>Cada fila es una pieza generada en español; cada columna, una pieza del original inglés. El color es el peso de atención cruzada; el recuadro naranja marca la columna con más peso de cada fila.</p>
+    <div class="row">
+      <label class="inline">Frase <select id="ate-sel"></select></label>
+      <label class="inline"><input type="radio" name="ate-capa" value="ultima_capa" checked> última capa</label>
+      <label class="inline"><input type="radio" name="ate-capa" value="media_capas"> media de las 6 capas</label>
+      <label class="inline"><input type="checkbox" id="ate-fin"> ocultar «&lt;/s&gt;» y renormalizar la fila</label>
+    </div>
+    <div class="scroll" style="max-height:none"><table class="heat" id="ate-mapa"></table></div>
+    <p class="small" id="ate-nota"></p>
+    <div class="warnbox">«Ocultar &lt;/s&gt;» cambia solo la vista (reparte el peso restante de cada fila hasta sumar 1); el modelo no se modifica. La atención ayuda a interpretar, pero no es un alineamiento fiable palabra a palabra.</div>
+  </div>
+</section>
+
+<!-- 3 · chrF -->
+<section class="panel" id="p-chr" role="tabpanel" aria-labelledby="t-chr">
+  <div class="card">
+    <h2>Calculadora de chrF</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (igual que sacrebleu 2.6.0)</span><span class="tag">Clase 16 · pp. 15-16</span></div>
+    <p>n-gramas de <strong>caracteres</strong> sin espacios. Para cada orden: precisión = coincidencias / n-gramas de la traducción; exhaustividad = coincidencias / n-gramas de la referencia. Se promedian los órdenes con n-gramas en las dos cadenas y se combinan con F-beta. sacrebleu usa por defecto n ≤ 6 y β = 2 (chrF2).</p>
+    <div class="chips" id="chr-ej"></div>
+    <div class="grid2">
+      <label>Referencia<textarea id="chr-ref">la casa</textarea></label>
+      <label>Traducción del sistema<textarea id="chr-hip">las casas</textarea></label>
+    </div>
+    <div class="row">
+      <label class="inline">Orden máximo n <select id="chr-n"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
+      <label class="inline">β <select id="chr-beta"><option>1</option><option selected>2</option><option>3</option></select></label>
+    </div>
+    <div class="stats" id="chr-stats"></div>
+    <table id="chr-tabla"></table>
+    <div id="chr-ngramas" class="small"></div>
+    <div class="info">Con «la casa» / «las casas» y n ≤ 2 sale 83,9, como en el turno de la Clase 16; con n ≤ 6, 40,5. Prueba a quitar letras de la traducción: con β = 2 lo que falta penaliza más que lo que sobra.</div>
+  </div>
+</section>
+
+<!-- 4 · Sesgo -->
+<section class="panel" id="p-ses" role="tabpanel" aria-labelledby="t-ses">
+  <div class="card">
+    <h2>Sondas de género: qué elige el traductor</h2>
+    <div class="meta"><span class="tag pre">Salidas reales de MarianMT precalculadas</span><span class="tag">Clase 16 · pp. 17-19 · ejercicio 8</span></div>
+    <p>En 14 frases el inglés no marca el género; en 6 un pronombre lo marca. Color del borde: género que elige el traductor (decodificación voraz). Para preguntar a la clase, oculta las salidas y destápalas una a una.</p>
+    <div class="row" id="ses-ctrl"></div>
+    <div class="stats" id="ses-stats"></div>
+    <div class="rejilla" id="ses-rejilla"></div>
+    <div class="warnbox">Es una sonda de 20 frases, no una medida general del sesgo del modelo; el patrón coincide con lo publicado (Savoldi et al., 2021). El género de cada salida se anotó a mano.</div>
+  </div>
+</section>
+
+<!-- 5 · Resumen -->
+<section class="panel" id="p-res" role="tabpanel" aria-labelledby="t-res">
+  <div class="card">
+    <h2>Resúmenes de una frase: medidos y comprobados</h2>
+    <div class="meta"><span class="tag real">TF-IDF, ROUGE-1 y comprobación de cifras calculados en el navegador</span><span class="tag pre">Resumen de Qwen2.5-0.5B-Instruct precalculado</span><span class="tag">Sesión complementaria · 9.3</span></div>
+    <p>Noticias <strong>ficticias</strong> del Tema 6 con un resumen de referencia escrito a mano. La frase central es la más parecida (coseno TF-IDF, 92 noticias) al cuerpo de la noticia.</p>
+    <div class="row"><label class="inline">Noticia <select id="res-sel"></select></label></div>
+    <div id="res-frases"></div>
+    <div class="scroll" style="margin-top:.6rem"><table id="res-tabla"></table></div>
+    <h3>Un resumen escrito en directo</h3>
+    <div class="row"><input type="text" id="res-mio" placeholder="Escribe aquí un resumen de una frase (por ejemplo, el que proponga la clase) y mira su ROUGE-1 y sus cifras"></div>
+    <div id="res-mio-out" class="small"></div>
+    <div class="warnbox">ROUGE solo cuenta palabras comunes con la referencia: no detecta que una cifra sea inventada. Por eso se compara aparte cada número completo del resumen con los de la noticia (100 no coincide con 1000). Esta comprobación literal no verifica unidades, atribuciones ni paráfrasis: hay que revisar el significado.</div>
+    <p class="small" id="res-agregado"></p>
+  </div>
+</section>
+
+<!-- 6 · Agente -->
+<section class="panel" id="p-age" role="tabpanel" aria-labelledby="t-age">
+  <div class="card">
+    <h2>Agente de marcos para reservar tutorías</h2>
+    <svg id="age-esq" class="esquema" viewBox="0 0 1000 120" role="img" aria-label="Arquitectura del agente: comprensión, gestión del diálogo y generación"></svg>
+    <p class="small">Esquema simplificado de la Figura 12 del tema (agente de texto: sin reconocimiento ni síntesis de voz).</p>
+    <div class="meta"><span class="tag real">Reglas ejecutadas en el navegador (las mismas que en Python)</span><span class="tag">Sesión complementaria · 9.4</span></div>
+    <p>Comprensión con reglas (intención y huecos: tema, día, hora, modalidad), gestión del diálogo con un marco y generación con plantillas. Horario supuesto: lunes a jueves de 16:00 a 20:00 y viernes de 9:00 a 13:00.</p>
+    <div class="grid2">
+      <div>
+        <div class="chat" id="age-chat" aria-live="polite"></div>
+        <div class="row"><input type="text" id="age-in" placeholder="Escribe un mensaje (p. ej., «Quiero una tutoría del tema 9»)"><button class="btn btn-main" id="age-env">Enviar</button><button class="btn btn-gray" id="age-reset">Reiniciar</button></div>
+        <div class="chips" id="age-ej"></div>
+        <label class="inline"><input type="checkbox" id="age-extra"> añadir la regla «no puedo ir» → cancelar (TODO 2 del cuaderno)</label>
+      </div>
+      <div>
+        <div class="box"><h3>Comprensión del último mensaje</h3><div id="age-nlu" class="mono small">—</div></div>
+        <div class="box" style="margin-top:.6rem"><h3>Marco de la reserva</h3><div id="age-marco" class="mono small">—</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Evaluación de la comprensión</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
+    <p>32 enunciados anotados: las reglas se escribieron mirando los 12 de desarrollo; los 20 de prueba miden si generalizan.</p>
+    <div class="stats" id="age-stats"></div>
+    <div class="scroll"><table id="age-tabla"></table></div>
+  </div>
+</section>
+
+<!-- 7 · Búsqueda -->
+<section class="panel" id="p-bus" role="tabpanel" aria-labelledby="t-bus">
+  <div class="card">
+    <h2>Buscar en las noticias: índice invertido y TF-IDF</h2>
+    <svg id="bus-esq" class="esquema" viewBox="0 0 1000 120" role="img" aria-label="Esquema de recuperación de información"></svg>
+    <p class="small">Esquema simplificado de la Figura 13 del tema (sistema de recuperación de información).</p>
+    <div class="meta"><span class="tag real">Índice y TF-IDF calculados en el navegador</span><span class="tag pre">Rangos de spaCy y BETO precalculados</span><span class="tag">Sesión complementaria · pp. 27-29</span></div>
+    <div class="row">
+      <label class="inline">Pregunta <select id="bus-sel"></select></label>
+    </div>
+    <div class="row"><input type="text" id="bus-q"><button class="btn btn-main" id="bus-go">Buscar</button></div>
+    <div id="bus-indice" class="small"></div>
+    <div class="scroll"><table id="bus-res"></table></div>
+    <div id="bus-rangos"></div>
+  </div>
+  <div class="card">
+    <h2>MRR de cuatro representaciones (17 preguntas de prueba)</h2>
+    <div class="meta"><span class="tag pre">Resultados reales precalculados</span></div>
+    <table id="bus-mrr"></table>
+    <h3>Calculadora de MRR</h3>
+    <div class="row"><input type="text" id="mrr-in" value="1, 4, 1"><button class="btn btn-gray" id="mrr-go">Calcular</button><span id="mrr-out" class="big"></span></div>
+    <p class="small">Rangos del documento correcto separados por comas (TF-IDF en Q01, Q20 y Q02: 1, 4, 1 → 0,750).</p>
+  </div>
+</section>
+
+<!-- 8 · Lector -->
+<section class="panel" id="p-lec" role="tabpanel" aria-labelledby="t-lec">
+  <div class="card">
+    <h2>Leer la respuesta: P(inicio) y P(fin)</h2>
+    <div class="meta"><span class="tag pre">Probabilidades reales de BETO ajustado con SQAC precalculadas</span><span class="tag">Sesión complementaria · pp. 30-33</span></div>
+    <div class="row"><label class="inline">Pregunta <select id="lec-sel"></select></label></div>
+    <div id="lec-doc"></div>
+    <div class="scroll" style="max-height:none"><div id="lec-graf"></div></div>
+    <p class="small">Amarillo: tramo elegido por el modelo (máximo de P(inicio)·P(fin) en el documento); subrayado verde: respuesta anotada.</p>
+  </div>
+  <div class="card">
+    <h2>¿Contestar o abstenerse? El umbral del margen</h2>
+    <div class="meta"><span class="tag real">Recuento en el navegador con los márgenes reales</span></div>
+    <p>Margen = puntuación del mejor tramo menos la de [CLS]. El sistema contesta si el margen supera el umbral. En desarrollo se fijó 0,81.</p>
+    <div class="row"><label class="inline">Umbral <input type="range" id="lec-umbral" min="-10" max="30" step="0.5" value="0.81"></label><span id="lec-umbral-v" class="big"></span></div>
+    <table id="lec-cuenta"></table>
+    <div class="badbox">SQAC no tiene preguntas sin respuesta: el modelo contesta con seguridad «un penalti decisivo» o «gratuita». Subir el umbral para abstenerse en ellas obliga a callar en preguntas que sí tienen respuesta.</div>
+  </div>
+</section>
+
+<!-- 9 · Voz -->
+<section class="panel" id="p-voz" role="tabpanel" aria-labelledby="t-voz">
+  <div class="card">
+    <h2>Escuchar: síntesis con y sin normalizar</h2>
+    <svg id="voz-esq" class="esquema" viewBox="0 0 1000 250" role="img" aria-label="Esquemas de reconocimiento del habla y de síntesis de voz"></svg>
+    <p class="small">Esquemas simplificados de las Figuras 17 a 20 del tema; 80 bandas log-mel según la configuración de openai/whisper-tiny.</p>
+    <div class="meta"><span class="tag pre">Audios sintetizados con MMS-TTS (CC BY-NC 4.0) y transcripciones reales de Whisper</span><span class="tag">Sesión complementaria · 9.6</span></div>
+    <div id="voz-audios"></div>
+    <div class="warnbox">Voz sintética, no de una persona real. El sintetizador tiene las cifras en su vocabulario, pero las pronuncia ininteligibles y descarta «%» y «,».</div>
+  </div>
+  <div class="card">
+    <h2>Normalizador de cifras (clases semióticas)</h2>
+    <div class="meta"><span class="tag real">Reglas ejecutadas en el navegador (las mismas que en Python)</span><span class="tag">pp. 41-42</span></div>
+    <div class="row"><input type="text" id="voz-norm-in" value="En 1910 se fundó el club y la clave de la consigna es 1910."></div>
+    <div class="chips" id="voz-norm-ej"></div>
+    <div class="salida" id="voz-norm-out"></div>
+    <p class="small">Reglas mínimas: masculino por defecto, sin ordinales; año o código según las palabras anteriores (clave, contraseña, código, pin, consigna).</p>
+  </div>
+  <div class="card">
+    <h2>Calculadora de la tasa de error por palabra (WER)</h2>
+    <div class="meta"><span class="tag real">Alineamiento calculado en el navegador</span><span class="tag">p. 39</span></div>
+    <div class="grid2">
+      <label>Referencia<textarea id="wer-ref">La inflación se modera hasta el dos coma uno por ciento en septiembre.</textarea></label>
+      <label>Transcripción<textarea id="wer-hip">La inflación se modera hasta el 2,1% en septiembre.</textarea></label>
+    </div>
+    <div class="row"><label class="inline"><input type="checkbox" id="wer-verb"> verbalizar las cifras de las dos cadenas antes de comparar</label></div>
+    <div class="stats" id="wer-stats"></div>
+    <div class="ops" id="wer-ops"></div>
+    <p class="small">Verde: igual · rojo: sustitución · gris tachado: borrado · amarillo: inserción. Siempre se pasa a minúsculas y se quita la puntuación.</p>
+    <h3>WER de corpus en las 12 frases</h3>
+    <table id="wer-corpus"></table>
+  </div>
+  <div class="card">
+    <h2>Rasgos de Whisper</h2>
+    <div class="meta"><span class="tag pre">Figura real (rasgos de Whisper tiny)</span></div>
+    <img src="09_aplicaciones_audio/onda_y_logmel_V11.png" alt="Onda y espectrograma log-Mel de la frase «La aplicación permite pedir cita en el centro de salud con un asistente de voz»" style="width:100%;max-width:900px;border:1px solid var(--line);border-radius:8px">
+    <p class="small" id="voz-rasgos"></p>
+  </div>
+</section>
+
+
+</div>
+<footer>
+  Datos propios redactados para la asignatura (12/10/2026): frases de traducción, sondas, preguntas, resúmenes, enunciados del agente y frases de voz; noticias ficticias del Tema 6. Modelos: Helsinki-NLP/opus-mt-en-es (Apache 2.0), Qwen2.5-0.5B-Instruct (Apache 2.0), dccuchile BETO-SQAC, facebook/mms-tts-spa (CC BY-NC 4.0), openai/whisper-tiny y -base (Apache 2.0), con revisiones fijadas. Figura del tema: Jurafsky y Martin. Generado por <code>Demos/fuentes/generar_datos_09.py</code>; biblioteca comprobada con <code>Demos/fuentes/probar_lib_09.js</code>. Funciona sin conexión.
+</footer>
+
+<script src="09_aplicaciones_datos.js"></script>
+<script src="09_aplicaciones_haz.js"></script>
+<script src="comun/clase.js"></script>
+<script src="09_aplicaciones_lib.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.DATOS09, L = window.LIB09;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const n = (x, d) => L.num(x, d);
+  const pieza = (t) => esc(t.replace(/▁/g, "") || "▁");
+  const miles = (x) => String(x).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  // Pestañas
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  function activar(t) {
+    tabs.forEach((x) => { x.setAttribute("aria-selected", x === t ? "true" : "false"); $(x.getAttribute("aria-controls")).classList.toggle("active", x === t); });
+  }
+  tabs.forEach((t, k) => {
+    t.addEventListener("click", () => activar(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { const s = tabs[(k + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length]; s.focus(); activar(s); }
+    });
+  });
+
+  // ---------------------------------------------------------------- 1 · Traducción
+  const TR = D.traduccion, DET = TR.detalle;
+  const fenomenos = Array.from(new Set(DET.map((d) => d.fenomeno)));
+  fenomenos.forEach((f) => { const o = document.createElement("option"); o.textContent = f; $("tra-fen").appendChild(o); });
+  function filtrarTra() {
+    const p = $("tra-par").value, f = $("tra-fen").value;
+    const lista = DET.filter((d) => (!p || d.particion === p) && (!f || d.fenomeno === f));
+    $("tra-sel").innerHTML = lista.map((d) => `<option value="${d.id}">${d.id} · ${esc(d.en.slice(0, 60))}</option>`).join("");
+    pintarFrase();
+  }
+  function pintarFrase() {
+    const d = DET.find((x) => x.id === $("tra-sel").value);
+    if (!d) { $("tra-frase").innerHTML = ""; return; }
+    const sis = [["palabra a palabra (mismo modelo)", d.palabra, d.chrF2_palabra], ["voraz", d.voraz, d.chrF2_voraz], [`haz ${TR.haz_elegido}`, d.haz, d.chrF2_haz]];
+    $("tra-frase").innerHTML = `<div class="salida"><b>Original (${d.particion}, ${d.fenomeno}):</b> ${esc(d.en)}</div>
+      <div class="salida"><b>Referencia:</b> ${esc(d.es_referencia)} <span class="small">(${esc(d.origen)})</span></div>` +
+      sis.map(([nom, s, c]) => {
+        const mio = L.chrf(d.es_referencia, s).puntuacion;
+        return `<div class="salida"><b>${nom}:</b> ${esc(s)}<br><span class="small">chrF2 calculado aquí: <strong>${n(mio)}</strong> (sacrebleu: ${n(c)})</span></div>`;
+      }).join("");
+  }
+  ["tra-par", "tra-fen"].forEach((id) => $(id).addEventListener("change", filtrarTra));
+  $("tra-sel").addEventListener("change", pintarFrase);
+  filtrarTra();
+  $("tra-dev").innerHTML = "<tr><th>sistema</th><th class='num'>chrF2</th><th class='num'>BLEU</th></tr>" +
+    Object.entries(TR.desarrollo).map(([k, v]) => `<tr class="${k === "haz " + TR.haz_elegido ? "hl" : ""}"><td>${k}</td><td class="num">${n(v.chrF2)}</td><td class="num">${n(v.BLEU)}</td></tr>`).join("");
+  const pruebaD = DET.filter((d) => d.particion === "prueba");
+  const clave = { "palabra a palabra": "palabra", "voraz": "voraz" }; clave["haz " + TR.haz_elegido] = "haz";
+  $("tra-pru").innerHTML = "<tr><th>sistema</th><th class='num'>chrF2</th><th class='num'>BLEU</th><th class='num'>chrF2 (navegador)</th></tr>" +
+    Object.entries(TR.prueba).map(([k, v]) => `<tr class="${k === "haz " + TR.haz_elegido ? "hl" : ""}"><td>${k}</td><td class="num">${n(v.chrF2)}</td><td class="num">${n(v.BLEU)}</td><td class="num">${n(L.chrfCorpus(pruebaD.map((d) => d[clave[k]]), pruebaD.map((d) => d.es_referencia)))}</td></tr>`).join("");
+  $("tra-nota").textContent = `Criterio fijado antes: mayor chrF2 en desarrollo y, a igualdad, el haz más pequeño → haz ${TR.haz_elegido}. Español → inglés en las mismas 32 frases: chrF2 ${n(TR.es_en.chrF2)}, BLEU ${n(TR.es_en.BLEU)}. Tiempo en CPU (Apple M3) para las 48 frases: voraz ${n(TR.tiempos.voraz_48_s, 2)} s, haz 4 ${n(TR.tiempos.haz4_48_s, 2)} s.`;
+  $("tra-fenomeno").innerHTML = `<tr><th>fenómeno</th><th class="num">frases</th><th class="num">palabra a palabra</th><th class="num">voraz</th><th class="num">haz ${TR.haz_elegido}</th></tr>` +
+    Object.entries(TR.por_fenomeno).sort((a, b) => b[1].voraz - a[1].voraz).map(([f, v]) => `<tr><td>${f}</td><td class="num">${v.frases}</td><td class="num">${n(v["palabra a palabra"])}</td><td class="num">${n(v.voraz)}</td><td class="num">${n(v["haz " + TR.haz_elegido])}</td></tr>`).join("");
+  TR.forzado.forEach((f, k) => { const o = document.createElement("option"); o.value = k; o.textContent = `${f.en} → «${f.referencia}»`; $("for-sel").appendChild(o); });
+  function pintarForzado() {
+    const f = TR.forzado[+$("for-sel").value];
+    $("for-tabla").innerHTML = `<table><tr><th class="num">paso</th><th>entrada del decodificador</th><th>pieza correcta</th><th class="num">p</th><th>el modelo prefería</th><th class="num">p</th></tr>` +
+      f.forzado.map((r) => `<tr><td class="num">${r.paso}</td><td class="mono">${pieza(r.entrada_decodificador)}</td><td class="mono ${r.objetivo !== r.mas_probable ? "malo" : ""}">${pieza(r.objetivo)}</td><td class="num">${n(100 * r.p_objetivo, 1)} %</td><td class="mono">${pieza(r.mas_probable)}</td><td class="num">${n(100 * r.p_mas_probable, 1)} %</td></tr>`).join("") +
+      `</table><p class="small">Pérdida (entropía cruzada media): <strong>${n(f.perdida_entropia_cruzada, 3)}</strong>. En inferencia, sin referencia, genera: «${esc(f.salida_libre)}».</p>`;
+  }
+  $("for-sel").addEventListener("change", pintarForzado); pintarForzado();
+  const ob = TR.opus_books;
+  $("tra-opus").innerHTML = `<p>OPUS Books inglés-español publica solo <strong>${ob.particiones_publicadas.map(esc).join(", ")}</strong> (${miles(ob.filas)} pares). El cuaderno del curso pasado pedía «validation» y fallaba. División propia con semilla ${ob.division_propia.semilla}: ${miles(ob.division_propia.entrenamiento)} / ${miles(ob.division_propia.validacion)} / ${miles(ob.division_propia.prueba)}. En 100 frases de esa prueba, el mismo traductor obtiene chrF2 ${n(ob.muestra_prueba_100.chrF2)} (textos literarios), frente a ${n(TR.prueba["haz " + TR.haz_elegido].chrF2)} en nuestras frases: las cifras de chrF no se comparan entre conjuntos. Además, los modelos opus-mt se entrenaron con datos de OPUS: esta muestra puede no ser independiente.</p>`;
+
+  // Árbol de la búsqueda en haz
+  const HZ = window.HAZ09;
+  $("haz-sel").innerHTML = HZ.frases.map((f, k) => `<option value="${k}">${esc(f.en)}</option>`).join("");
+  const txtPieza = (p) => (p === "</s>" || p === "␣" ? p : p.startsWith("␣") ? p.slice(1) : "+" + p);
+  function pintarHaz(t) {
+    const f = HZ.frases[+$("haz-sel").value], P = f.pasos, colW = Math.min(128, Math.floor(1300 / P.length)), bw = colW - 20, x0 = 20, filaH = 44;
+    // vivas del paso t (índice dentro de las elegidas no terminadas del paso anterior)
+    const pos = [];  // pos[t][k] = y de la hipótesis viva k al entrar en el paso t
+    let g = `<g><rect x="${x0}" y="${30}" width="70" height="30" rx="6" fill="#0F1B2D"/><text x="${x0 + 35}" y="50" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">inicio</text></g>`;
+    pos[0] = [45];
+    // camino de la frase elegida: se reconstruye hacia atrás desde la candidata que la termina
+    const fin = t === P.length - 1, padreRango = P.map((paso, i) => {
+      const vivas = i ? P[i - 1].candidatas.map((c, r) => (c.elegida && !c.termina ? r : -1)).filter((r) => r >= 0) : [];
+      return paso.candidatas.map((c) => (i ? vivas[c.padre] : -1));
+    });
+    const gana = new Set();
+    P.forEach((paso, i) => paso.candidatas.forEach((c, r) => {
+      if (c.termina && Math.abs(c.acumulada - f.terminadas[0].logp) < 1e-3) for (let j = i, q = r; j >= 0; q = padreRango[j][q], j--) gana.add(j + "-" + q);
+    }));
+    P.forEach((paso, i) => {
+      if (i > t) return;
+      const x = x0 + 95 + i * colW, sig = [];
+      paso.candidatas.forEach((c, r) => {
+        const y = 30 + r * filaH, yPadre = pos[i][c.padre], on = c.elegida;
+        const xPadre = i === 0 ? x0 + 70 : x - colW + bw;
+        // al final: camino ganador en morado oscuro; el resto de elegidas, en morado claro
+        const ganador = fin && gana.has(i + "-" + r), claro = fin && on && !ganador;
+        const linea = ganador ? "#4A148C" : claro ? "#CE93D8" : on ? "#8E24AA" : "#CFD8DC";
+        const relleno = !on ? "#F5F7FA" : claro ? "#F3E5F5" : c.termina ? "#2E7D32" : ganador ? "#4A148C" : "#8E24AA";
+        g += `<line x1="${xPadre}" y1="${yPadre}" x2="${x}" y2="${y + 15}" stroke="${linea}" stroke-width="${ganador ? 4 : on ? 2.5 : 1.2}" ${on ? "" : 'stroke-dasharray="4 3"'}/>`;
+        g += `<rect x="${x}" y="${y}" width="${bw}" height="30" rx="6" fill="${relleno}" stroke="${!on ? "#CFD8DC" : claro ? "#CE93D8" : "none"}"/>`;
+        g += `<text x="${x + bw / 2}" y="${y + 20}" text-anchor="middle" font-size="${bw < 100 ? 14 : 15}" font-weight="${on ? 800 : 500}" fill="${!on ? "#9AA5B1" : claro ? "#6A1B9A" : "#fff"}">${esc(txtPieza(c.pieza))}</text>`;
+        g += `<text x="${x + bw / 2}" y="${y + 41}" text-anchor="middle" font-size="12" fill="${on ? "#4A148C" : "#B0BEC5"}">${n(c.acumulada, 2)}</text>`;
+        if (on && !c.termina) sig.push(y + 15);
+      });
+      pos[i + 1] = sig;
+    });
+    const W = x0 + 95 + P.length * colW + 20;
+    $("haz-svg").setAttribute("viewBox", `0 0 ${W} ${30 + 6 * filaH + 10}`);
+    $("haz-svg").innerHTML = g;
+    $("haz-msg").innerHTML = fin
+      ? `<b>Elegida (haz 2, camino en morado oscuro):</b> «${esc(f.terminadas[0].texto)}» (log-prob. ${n(f.terminadas[0].logp, 2)} en ${f.terminadas[0].longitud} piezas)` +
+        (f.terminadas[1] ? ` · <b>otra terminada:</b> «${esc(f.terminadas[1].texto)}» (${n(f.terminadas[1].logp, 2)})` : "") +
+        `<br><b>Voraz:</b> «${esc(f.generate_voraz)}» (log-prob. ${n(f.logp_voraz, 2)}). La voraz elige en cada paso la pieza más probable; el haz guarda una segunda hipótesis por si acaba siendo mejor en conjunto` +
+        (f.terminadas[0].logp > f.logp_voraz + 0.01 ? `, y aquí encuentra una frase más probable que la voraz (${n(f.terminadas[0].logp, 2)} frente a ${n(f.logp_voraz, 2)}).` : ".") +
+        ((ref) => ref ? `<br><b>Con la referencia</b> «${esc(ref.es_referencia)}»: chrF2 del haz ${n(L.chrf(ref.es_referencia, f.generate_haz).puntuacion)} y de la voraz ${n(L.chrf(ref.es_referencia, f.generate_voraz).puntuacion)}. ` +
+          (L.chrf(ref.es_referencia, f.generate_voraz).puntuacion > L.chrf(ref.es_referencia, f.generate_haz).puntuacion ? "Más probable no siempre es mejor según la métrica: chrF premia los caracteres compartidos, no el sentido de la expresión." : "") : "")(DET.find((d) => d.en === f.en))
+      : `Paso ${t + 1}: hipótesis vivas al entrar: ${P[t].vivas.map((v) => "«" + esc(v || "—") + "»").join(" y ")}. Se quedan las dos candidatas moradas.`;
+  }
+  const pasosHaz = Clase.pasos($("haz-pasos"), { total: () => HZ.frases[+$("haz-sel").value].pasos.length, pintar: pintarHaz, etiqueta: () => "paso" });
+  $("haz-sel").addEventListener("change", () => pasosHaz.ir(0));
+
+  // ---------------------------------------------------------------- 2 · Atención
+  D.atencion.forEach((a, k) => { const o = document.createElement("option"); o.value = k; o.textContent = a.en; $("ate-sel").appendChild(o); });
+  function pintarAtencion() {
+    const a = D.atencion[+$("ate-sel").value];
+    const capa = document.querySelector("input[name=ate-capa]:checked").value;
+    const ocultar = $("ate-fin").checked;
+    const fin = a.origen.length - 1;
+    let M = a[capa].map((fila) => fila.slice());
+    if (ocultar) M = M.map((fila) => { const s = fila.reduce((t, v, j) => t + (j === fin ? 0 : v), 0); return fila.map((v, j) => (j === fin ? null : s > 0 ? v / s : 0)); });
+    let h = "<tr><th></th>" + a.origen.map((t, j) => (ocultar && j === fin ? "" : `<th>${pieza(t)}</th>`)).join("") + "</tr>";
+    M.forEach((fila, i) => {
+      const vals = fila.map((v) => (v === null ? -1 : v));
+      const jm = vals.indexOf(Math.max(...vals));
+      h += `<tr><th class="fila">${pieza(a.destino[i])}</th>` + fila.map((v, j) => {
+        if (v === null) return "";
+        const c = Math.round(255 - 180 * v);
+        return `<td class="${j === jm ? "max" : ""}" style="background:rgb(${Math.round(255 - 113 * v)},${c},${Math.round(255 - 85 * v)});color:${v > 0.55 ? "#fff" : "#1F2933"}" title="${pieza(a.destino[i])} → ${pieza(a.origen[j])}: ${n(v, 3)}">${n(v, 2)}</td>`;
+      }).join("") + "</tr>";
+    });
+    $("ate-mapa").innerHTML = h;
+    $("ate-nota").textContent = `Salida de MarianMT: «${a.salida}». ${capa === "ultima_capa" ? "Última capa del decodificador" : "Media de las 6 capas"}, media de las 8 cabezas.`;
+  }
+  ["ate-sel", "ate-fin"].forEach((id) => $(id).addEventListener("change", pintarAtencion));
+  document.querySelectorAll("input[name=ate-capa]").forEach((r) => r.addEventListener("change", pintarAtencion));
+  pintarAtencion();
+
+  // ---------------------------------------------------------------- 3 · chrF
+  const EJ_CHR = [["la casa", "las casas"], ["Está lloviendo a cántaros.", "Está lloviendo gatos y perros."], ["Está lloviendo a cántaros.", "Llueve muchísimo."],
+    ["¿Hace falta reservar con antelación?", "¿Necesitamos reservar por adelantado?"], ["Fui a la biblioteca a sacar un libro.", "Fui a la biblioteca a pedir prestado un libro."]];
+  $("chr-ej").innerHTML = EJ_CHR.map((e, k) => `<button class="chip" data-k="${k}">${esc(e[1])}</button>`).join("");
+  $("chr-ej").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (!b) return; const [r, h] = EJ_CHR[+b.dataset.k]; $("chr-ref").value = r; $("chr-hip").value = h; pintarChrf(); });
+  function pintarChrf() {
+    const r = $("chr-ref").value, h = $("chr-hip").value, N = +$("chr-n").value, beta = +$("chr-beta").value;
+    const c = L.chrf(r, h, N, beta);
+    $("chr-stats").innerHTML = `<div><div class="big">${n(c.puntuacion)}</div><div class="small">chrF${beta} (n ≤ ${N})</div></div><div><div class="big">${n(c.P, 3)}</div><div class="small">chrP (media)</div></div><div><div class="big">${n(c.R, 3)}</div><div class="small">chrR (media)</div></div><div><div class="big">${n(L.chrf(r, h).puntuacion)}</div><div class="small">chrF2 por defecto (n ≤ 6)</div></div>`;
+    $("chr-tabla").innerHTML = "<tr><th class='num'>n</th><th class='num'>n-gramas traducción</th><th class='num'>n-gramas referencia</th><th class='num'>coincidencias</th><th class='num'>precisión</th><th class='num'>exhaustividad</th></tr>" +
+      c.ordenes.map((o) => `<tr class="${o.efectivo ? "" : "hl"}"><td class="num">${o.n}</td><td class="num">${o.hip}</td><td class="num">${o.ref}</td><td class="num">${o.coinc}</td><td class="num">${o.p === null ? "—" : n(o.p, 3)}</td><td class="num">${o.r === null ? "—" : n(o.r, 3)}</td></tr>`).join("");
+    const sinEsp = (s) => Array.from(s.split(/\s+/).join(""));
+    if (sinEsp(r).length <= 30 && sinEsp(h).length <= 30) {
+      // n-gramas de la traducción: verdes si están en la referencia (respetando cuántas veces), rojos si no
+      const ngs = (s, k) => { const a = sinEsp(s), out = []; for (let i = 0; i + k <= a.length; i++) out.push(a.slice(i, i + k).join("")); return out; };
+      $("chr-ngramas").innerHTML = [1, 2, 3].filter((k) => k <= N).map((k) => { const ref = {}; ngs(r, k).forEach((g) => { ref[g] = (ref[g] || 0) + 1; });
+        return `<p><strong>${k}-gramas de la traducción</strong> (verde: también en la referencia)</p><div class="ngr">` + ngs(h, k).map((g) => { const ok = ref[g] > 0; if (ok) ref[g]--; return `<span class="${ok ? "si" : "no"}">${esc(g)}</span>`; }).join("") + "</div>"; }).join("");
+    } else $("chr-ngramas").innerHTML = "";
+  }
+  ["chr-ref", "chr-hip"].forEach((id) => $(id).addEventListener("input", pintarChrf));
+  ["chr-n", "chr-beta"].forEach((id) => $(id).addEventListener("change", pintarChrf));
+  pintarChrf();
+
+  // ---------------------------------------------------------------- 4 · Sesgo
+  const SON = D.sondas, COLG = { masculino: "#1E88E5", femenino: "#C2185B" };
+  function pintarSesgo() {
+    $("ses-rejilla").innerHTML = SON.map((s) => `<div class="sonda" style="border-color:${COLG[s.genero_voraz] || "#CFD8DC"}"><div class="en">${esc(s.en)}</div>` +
+      `<div class="small">${s.tipo}${s.marcado !== "-" ? " (pronombre: " + s.marcado + ")" : ""}</div><div class="es">${esc(s.voraz)}</div>` +
+      `<span class="g" style="background:${COLG[s.genero_voraz] || "#9AA5B1"}">${s.genero_voraz}${s.tipo === "con pista" && s.genero_voraz !== s.marcado ? " · contradice la pista" : ""}</span></div>`).join("");
+    $$("#ses-rejilla .sonda").forEach((x) => x.addEventListener("click", () => x.classList.remove("oculto")));
+    const sin = SON.filter((s) => s.tipo === "sin pista"), con = SON.filter((s) => s.tipo === "con pista");
+    $("ses-stats").innerHTML = `<div><div class="big">${sin.filter((s) => s.genero_voraz === "masculino").length} de ${sin.length}</div><div class="small">sin pista → masculino (voraz)</div></div>` +
+      `<div><div class="big">${con.filter((s) => s.genero_voraz === s.marcado).length} de ${con.length}</div><div class="small">con pronombre → respeta la pista</div></div>`;
+  }
+  const $$ = (q) => [...document.querySelectorAll(q)];
+  Clase.botonPregunta($("ses-ctrl"), (oc) => { $$("#ses-rejilla .sonda").forEach((x) => x.classList.toggle("oculto", oc)); $("ses-stats").style.visibility = oc ? "hidden" : ""; }, { ver: "Ocultar las salidas para preguntar", ocultas: "Mostrar todas las salidas" });
+  pintarSesgo();
+
+  // ---------------------------------------------------------------- 5 · Resumen
+  const NOT = D.noticias, DOCS = NOT.map((x) => x.titular + ". " + x.texto);
+  const TFR = new L.Tfidf(DOCS, 2);
+  D.resumen.detalle.forEach((r) => { const x = NOT.find((y) => y.id === r.documento); const o = document.createElement("option"); o.value = r.documento; o.textContent = `${r.documento} · ${x.titular}`; $("res-sel").appendChild(o); });
+  function pintarResumen() {
+    const r = D.resumen.detalle.find((x) => x.documento === $("res-sel").value);
+    const x = NOT.find((y) => y.id === r.documento), fuente = x.titular + ". " + x.texto;
+    const fr = L.frases(x.texto), vt = TFR.transformar(x.texto);
+    const sims = fr.map((f) => L.producto(TFR.transformar(f), vt));
+    const jm = sims.indexOf(Math.max(...sims));
+    $("res-frases").innerHTML = `<div class="salida"><b>Titular:</b> ${esc(x.titular)}</div>` + fr.map((f, k) => `<div class="salida">${k === 0 ? "<b>1.ª frase</b> · " : ""}${k === jm ? "<b>frase central</b> · " : ""}${esc(f)}<br><span class="barra est" style="width:${Math.round(220 * sims[k])}px"></span> <span class="small">coseno con el cuerpo: ${n(sims[k], 3)}</span></div>`).join("") +
+      `<div class="salida"><b>Referencia (a mano):</b> ${esc(r.referencia)}</div>`;
+    const sal = [["titular", x.titular], ["primera frase", fr[0]], ["frase central (TF-IDF)", fr[jm]], ["Qwen2.5-0.5B-Instruct (precalculado)", r.qwen]];
+    $("res-tabla").innerHTML = "<tr><th>sistema</th><th>resumen</th><th class='num'>ROUGE-1</th><th class='num'>palabras</th><th>cifras que no están en la noticia</th></tr>" +
+      sal.map(([k, s]) => { const aj = L.cifrasAjenas(fuente, s); return `<tr><td>${k}</td><td>${esc(s)}</td><td class="num">${n(L.rouge1(r.referencia, s).f1, 3)}</td><td class="num">${L.palabras(s).length}</td><td class="${aj.length ? "malo" : ""}">${aj.length ? aj.map(esc).join(", ") : "—"}</td></tr>`; }).join("");
+    pintarMio();
+  }
+  function pintarMio() {
+    const r = D.resumen.detalle.find((x) => x.documento === $("res-sel").value);
+    const x = NOT.find((y) => y.id === r.documento), s = $("res-mio").value.trim();
+    if (!s) { $("res-mio-out").textContent = ""; return; }
+    const aj = L.cifrasAjenas(x.titular + ". " + x.texto, s);
+    $("res-mio-out").innerHTML = `ROUGE-1 frente a la referencia: <strong>${n(L.rouge1(r.referencia, s).f1, 3)}</strong> · ${L.palabras(s).length} palabras · cifras ajenas: ${aj.length ? "<span style='color:#C62828;font-weight:700'>" + aj.map(esc).join(", ") + "</span>" : "ninguna"}`;
+  }
+  $("res-sel").addEventListener("change", pintarResumen); $("res-mio").addEventListener("input", pintarMio);
+  pintarResumen();
+  const ag = D.resumen.agregado;
+  $("res-agregado").textContent = "Media en las 12 noticias (ROUGE-1): " + Object.entries(ag).map(([k, v]) => `${k} ${n(v.rouge1_f1, 3)}`).join(" · ") +
+    `. Resúmenes de Qwen con cifras ajenas: ${ag["Qwen2.5-0.5B-Instruct"].resumenes_con_cifras_ajenas} de 12 (dos invenciones y una paráfrasis, «1 Gbps» por «un gigabit»).`;
+
+  // Esquemas de flujo (Figuras 12, 13 y 17-20 del tema)
+  function flujo(id, filas, alto) {
+    let g = `<defs><marker id="fl-${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#52606D"/></marker></defs>`;
+    let y = 0;
+    filas.forEach(([etq, pasos]) => {
+      const w = 1000 / pasos.length, x0 = 17;
+      if (etq) { g += `<text x="${x0}" y="${y + 22}" font-size="17" font-weight="800" fill="#1F2933">${etq}</text>`; y += 22; }
+      pasos.forEach(([t, sub, c], k) => {
+        const x = x0 + k * w;
+        g += `<rect x="${x}" y="${y + 20}" width="${w - 34}" height="62" rx="9" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-width="2"/>`;
+        g += `<text x="${x + (w - 34) / 2}" y="${y + 46}" text-anchor="middle" font-size="15" font-weight="800" fill="#1F2933">${t}</text><text x="${x + (w - 34) / 2}" y="${y + 66}" text-anchor="middle" font-size="12" fill="#52606D">${sub}</text>`;
+        if (k < pasos.length - 1) g += `<line x1="${x + w - 32}" y1="${y + 51}" x2="${x + w - 4}" y2="${y + 51}" stroke="#52606D" stroke-width="2.5" marker-end="url(#fl-${id})"/>`;
+      });
+      y += 95;
+    });
+    $(id).setAttribute("viewBox", `0 0 1000 ${y}`);
+    $(id).innerHTML = g;
+  }
+  flujo("age-esq", [["", [["Mensaje", "texto del usuario", "#9AA5B1"], ["Comprensión", "intención y huecos", "#1E88E5"], ["Gestión del diálogo", "marco y estado", "#8E24AA"], ["Generación", "plantilla de respuesta", "#00897B"], ["Respuesta", "texto del agente", "#9AA5B1"]]]]);
+  flujo("bus-esq", [["", [["Pregunta", "texto libre", "#9AA5B1"], ["Índice invertido", "palabra → noticias", "#1E88E5"], ["Candidatos", "unos pocos documentos", "#F57C00"], ["Ordenar", "coseno de TF-IDF", "#8E24AA"], ["Documentos", "los primeros, al lector", "#9AA5B1"]]]]);
+  flujo("voz-esq", [["Habla → texto", [["Audio", "onda", "#9AA5B1"], ["Espectrograma", "log-mel, 80 bandas", "#1E88E5"], ["Codificador", "Transformer", "#8E24AA"], ["Decodificador", "texto pieza a pieza", "#8E24AA"], ["Texto", "transcripción", "#9AA5B1"]]],
+    ["Texto → habla", [["Texto", "con cifras", "#9AA5B1"], ["Normalización", "«2,1 %» → palabras", "#F57C00"], ["Modelo acústico", "da el espectrograma", "#8E24AA"], ["Vocoder", "da la onda", "#00897B"], ["Audio", "voz sintética", "#9AA5B1"]]]]);
+
+  // ---------------------------------------------------------------- 6 · Agente
+  let agente = new L.Agente(false);
+  const EJ_AGE = ["Hola", "Quiero reservar una tutoría del tema 9", "El jueves a las 21:00", "El jueves a las cinco y media", "Por videollamada", "Sí",
+    "Ya no puedo ir a la tutoría del martes", "¿Hay tutorías por la tarde?", "¿Me recomiendas una película?"];
+  $("age-ej").innerHTML = EJ_AGE.map((t) => `<button class="chip">${esc(t)}</button>`).join("");
+  function decir(t) {
+    if (!t.trim()) return;
+    const r = agente.responder(t);
+    $("age-chat").insertAdjacentHTML("beforeend", `<div class="msg u">${esc(t)}<span class="nlu">${r.nlu.intencion} ${esc(JSON.stringify(r.nlu.huecos))}</span></div><div class="msg a">${esc(r.respuesta)}</div>`);
+    $("age-chat").scrollTop = $("age-chat").scrollHeight;
+    $("age-nlu").innerHTML = `intención: <strong>${r.nlu.intencion}</strong><br>huecos: ${esc(JSON.stringify(r.nlu.huecos))}<br>regla: ${r.nlu.regla ? esc(r.nlu.regla.replace(/\(\?<!\[\\p\{L\}\\p\{N\}_\]\)|\(\?!\[\\p\{L\}\\p\{N\}_\]\)/g, "\\b").replace(/\[\\p\{L\}\\p\{N\}_\]/g, "\\w")) : "ninguna (informar si hay huecos; si no, fuera de dominio)"}`;
+    $("age-marco").innerHTML = esc(JSON.stringify(agente.marco)) + (agente.esperando ? "<br>esperando confirmación" : "");
+  }
+  $("age-env").addEventListener("click", () => { decir($("age-in").value); $("age-in").value = ""; });
+  $("age-in").addEventListener("keydown", (e) => { if (e.key === "Enter") { decir($("age-in").value); $("age-in").value = ""; } });
+  $("age-ej").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) decir(b.textContent); });
+  function reiniciar() { agente = new L.Agente($("age-extra").checked); $("age-chat").innerHTML = ""; $("age-nlu").textContent = "—"; $("age-marco").textContent = "—"; pintarEvalAgente(); }
+  $("age-reset").addEventListener("click", reiniciar); $("age-extra").addEventListener("change", reiniciar);
+  function pintarEvalAgente() {
+    const extra = $("age-extra").checked;
+    const filas = D.dialogo.map((u) => { const r = L.comprender(u.enunciado, extra); const oro = {}; ["tema", "dia", "hora", "modalidad"].forEach((k) => { if (u[k]) oro[k] = u[k]; }); return { u, r, ok: r.intencion === u.intencion, okh: JSON.stringify(r.huecos) === JSON.stringify(oro) }; });
+    const cuenta = (p, k) => filas.filter((f) => f.u.particion === p && f[k]).length;
+    $("age-stats").innerHTML = ["desarrollo", "prueba"].map((p) => `<div><div class="big">${cuenta(p, "ok")} de ${filas.filter((f) => f.u.particion === p).length}</div><div class="small">intención, ${p}</div></div><div><div class="big">${cuenta(p, "okh")}</div><div class="small">huecos, ${p}</div></div>`).join("");
+    $("age-tabla").innerHTML = "<tr><th>id</th><th>partición</th><th>enunciado</th><th>reglas</th><th>anotada</th><th>huecos</th></tr>" +
+      filas.map((f) => `<tr><td>${f.u.id}</td><td>${f.u.particion}</td><td>${esc(f.u.enunciado)}</td><td class="${f.ok ? "" : "malo"}">${f.r.intencion}</td><td>${f.u.intencion}</td><td class="mono small ${f.okh ? "" : "malo"}">${esc(JSON.stringify(f.r.huecos))}</td></tr>`).join("");
+  }
+  pintarEvalAgente();
+
+  // ---------------------------------------------------------------- 7 · Búsqueda
+  const TFB = new L.Tfidf(DOCS, 1), STOP = new Set(D.stop), IDS = NOT.map((x) => x.id);
+  const indice = new Map();
+  DOCS.forEach((d, k) => { new Set(d.toLowerCase().match(/[a-záéíóúüñ0-9]+/gu) || []).forEach((w) => { if (!indice.has(w)) indice.set(w, []); indice.get(w).push(IDS[k]); }); });
+  const FAC = D.preguntas.filter((q) => q.tipo === "factoide");
+  $("bus-sel").innerHTML = FAC.map((q) => `<option value="${q.id}">${q.id} (${q.particion}) · ${esc(q.pregunta)}</option>`).join("");
+  $("bus-sel").value = "Q20";
+  function buscar() {
+    const q = $("bus-q").value, v = TFB.transformar(q);
+    const s = TFB.vectores.map((d, k) => [L.producto(v, d), k]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+    const terms = (q.toLowerCase().match(/[a-záéíóúüñ0-9]+/gu) || []).filter((w) => !STOP.has(w));
+    const cand = new Set(); terms.forEach((w) => (indice.get(w) || []).forEach((d) => cand.add(d)));
+    $("bus-indice").innerHTML = `<p><strong>Índice invertido</strong> (${miles(indice.size)} términos; sin palabras vacías): ` + (terms.length ? terms.map((w) => `<span class="mono">${esc(w)}</span> → ${(indice.get(w) || []).length ? (indice.get(w) || []).join(", ") : "<span style='color:#C62828'>ninguno</span>"}`).join(" · ") : "—") + ` · <strong>${cand.size} candidatos</strong> de ${DOCS.length}</p>`;
+    const sel = FAC.find((x) => x.id === $("bus-sel").value);
+    const correcto = sel && sel.pregunta === q ? sel.documento : null;
+    $("bus-res").innerHTML = "<tr><th class='num'>#</th><th>noticia</th><th class='num'>coseno TF-IDF</th></tr>" + s.slice(0, 5).map(([p, k], i) => `<tr class="${IDS[k] === correcto ? "hl" : ""}"><td class="num">${i + 1}</td><td><strong>${IDS[k]}</strong> · ${esc(NOT[k].titular)}</td><td class="num"><span style="display:inline-block;height:.8rem;border-radius:3px;background:#8E24AA;margin-right:.4rem;width:${(6 * p / Math.max(s[0][0], 1e-9)).toFixed(2)}rem"></span>${n(p, 3)}</td></tr>`).join("");
+    if (correcto) {
+      const rt = s.findIndex(([, k]) => IDS[k] === correcto) + 1, rg = D.rangos[sel.id];
+      $("bus-rangos").innerHTML = `<div class="info">Documento correcto: <strong>${correcto}</strong>. Rango con TF-IDF (calculado aquí): <strong>${rt}</strong> · puntuación del tema: ${rg["puntuación del tema (TF-IDF / |d|)"]} · vectores de spaCy: ${rg["vectores de spaCy (media)"]} · BETO: ${rg["BETO (media de la capa final)"]} (precalculados).</div>`;
+    } else $("bus-rangos").innerHTML = "<p class='small'>Consulta libre: no hay documento correcto anotado.</p>";
+  }
+  $("bus-sel").addEventListener("change", () => { $("bus-q").value = FAC.find((x) => x.id === $("bus-sel").value).pregunta; buscar(); });
+  $("bus-go").addEventListener("click", buscar); $("bus-q").addEventListener("keydown", (e) => { if (e.key === "Enter") buscar(); });
+  $("bus-q").value = FAC.find((x) => x.id === "Q20").pregunta; buscar();
+  $("bus-mrr").innerHTML = "<tr><th>representación</th><th class='num'>MRR</th><th class='num'>1.º puesto</th><th class='num'>en los 3 primeros</th></tr>" +
+    Object.entries(D.mrr).map(([k, v]) => `<tr><td>${k}</td><td class="num">${n(v.prueba.MRR, 3)}</td><td class="num">${v.prueba["acierto@1"]} de ${v.prueba.consultas}</td><td class="num">${v.prueba["acierto@3"]} de ${v.prueba.consultas}</td></tr>`).join("");
+  function calcMrr() {
+    const r = $("mrr-in").value.split(/[,;\s]+/).map(Number).filter((x) => x >= 1 && Number.isFinite(x));
+    $("mrr-out").textContent = r.length ? "MRR = " + n(L.mrr(r), 3) : "—";
+  }
+  $("mrr-go").addEventListener("click", calcMrr); $("mrr-in").addEventListener("input", calcMrr); calcMrr();
+
+  // ---------------------------------------------------------------- 8 · Lector
+  const LEC = D.lector;
+  $("lec-sel").innerHTML = LEC.preguntas.map((q, k) => `<option value="${k}">${q.id} (${q.particion}, ${q.tipo}) · ${esc(q.pregunta)}</option>`).join("");
+  $("lec-sel").value = String(LEC.preguntas.findIndex((q) => q.id === "Q03"));
+  function pintarLector() {
+    const q = LEC.preguntas[+$("lec-sel").value], ctx = q.contexto;
+    // Tramo del modelo: máximo de P(inicio)·P(fin) con el fin detrás del inicio (como mucho 30 piezas del documento)
+    const Pc = q.piezas.slice(1);
+    let mejor = [-1, 0, 0];
+    Pc.forEach((pi, i) => { for (let j = i; j < Math.min(Pc.length, i + 30); j++) { const v = pi.ps * Pc[j].pe; if (v > mejor[0]) mejor = [v, i, j]; } });
+    const ini = Pc[mejor[1]].a, finP = Pc[mejor[2]].b, io = q.oro ? ctx.indexOf(q.oro) : -1;
+    let html = "", clase = null, tramo = "";
+    const cierra = () => { if (tramo) html += clase ? `<span class="${clase}">${esc(tramo)}</span>` : esc(tramo); tramo = ""; };
+    for (let i = 0; i <= ctx.length; i++) {
+      const enP = i >= ini && i < finP, enO = io >= 0 && i >= io && i < io + q.oro.length;
+      const c = i === ctx.length ? "fin" : ((enP ? "pred " : "") + (enO ? "oro" : "")).trim() || null;
+      if (c !== clase) { cierra(); clase = c; }
+      if (i < ctx.length) tramo += ctx[i];
+    }
+    const dec = q.contesta_con_umbral ? "contesta" : "se abstiene";
+    $("lec-doc").innerHTML = `<div class="doc">${html}</div><p class="small">Respuesta del modelo: «${esc(ctx.slice(ini, finP))}» (P(inicio)·P(fin) = ${n(mejor[0], 3)}) · anotada: «${esc(q.oro || "sin respuesta")}» · margen ${n(q.margen, 1)} → con el umbral ${n(LEC.umbral, 2)} ${dec}${q.f1 !== null ? " · F1 " + n(q.f1, 2) : ""}.</p>`;
+    const P = q.piezas, w = 26, h = 150, alto = h + 70;
+    let svg = `<svg width="${P.length * w + 60}" height="${alto}" role="img" aria-label="Probabilidades de inicio y fin por pieza">`;
+    svg += `<rect x="4" y="4" width="10" height="10" fill="#8E24AA"/><text x="18" y="13" font-size="12" fill="#52606D">P(inicio)</text><rect x="80" y="4" width="10" height="10" fill="#F57C00"/><text x="94" y="13" font-size="12" fill="#52606D">P(fin)</text>`;
+    P.forEach((p, k) => {
+      const x = 40 + k * w;
+      svg += `<rect x="${x}" y="${20 + h * (1 - p.ps)}" width="10" height="${h * p.ps}" fill="#8E24AA"><title>${esc(p.t)} · P(inicio) ${n(p.ps, 3)}</title></rect>`;
+      svg += `<rect x="${x + 11}" y="${20 + h * (1 - p.pe)}" width="10" height="${h * p.pe}" fill="#F57C00"><title>${esc(p.t)} · P(fin) ${n(p.pe, 3)}</title></rect>`;
+      svg += `<text transform="translate(${x + 12},${h + 28}) rotate(60)" font-size="11" fill="#1F2933">${esc(p.t)}</text>`;
+    });
+    svg += `<line x1="38" x2="${P.length * w + 45}" y1="${h + 20}" y2="${h + 20}" stroke="#9AA5B1"/></svg>`;
+    $("lec-graf").innerHTML = svg;
+  }
+  $("lec-sel").addEventListener("change", pintarLector); pintarLector();
+  function pintarUmbral() {
+    const u = +$("lec-umbral").value;
+    $("lec-umbral-v").textContent = n(u, 2);
+    const filas = ["desarrollo", "prueba"].map((p) => {
+      const f = LEC.preguntas.filter((q) => q.particion === p && q.tipo === "factoide"), s = LEC.preguntas.filter((q) => q.particion === p && q.tipo === "sin respuesta");
+      return `<tr><td>${p}</td><td class="num">${f.filter((q) => q.margen > u).length} de ${f.length}</td><td class="num">${s.filter((q) => q.margen <= u).length} de ${s.length}</td></tr>`;
+    });
+    $("lec-cuenta").innerHTML = "<tr><th>partición</th><th class='num'>factoides que contesta</th><th class='num'>sin respuesta en las que se abstiene</th></tr>" + filas.join("");
+  }
+  $("lec-umbral").addEventListener("input", pintarUmbral); pintarUmbral();
+
+  // ---------------------------------------------------------------- 9 · Voz
+  const VZ = D.voz, ASR = VZ.asr;
+  const det = (m, id) => ASR[m].detalle.find((f) => f.id === id);
+  const AUD = [["V01", "original"], ["V01", "verbalizado"], ["V09", "original"], ["V09", "verbalizado"], ["V10", "original"], ["V10", "verbalizado"], ["V11", "original"]];
+  $("voz-audios").innerHTML = "<table><tr><th>audio</th><th>texto sintetizado</th><th>Whisper tiny</th><th>Whisper base</th></tr>" + AUD.map(([id, c]) => {
+    const f = VZ.frases.find((x) => x.id === id), texto = c === "original" ? f.texto : f.texto_verbalizado;
+    return `<tr><td><audio controls preload="none" src="09_aplicaciones_audio/${id}_${c}.wav"></audio><br><span class="small">${id} · ${c === "original" ? "con cifras" : "verbalizado"}</span></td><td>${esc(texto)}</td><td>${esc(det("whisper-tiny", id)[c].transcripcion)}</td><td>${esc(det("whisper-base", id)[c].transcripcion)}</td></tr>`;
+  }).join("") + "</table>";
+  const EJ_N = ["La inflación se modera hasta el 2,1 % en septiembre.", "La maratón reunió a 14.000 corredores y ganó por 3-1.", "Abre a las 8:30 y cuesta 9,05 €.",
+    "En 1910 se fundó el club y la clave de la consigna es 1910.", "Hay 1.500.000 habitantes y 21.000 socios."];
+  $("voz-norm-ej").innerHTML = EJ_N.map((t) => `<button class="chip">${esc(t)}</button>`).join("");
+  $("voz-norm-ej").addEventListener("click", (e) => { const b = e.target.closest(".chip"); if (b) { $("voz-norm-in").value = b.textContent; pintarNorm(); } });
+  function pintarNorm() { $("voz-norm-out").innerHTML = "<b>Verbalizado:</b> " + esc(L.verbalizar($("voz-norm-in").value)); }
+  $("voz-norm-in").addEventListener("input", pintarNorm); pintarNorm();
+  function pintarWer() {
+    const v = $("wer-verb").checked;
+    const a = L.alinear(L.normalizarParaWer($("wer-ref").value, v), L.normalizarParaWer($("wer-hip").value, v));
+    $("wer-stats").innerHTML = `<div><div class="big">${n(100 * a.wer, 1)} %</div><div class="small">WER</div></div><div><div class="big">${a.S}</div><div class="small">sustituciones</div></div><div><div class="big">${a.D}</div><div class="small">borrados</div></div><div><div class="big">${a.I}</div><div class="small">inserciones</div></div><div><div class="big">${a.N}</div><div class="small">palabras de la referencia</div></div>`;
+    $("wer-ops").innerHTML = a.pasos.map(([op, r, h]) => op === "=" ? `<span class="eq">${esc(r)}</span>` : op === "S" ? `<span class="S" title="sustitución">${esc(r)} → ${esc(h)}</span>` : op === "D" ? `<span class="D" title="borrado">${esc(r)}</span>` : `<span class="I" title="inserción">+${esc(h)}</span>`).join("");
+  }
+  ["wer-ref", "wer-hip"].forEach((id) => $(id).addEventListener("input", pintarWer)); $("wer-verb").addEventListener("change", pintarWer); pintarWer();
+  const pc = (x) => n(100 * x, 1) + " %";
+  $("wer-corpus").innerHTML = "<tr><th>condición (10 frases con cifras)</th><th class='num'>tiny</th><th class='num'>base</th></tr>" +
+    [["texto con cifras · WER directa", "original", "wer"], ["texto con cifras · normalizando la transcripción", "original", "wer_verbalizando"], ["texto verbalizado · WER directa", "verbalizado", "wer"], ["texto verbalizado · normalizando la transcripción", "verbalizado", "wer_verbalizando"]]
+      .map(([t, c, m]) => `<tr><td>${t}</td><td class="num">${pc(ASR["whisper-tiny"].wer_corpus[c][m].con_cifras)}</td><td class="num">${pc(ASR["whisper-base"].wer_corpus[c][m].con_cifras)}</td></tr>`).join("") +
+    `<tr><td>frases de control (sin cifras)</td><td class="num">${pc(ASR["whisper-tiny"].wer_corpus.original.wer.control)}</td><td class="num">${pc(ASR["whisper-base"].wer_corpus.original.wer.control)}</td></tr>`;
+  const ra = VZ.rasgos;
+  $("voz-rasgos").textContent = `Muestreo ${ra.frecuencia / 1000} kHz · ventana ${ra.ventana_ms} ms cada ${ra.salto_ms} ms · ${ra.bandas_mel} bandas Mel · fragmentos de ${ra.fragmento_s} s = ${miles(ra.tramas_fragmento)} tramas · codificador de ${miles(ra.posiciones_codificador)} posiciones. La frase dura ${n(ra.duracion_s, 2)} s: ${ra.tramas_con_voz} tramas para ${ra.caracteres_frase} caracteres.`;
+
+  // (El repaso del test está en repaso.html, fuera de la demo de clase.)
+})();
+</script>
+</body>
+</html>

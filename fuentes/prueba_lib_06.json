@@ -1,0 +1,70 @@
+{
+ "fecha": "2026-10-12T12:04:12.283Z",
+ "node": "v22.22.0",
+ "mulberry32": {
+  "ok": true,
+  "js": [
+   0.6011037519201636,
+   0.44829055899754167,
+   0.8524657934904099
+  ]
+ },
+ "tokens": {
+  "ok": true,
+  "casos": 3,
+  "fallos": []
+ },
+ "ngramas": {
+  "ok": true,
+  "columnas": {
+   "1": 1108,
+   "2": 2363,
+   "3": 2731
+  },
+  "fallos_distintivos": []
+ },
+ "naive_bayes": {
+  "ok": true,
+  "variantes": 4,
+  "fallos": [],
+  "ejemplo_mano": {
+   "deportes": -8.50577828860094,
+   "salud": -8.851913894998644
+  }
+ },
+ "svd": {
+  "ok": true,
+  "sigma": [
+   8.4252,
+   3.2612,
+   0.988,
+   0.5743,
+   0.2721,
+   0
+  ]
+ },
+ "nmf": {
+  "ok": true,
+  "casos": 3,
+  "fallos": [],
+  "error_k2_s1": 1.179272815259616
+ },
+ "gibbs": {
+  "ok": true,
+  "casos": 4,
+  "fallos": []
+ },
+ "clinico": {
+  "ok": true,
+  "fallos": []
+ },
+ "entidades": {
+  "ok": true,
+  "fallos": []
+ },
+ "jaccard": {
+  "ok": true,
+  "semillas_0_1_top8": 0.265
+ },
+ "resultado": "OK"
+}

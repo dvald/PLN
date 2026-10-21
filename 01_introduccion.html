@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 1 · Introducción al PLN y la minería de textos — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.4rem 2rem 1.1rem; }
+  .header h1 { font-size: 1.55rem; margin-bottom: .2rem; }
+  .header p { color: #B0BEC5; font-size: .9rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .75rem 1rem; font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--unir); }
+  .content { max-width: 1100px; margin: 1.4rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.3rem 1.5rem; margin-bottom: 1.2rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.35rem; margin-bottom: .5rem; }
+  .card h3 { font-size: 1.08rem; margin: .8rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .7rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .8rem; align-items: center; }
+  .tag { display: inline-block; font-size: .76rem; font-weight: 700; padding: .12rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--texto-l); border-left: 4px solid var(--texto); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #0D47A1; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid var(--warn); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #5D4600; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #90CAF9; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  textarea { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); width: 100%; min-height: 3.2rem; resize: vertical; }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .chip { font: inherit; font-size: .88rem; padding: .3rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: .4rem; color: var(--ink); }
+  .chip[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  footer { max-width: 1100px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .8rem; color: var(--ink2); }
+
+  /* 1 · pronombres */
+  .frase-grande { font-size: 1.75rem; font-weight: 700; margin: .4rem 0 .6rem; padding: .7rem 1.1rem; background: var(--texto-l); border: 1px solid #90CAF9; border-radius: 10px; }
+  .prow { display: grid; grid-template-columns: 14rem minmax(0, 1fr) 8.5rem; gap: 1rem; align-items: center; padding: .8rem 0; border-top: 1px solid var(--line); }
+  .prow[hidden] { display: none; }
+  .plabel b { display: block; font-size: 1.05rem; }
+  .plabel span { font-size: .82rem; color: var(--ink2); }
+  .pcount { text-align: right; }
+  .pcount .n { font-size: 2.6rem; font-weight: 800; line-height: 1; }
+  .pcount .u { display: block; font-size: .82rem; color: var(--ink2); }
+  .tokens { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .tok { padding: .25rem .6rem; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-size: 1.25rem; line-height: 1.25; }
+  .tok .lab { display: block; font-size: .68rem; color: var(--ink2); line-height: 1.15; }
+  .tok.raw { background: #ECEFF1; font-family: Menlo, Consolas, monospace; font-size: 1.05rem; }
+  .tok.tp { background: var(--ok-l); border-color: var(--ok); }
+  .tok.fp { background: var(--bad-l); border-color: var(--bad); text-decoration: line-through; text-decoration-color: var(--bad); }
+  .tok.fn { background: var(--ok-l); border: 2px dashed var(--aplic); }
+  .tok.cand { background: var(--aplic-l); border-color: var(--aplic); }
+  .msg { margin-top: .8rem; padding: .7rem 1rem; border-radius: 8px; background: var(--soft); border: 1px solid var(--line); font-size: 1.02rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 1.1rem; font-size: .82rem; color: var(--ink2); margin-top: .5rem; }
+  .legend span { display: inline-flex; align-items: center; gap: .35rem; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid; }
+
+  /* 2 · Venn */
+  .venn-wrap { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); gap: 1.4rem; align-items: start; }
+  .venn-wrap svg { width: 100%; height: auto; display: block; }
+  .caso { cursor: pointer; }
+  .caso .lb { transition: opacity .3s; }
+  .caso:hover circle, .caso.sel circle { stroke: var(--aplic); stroke-width: 4; }
+  .detalle { border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.2rem; background: var(--soft); min-height: 12rem; }
+  .detalle .q { font-size: 1.25rem; font-weight: 700; margin-bottom: .6rem; }
+  .detalle .r { display: inline-block; font-weight: 800; padding: .15rem .7rem; border-radius: 999px; color: #fff; margin-bottom: .5rem; }
+  .detalle .e { font-size: 1.05rem; color: #37474F; }
+  .compar { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+  .compar > div { border-radius: 10px; padding: .9rem 1.1rem; border-top: 5px solid; background: var(--soft); }
+  .compar h3 { margin: 0 0 .4rem; }
+  .compar dl { display: grid; grid-template-columns: 7.5rem 1fr; gap: .25rem .6rem; font-size: .95rem; }
+  .compar dt { font-weight: 700; color: var(--ink2); }
+
+  /* 3 · historia */
+  .hist svg { width: 100%; height: auto; display: block; }
+  .hito { cursor: pointer; }
+  .hito-det { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 1.2rem; align-items: start; border-left: 8px solid var(--gris); background: var(--soft); border-radius: 0 12px 12px 0; padding: 1rem 1.2rem; margin-top: .4rem; }
+  .hito-det .yr { font-size: 2.8rem; font-weight: 800; line-height: 1; }
+  .hito-det .tt { font-size: 1.45rem; font-weight: 800; margin-bottom: .3rem; }
+  .hito-det .ds { font-size: 1.1rem; color: #37474F; }
+  .hito-det .src { font-size: .85rem; color: var(--ink2); font-style: italic; margin-top: .4rem; }
+
+  /* 4 · aplicaciones */
+  .apps-nav { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: .8rem; }
+  .escena { display: grid; grid-template-columns: minmax(0, 1fr) 13rem minmax(0, 1fr); gap: 1rem; align-items: stretch; margin-top: .4rem; }
+  .escena > div { border-radius: 12px; padding: 1rem 1.1rem; }
+  .esc-in { background: var(--texto-l); border: 1px solid #90CAF9; }
+  .esc-sis { background: var(--dark); color: #fff; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .esc-sis::before, .esc-sis::after { content: "▶"; position: absolute; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1.3rem; }
+  .esc-sis::before { left: -1.05rem; } .esc-sis::after { right: -1.05rem; }
+  .esc-sis b { font-size: 1.05rem; margin-bottom: .4rem; }
+  .esc-sis ul { list-style: none; font-size: .82rem; color: #CFD8DC; }
+  .esc-sis li::before { content: "· "; }
+  .esc-out { background: var(--ok-l); border: 1px solid #A5D6A7; }
+  .esc-lbl { font-size: .75rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--ink2); margin-bottom: .35rem; }
+  .burb { background: #fff; border-radius: 10px; padding: .55rem .8rem; margin: .35rem 0; font-size: 1.12rem; border: 1px solid var(--line); }
+  .burb.u { margin-right: 2.5rem; } .burb.a { margin-left: 2.5rem; background: #EDE7F6; }
+  .burb mark { background: #FFE082; border-radius: 3px; padding: 0 .1rem; }
+  .etq { display: inline-block; font-weight: 800; font-size: .85rem; padding: .05rem .55rem; border-radius: 999px; color: #fff; margin-left: .4rem; }
+  .barra { display: flex; height: 1.9rem; border-radius: 6px; overflow: hidden; margin: .5rem 0; font-size: .85rem; font-weight: 700; color: #fff; }
+  .barra span { display: flex; align-items: center; justify-content: center; }
+  .tema-chip { display: inline-block; font-weight: 800; padding: .2rem .8rem; border-radius: 999px; background: var(--dark); color: #fff; }
+
+  /* 5 · niveles */
+  .utter { font-size: 1.6rem; font-weight: 600; background: var(--texto-l); border: 1px solid #90CAF9; border-radius: 10px; padding: .8rem 1.1rem; }
+  .utter mark { background: #FFE082; border-radius: 4px; padding: 0 .15rem; }
+  .levels { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .5rem; margin: .8rem 0; }
+  .lvl { font: inherit; text-align: left; padding: .55rem .7rem; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; border-top-width: 6px; }
+  .lvl[aria-pressed="true"] { background: var(--soft); box-shadow: inset 0 0 0 2px var(--ink2); }
+  .lvl b { display: block; font-size: .95rem; }
+  .lvl span { font-size: .78rem; color: var(--ink2); }
+  .lvl-msg { font-size: 1.15rem; padding: .8rem 1rem; border-radius: 8px; background: var(--soft); border: 1px solid var(--line); min-height: 4.2rem; }
+  .tablero { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .6rem; margin-top: .6rem; }
+  .col { background: var(--soft); border-radius: 10px; padding: .5rem; min-height: 12rem; border-top: 6px solid; }
+  .col h3 { margin: .1rem 0 .5rem; font-size: .95rem; }
+  .fallo { font: inherit; text-align: left; width: 100%; display: block; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .6rem; margin-bottom: .45rem; font-size: .9rem; cursor: pointer; }
+  .fallo:hover, .fallo.sel { border-color: var(--aplic); box-shadow: 0 0 0 2px var(--aplic-l); }
+  .fallo .tambien { display: block; font-size: .72rem; color: var(--ink2); margin-top: .2rem; }
+  .bandeja { display: flex; flex-wrap: wrap; gap: .5rem; padding: .6rem; border: 2px dashed #F0D78C; border-radius: 10px; background: var(--warn-l); margin-top: .6rem; }
+  .bandeja[hidden] { display: none; }
+  .bandeja .fallo { width: auto; max-width: 22rem; margin: 0; }
+
+  /* 6 · ambigüedad */
+  .amb-frase { font-size: 2rem; font-weight: 800; text-align: center; margin: .6rem 0 .3rem; }
+  .amb-tipo { text-align: center; margin-bottom: .8rem; }
+  .amb-tipo span { display: inline-block; font-weight: 800; color: #fff; padding: .2rem .9rem; border-radius: 999px; }
+  .lecturas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .lectura { border: 2px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; background: #fff; }
+  .lectura h3 { margin: 0 0 .7rem; font-size: 1.2rem; }
+  .lectura h3 .l { display: inline-block; width: 1.8rem; height: 1.8rem; border-radius: 50%; color: #fff; text-align: center; line-height: 1.8rem; margin-right: .4rem; font-size: 1rem; }
+  .arcos { position: relative; padding-top: 4.2rem; text-align: center; }
+  .arcos .w { display: inline-block; font-size: 1.45rem; font-weight: 600; margin: 0 .22rem; padding: .05rem .2rem; border-radius: 5px; }
+  .arcos .w.g { background: var(--aplic-l); }
+  .arcos .w.d { background: #FFE082; }
+  .arcos svg { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  .ctx { font-size: 1.2rem; }
+  .ctx mark { background: #FFE082; border-radius: 4px; padding: 0 .15rem; }
+  .alumnos { display: flex; gap: .45rem; justify-content: center; margin: .6rem 0; flex-wrap: wrap; }
+  .alumnos span { width: 2.3rem; height: 2.3rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 1.1rem; }
+  .pol { display: inline-block; font-size: 1.3rem; font-weight: 700; padding: .2rem .55rem; border-radius: 6px; margin: .15rem; }
+  .pol sup { font-size: .8rem; }
+  .resuelve { margin-top: 1rem; font-size: 1.1rem; }
+  .oculta-lect { text-align: center; padding: 2.2rem 0; border: 2px dashed #F0D78C; border-radius: 12px; background: var(--warn-l); }
+
+  /* 7 · retos */
+  table.matriz { border-collapse: collapse; width: 100%; font-size: .92rem; table-layout: fixed; }
+  .matriz th, .matriz td { border-bottom: 1px solid var(--line); padding: .45rem .4rem; vertical-align: middle; }
+  .matriz thead th { background: var(--dark); color: #fff; font-weight: 700; font-size: .74rem; text-align: center; padding: .4rem .2rem; hyphens: auto; }
+  .matriz thead tr.grupo th { font-size: .85rem; }
+  .matriz td.m { text-align: center; }
+  .matriz tbody tr { cursor: pointer; }
+  .matriz tbody tr:hover, .matriz tbody tr.sel { background: #FFFBEA; }
+  .matriz .num { width: 2rem; height: 2rem; border-radius: 50%; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; }
+  .matriz .caso-t b { display: block; }
+  .matriz .caso-t .io { font-size: .88rem; color: #37474F; }
+  .marca { display: inline-block; width: 1.5rem; height: 1.5rem; border-radius: 50%; }
+  .marca.p { background: var(--aplic); }
+  .marca.a { border: 3px solid var(--aplic); }
+  .niv-chip { display: inline-block; font-size: .75rem; font-weight: 700; padding: .05rem .45rem; border-radius: 999px; background: var(--soft); border: 1px solid var(--line); margin: .1rem; }
+  .ver-sol { font: inherit; font-size: .78rem; font-weight: 700; padding: .2rem .55rem; border-radius: 6px; border: 1px dashed var(--warn); background: var(--warn-l); color: var(--warn); cursor: pointer; }
+  .reto-det { margin-top: 1rem; border-left: 6px solid var(--aplic); background: var(--soft); border-radius: 0 10px 10px 0; padding: .9rem 1.1rem; font-size: 1.05rem; }
+  @media (max-width: 720px) { .hito-det { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .venn-wrap, .escena, .lecturas, .compar { grid-template-columns: 1fr; } .levels, .tablero { grid-template-columns: repeat(3, minmax(0, 1fr)); } .prow { grid-template-columns: 1fr; } }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-texto">
+
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción" aria-current="page">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="sig" href="02_texto_como_dato.html">Tema 2 · El texto como dato ›</a></nav>
+  <h1><span class="num-tema">TEMA 1</span>Introducción al PLN y la minería de textos</h1>
+  <p>Qué es el PLN y en qué se diferencia de la minería de textos, su historia, sus aplicaciones y por qué el lenguaje es difícil para una máquina. <span class="cuando">Clases 1 y 2 · semana 1</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M9 8h30a5 5 0 0 1 5 5v15a5 5 0 0 1-5 5H21l-9 8v-8H9a5 5 0 0 1-5-5V13a5 5 0 0 1 5-5z" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M12 16h24M12 24h15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Secciones de la demo">
+  <button class="tab" role="tab" id="t-pron" aria-controls="p-pron" aria-selected="true"><span class="tab-n">1</span> Contar pronombres</button>
+  <button class="tab" role="tab" id="t-mineria" aria-controls="p-mineria" aria-selected="false" tabindex="-1"><span class="tab-n">2</span> PLN o minería de textos</button>
+  <button class="tab" role="tab" id="t-hist" aria-controls="p-hist" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Historia</button>
+  <button class="tab" role="tab" id="t-apl" aria-controls="p-apl" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Aplicaciones</button>
+  <button class="tab" role="tab" id="t-niv" aria-controls="p-niv" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Niveles de conocimiento</button>
+  <button class="tab" role="tab" id="t-amb" aria-controls="p-amb" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Ambigüedad</button>
+  <button class="tab" role="tab" id="t-retos" aria-controls="p-retos" aria-selected="false" tabindex="-1"><span class="tab-n">7</span> Seis fallos, seis retos</button>
+</div>
+
+<div class="content">
+
+<!-- ================= 1. Contar pronombres ================= -->
+<section class="panel active" id="p-pron" role="tabpanel" aria-labelledby="t-pron">
+  <div class="card">
+    <h2>Contar palabras no es PLN; contar pronombres, sí</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Ilustración: no ejecuta ningún modelo</span></div>
+    <p>La misma frase pasa por tres programas. Solo el tercero necesita saber qué es cada palabra: ese es el que hace PLN.</p>
+    <div class="row" id="pronChips" aria-label="Elegir frase"></div>
+    <textarea id="pronText" aria-label="Frase propia" hidden></textarea>
+    <div class="frase-grande" id="pronFrase"></div>
+    <div id="pronPasos"></div>
+    <div class="prow" id="rowA" hidden>
+      <div class="plabel"><b>Programa A · procesar datos</b><span>Separa por espacios, como <code>wc</code></span></div>
+      <div class="tokens" id="toksA"></div>
+      <div class="pcount" id="cntA"></div>
+    </div>
+    <div class="prow" id="rowB" hidden>
+      <div class="plabel"><b>Programa B · lista de pronombres</b><span>Marca toda palabra que esté en una lista (la, le, lo, me, se, sí, él…)</span></div>
+      <div class="tokens" id="toksB"></div>
+      <div class="pcount" id="cntB"></div>
+    </div>
+    <div class="prow" id="rowC" hidden>
+      <div class="plabel"><b>Programa C · con conocimiento</b><span>Usa la categoría gramatical de cada palabra (aquí, anotada a mano)</span></div>
+      <div class="tokens" id="toksC"></div>
+      <div class="pcount" id="cntC"></div>
+    </div>
+    <div class="legend" id="pronLegend" hidden>
+      <span><i class="sw" style="background:var(--ok-l);border-color:var(--ok)"></i>pronombre</span>
+      <span><i class="sw" style="background:var(--bad-l);border-color:var(--bad)"></i>la lista lo cuenta, pero no es pronombre</span>
+      <span><i class="sw" style="background:var(--ok-l);border:2px dashed var(--aplic)"></i>pronombre que la lista no ve</span>
+    </div>
+    <div class="msg" id="pronMsg" hidden></div>
+    <p class="small" style="margin-top:.8rem">El etiquetado gramatical que haría el trabajo del programa C se estudia en el Tema 3; cómo separar «dímelo» en sus piezas, en el Tema 2.</p>
+  </div>
+</section>
+
+<!-- ================= 2. PLN o minería de textos ================= -->
+<section class="panel" id="p-mineria" role="tabpanel" aria-labelledby="t-mineria" hidden>
+  <div class="card">
+    <h2>¿PLN, minería de textos o las dos cosas?</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartados 1.2 y 1.3 · Tabla 1 y Figura 1</span><span class="tag illus">Casos escritos para la clase</span></div>
+    <p>Cada caso está colocado según su <b>objetivo principal</b>: comprender o generar lenguaje (PLN) o sacar conocimiento de muchos textos (minería de textos). Pulsa un caso para ver por qué está ahí.</p>
+    <div class="row" id="vennCtrl"></div>
+    <div class="venn-wrap">
+      <svg id="venn" viewBox="0 0 800 655" role="img" aria-label="Diagrama de Venn con ocho casos entre PLN y minería de textos"></svg>
+      <div class="detalle" id="vennDet" aria-live="polite"></div>
+    </div>
+    <div class="compar">
+      <div style="border-top-color:var(--texto)"><h3>Procesamiento del lenguaje natural</h3><dl>
+        <dt>Objetivo</dt><dd>Que una máquina comprenda y genere lenguaje humano.</dd>
+        <dt>Ejemplos</dt><dd>Chatbots, asistentes de voz, traducción automática.</dd></dl></div>
+      <div style="border-top-color:var(--estad)"><h3>Minería de textos</h3><dl>
+        <dt>Objetivo</dt><dd>Extraer conocimiento accionable de grandes colecciones de texto no estructurado.</dd>
+        <dt>Casos de uso</dt><dd>Decisiones basadas en datos; sentimiento y opiniones de clientes.</dd>
+        <dt>Mecanismos</dt><dd>Análisis semántico, clasificación de documentos, resúmenes, detección de temas.</dd></dl></div>
+    </div>
+    <p class="small" style="margin-top:.6rem">La minería de textos usa técnicas de PLN junto con las de la minería de datos (Figura 1 del tema, Türegün, 2019); por eso hay casos en la intersección.</p>
+  </div>
+</section>
+
+<!-- ================= 3. Historia ================= -->
+<section class="panel" id="p-hist" role="tabpanel" aria-labelledby="t-hist" hidden>
+  <div class="card hist">
+    <h2>Historia del PLN: del autómata a los LLM</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.4 · Figuras 2-6</span><span class="tag">Fuentes de los hitos y correcciones: ficha del Tema 1</span></div>
+    <p>Cada carril es un enfoque. Se ve el péndulo: reglas y lógica al principio, estadística desde los ochenta, redes neuronales desde 2013. Avanza hito a hito con las flechas (la escala de tiempo se amplía desde 1990, donde hay más hitos).</p>
+    <div class="row" id="histFilters" aria-label="Enfoques visibles"></div>
+    <svg id="histSvg" viewBox="0 0 1200 300" role="img" aria-label="Línea de tiempo de los hitos del PLN por enfoque"></svg>
+    <div id="histPasos"></div>
+    <div class="hito-det" id="histDet" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ================= 4. Aplicaciones ================= -->
+<section class="panel" id="p-apl" role="tabpanel" aria-labelledby="t-apl" hidden>
+  <div class="card">
+    <h2>Dónde está el PLN: una aplicación, un ejemplo</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.5 · Figura 8</span><span class="tag illus">Ejemplos escritos para la clase; no son salidas de un producto concreto</span></div>
+    <div class="apps-nav" id="appsNav"></div>
+    <div id="appsPasos"></div>
+    <div class="escena" id="appEscena"></div>
+    <div class="row" style="margin-top:1rem"><span>Se estudia en:</span><span class="tema-chip" id="appTema"></span></div>
+    <div id="appNota"></div>
+  </div>
+</section>
+
+<!-- ================= 5. Niveles de conocimiento ================= -->
+<section class="panel" id="p-niv" role="tabpanel" aria-labelledby="t-niv" hidden>
+  <div class="card">
+    <h2>Una frase, seis niveles de conocimiento</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.6 · Figura 9</span><span class="tag illus">Ilustración construida a mano</span></div>
+    <p>Lo que una persona dice a su asistente de voz. Cada nivel resuelve una parte distinta de la frase.</p>
+    <p class="utter" id="utter"></p>
+    <div class="levels" id="levels"></div>
+    <div id="nivPasos"></div>
+    <div class="lvl-msg" id="levelMsg" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h2>Cada fallo, en el nivel que falla</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Fallos escritos para la clase</span></div>
+    <div class="row" id="tableroCtrl"></div>
+    <div class="bandeja" id="bandeja" hidden></div>
+    <div class="tablero" id="tablero"></div>
+    <div class="lvl-msg" id="falloMsg" style="margin-top:.8rem" aria-live="polite">Pulsa un fallo para ver la explicación.</div>
+  </div>
+</section>
+
+<!-- ================= 6. Ambigüedad ================= -->
+<section class="panel" id="p-amb" role="tabpanel" aria-labelledby="t-amb" hidden>
+  <div class="card">
+    <h2>La ambigüedad aparece en todos los niveles</h2>
+    <div class="meta"><span class="tag">Tema 1 · apartado 1.6</span><span class="tag illus">Ejemplos construidos a mano</span></div>
+    <div class="row" id="ambNav"></div>
+    <div class="row"><span id="ambPasos"></span><span id="ambCtrl"></span></div>
+    <div class="amb-frase" id="ambFrase"></div>
+    <div class="amb-tipo" id="ambTipo"></div>
+    <div id="ambLect"></div>
+    <div class="resuelve" id="ambRes"></div>
+  </div>
+</section>
+
+<!-- ================= 7. Retos ================= -->
+<section class="panel" id="p-retos" role="tabpanel" aria-labelledby="t-retos" hidden>
+  <div class="card">
+    <h2>Seis fallos y el reto que hay detrás</h2>
+    <div class="meta"><span class="tag">Clase 2 · problema de identificación de retos actuales</span><span class="tag illus">Casos ilustrativos, no salidas de un producto concreto</span></div>
+    <p><span class="marca p" style="vertical-align:middle"></span> reto principal &nbsp; <span class="marca a" style="vertical-align:middle"></span> también defendible. Muchos retos actuales son retos clásicos del lenguaje a mayor escala. Pulsa una fila para ver la explicación.</p>
+    <div class="row" id="retosCtrl"></div>
+    <div style="overflow-x:auto"><table class="matriz" id="matriz"></table></div>
+    <div class="reto-det" id="retoDet" aria-live="polite"></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Material docente de Procesamiento del Lenguaje Natural (UNIR, curso 2026/27) para proyectar en clase. Funciona sin conexión: no envía datos ni ejecuta modelos. Fuentes de los hitos y de las correcciones del tema: ficha del Tema 1. Versión 12/10/2026 (modo clase).
+</footer>
+
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = Clase.esc;
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'class') e.className = v;
+    else if (k === 'html') e.innerHTML = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  kids.flat().forEach(k => e.append(k instanceof Node ? k : document.createTextNode(k)));
+  return e;
+}
+
+// ---------------------------------------------------------------- pestañas
+const tabs = [...document.querySelectorAll('.tab')];
+const alMostrar = {};
+function selectTab(tab) {
+  tabs.forEach(t => {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    const p = document.getElementById(t.getAttribute('aria-controls'));
+    p.hidden = !on; p.classList.toggle('active', on);
+  });
+  const f = alMostrar[tab.getAttribute('aria-controls')];
+  if (f) requestAnimationFrame(f);
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => selectTab(t));
+  t.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(n); n.focus();
+    }
+  });
+});
+
+// ---------------------------------------------------------------- 1. pronombres
+const PRON_LIST = new Set(['yo','tú','él','ella','ello','nosotros','nosotras','vosotros','vosotras','ellos','ellas','usted','ustedes',
+  'me','te','se','nos','os','lo','la','le','los','las','les','mí','ti','sí','conmigo','contigo','consigo']);
+// Anotación manual: índice de palabra -> [nº de pronombres que contiene, etiqueta]
+const PRON_EX = [
+  {t: 'La vi ayer en la estación y le dije que la llamaría.',
+   g: {0: [1, 'pronombre'], 1: [0, 'verbo'], 2: [0, 'adverbio'], 3: [0, 'preposición'], 4: [0, 'artículo'], 5: [0, 'nombre'], 6: [0, 'conjunción'], 7: [1, 'pronombre'], 8: [0, 'verbo'], 9: [0, 'conjunción'], 10: [1, 'pronombre'], 11: [0, 'verbo']},
+   m: 'La lista cuenta 4 porque incluye el artículo de «la estación». Hay 3 pronombres.'},
+  {t: 'El libro que me prestaste lo dejé en la mesa.',
+   g: {0: [0, 'artículo'], 1: [0, 'nombre'], 2: [1, 'pron. relativo'], 3: [1, 'pronombre'], 4: [0, 'verbo'], 5: [1, 'pronombre'], 6: [0, 'verbo'], 7: [0, 'preposición'], 8: [0, 'artículo'], 9: [0, 'nombre']},
+   m: 'Mismo número (3), pero no son los mismos: la lista cuenta un artículo y no ve el relativo «que». Acertar el total no basta.'},
+  {t: 'Los vimos cuando los niños salían, y se lo contamos a ellas.',
+   g: {0: [1, 'pronombre'], 1: [0, 'verbo'], 2: [0, 'conjunción'], 3: [0, 'artículo'], 4: [0, 'nombre'], 5: [0, 'verbo'], 6: [0, 'conjunción'], 7: [1, 'pron. («les»)'], 8: [1, 'pronombre'], 9: [0, 'verbo'], 10: [0, 'preposición'], 11: [1, 'pron. tónico']},
+   m: 'La lista cuenta 5; hay 4. «los niños» lleva artículo, no pronombre.'},
+  {t: 'Si quieres, dímelo; sí, ya sé que te lo debo.',
+   g: {0: [0, 'conjunción'], 1: [0, 'verbo'], 2: [2, 'verbo + me + lo'], 3: [0, 'adverbio'], 4: [0, 'adverbio'], 5: [0, 'verbo saber'], 6: [0, 'conjunción'], 7: [1, 'pronombre'], 8: [1, 'pronombre'], 9: [0, 'verbo']},
+   m: 'La lista cuenta 3 y se equivoca dos veces: «sí» es aquí un adverbio y no ve los dos pronombres pegados a «dímelo». Hay 4.'},
+];
+let pronSel = 0;
+const pronText = $('#pronText');
+const pronChips = $('#pronChips');
+PRON_EX.forEach((ex, i) => pronChips.append(el('button', {class: 'chip', type: 'button', 'aria-pressed': String(i === 0), onclick: () => elegirFrase(i)}, 'Frase ' + (i + 1))));
+pronChips.append(el('button', {class: 'chip', type: 'button', 'aria-pressed': 'false', onclick: () => elegirFrase('propia')}, 'Frase propia'));
+function frasePron() { return pronSel === 'propia' ? pronText.value : PRON_EX[pronSel].t; }
+function elegirFrase(i) {
+  pronSel = i;
+  [...pronChips.children].forEach((c, k) => c.setAttribute('aria-pressed', String(k === (i === 'propia' ? PRON_EX.length : i))));
+  pronText.hidden = i !== 'propia';
+  if (i === 'propia') { pronText.value = pronText.value || 'Se lo dije a ella, pero no me creyó.'; pronText.focus(); }
+  pasosPron.ir(0);
+}
+pronText.addEventListener('input', () => pasosPron.ir(pasosPron.k));
+function cuenta(n, u) { return `<span class="n">${n}</span><span class="u">${u}</span>`; }
+function pintarPron(k) {
+  const text = frasePron();
+  const ex = pronSel === 'propia' ? null : PRON_EX[pronSel];
+  $('#pronFrase').textContent = text || '—';
+  const words = text.match(/\p{L}+/gu) || [];
+  const raw = text.trim() ? text.trim().split(/\s+/) : [];
+  const hitsB = words.map(w => PRON_LIST.has(w.toLowerCase()));
+  // A
+  $('#toksA').innerHTML = raw.map(w => `<span class="tok raw">${esc(w)}</span>`).join('');
+  $('#cntA').innerHTML = cuenta(raw.length, 'palabras · ' + new TextEncoder().encode(text).length + ' bytes');
+  // B
+  $('#toksB').innerHTML = words.map((w, i) => {
+    let c = 'tok';
+    if (hitsB[i]) c += ex ? ((ex.g[i] || [0])[0] > 0 ? ' tp' : ' fp') : ' cand';
+    return `<span class="${c}">${esc(w)}</span>`;
+  }).join('');
+  $('#cntB').innerHTML = cuenta(hitsB.filter(Boolean).length, 'pronombres');
+  // C
+  if (ex) {
+    let nC = 0;
+    $('#toksC').innerHTML = words.map((w, i) => {
+      const g = ex.g[i] || [0, ''];
+      nC += g[0];
+      const c = g[0] > 0 ? (hitsB[i] ? 'tok tp' : 'tok fn') : 'tok';
+      return `<span class="${c}">${esc(w)}<span class="lab">${esc(g[1])}</span></span>`;
+    }).join('');
+    $('#cntC').innerHTML = cuenta(nC, 'pronombres');
+    $('#pronMsg').textContent = ex.m;
+  } else {
+    $('#toksC').innerHTML = '<span class="small">Para una frase nueva haría falta un etiquetador gramatical (Tema 3). Comprobad juntos las palabras naranjas de la fila B: artículos, el adverbio «sí» y pronombres pegados al verbo («dímelo») son las trampas habituales.</span>';
+    $('#cntC').innerHTML = cuenta('?', 'pronombres');
+    $('#pronMsg').textContent = 'En naranja, lo que la lista toma por pronombre.';
+  }
+  $('#rowA').hidden = k < 1; $('#rowB').hidden = k < 2; $('#rowC').hidden = k < 3;
+  $('#pronLegend').hidden = k < 2 || !ex; $('#pronMsg').hidden = k < 3;
+}
+const pasosPron = Clase.pasos($('#pronPasos'), {total: 4, pintar: pintarPron, etiqueta: k => ['La frase', 'Programa A', 'Programa B', 'Programa C'][k]});
+
+// ---------------------------------------------------------------- 2. Venn
+const CASOS_VENN = [
+  [1, 'Traductor', 'PLN', 95, 230, 'Un traductor convierte un correo del español al alemán.', 'Comprende un texto y genera otro en otra lengua: es PLN.'],
+  [3, 'Asistente de voz', 'PLN', 95, 290, 'Un asistente de voz entiende «pon una alarma a las siete» y contesta.', 'Reconoce el habla, interpreta la intención y genera la respuesta: es PLN.'],
+  [6, 'Corrector', 'PLN', 95, 350, 'Un corrector propone «a ver» en lugar de «haber» en «Vamos haber qué pasa».', 'Necesita conocimiento de la lengua para corregir una frase concreta: es PLN.'],
+  [8, 'Chatbot', 'PLN', 95, 410, 'Un chatbot redacta la respuesta a la reclamación de un cliente.', 'Genera lenguaje dentro de un diálogo: es PLN.'],
+  [5, 'Filtro de spam', 'Las dos', 400, 255, 'Un filtro decide si cada correo entrante es spam.', 'Es una aplicación clásica de PLN (apartado 1.5) que se resuelve clasificando documentos, técnica central de la minería de textos. Por eso cae en la intersección.'],
+  [7, 'Informes clínicos', 'Las dos', 400, 375, 'Un hospital extrae de 50.000 informes qué fármacos se mencionan con cada diagnóstico.', 'El objetivo es conocimiento sobre la colección (minería de textos), pero lo consigue con reconocimiento de entidades, una técnica de PLN que veremos en el Tema 3.'],
+  [2, 'Encuesta', 'Minería de textos', 575, 255, 'Un panel muestra los temas más repetidos en 20.000 respuestas abiertas de una encuesta.', 'Saca conocimiento de una colección (detección de temas, análisis de encuestas): es minería de textos.'],
+  [4, 'Reseñas', 'Minería de textos', 575, 375, 'Una cadena detecta en sus reseñas que las quejas por retrasos han crecido este mes.', 'Busca patrones y tendencias accionables en muchos textos de clientes: es minería de textos.'],
+];
+const COL_R = {'PLN': 'var(--texto)', 'Minería de textos': 'var(--estad)', 'Las dos': 'var(--ink)'};
+const venn = $('#venn');
+venn.innerHTML = `
+  <circle cx="300" cy="320" r="240" fill="#E3F2FD" fill-opacity=".75" stroke="#1E88E5" stroke-width="2"/>
+  <circle cx="500" cy="320" r="240" fill="#E0F2F1" fill-opacity=".6" stroke="#00897B" stroke-width="2"/>
+  <text x="200" y="40" text-anchor="middle" font-size="28" font-weight="800" fill="#0D47A1">PLN</text>
+  <text x="200" y="66" text-anchor="middle" font-size="17" fill="#1565C0">comprender o generar lenguaje</text>
+  <text x="600" y="40" text-anchor="middle" font-size="28" font-weight="800" fill="#00695C">Minería de textos</text>
+  <text x="600" y="66" text-anchor="middle" font-size="17" fill="#00796B">extraer conocimiento de muchos textos</text>
+  <text x="400" y="500" text-anchor="middle" font-size="16" fill="#37474F">las dos</text>
+  <text x="400" y="640" text-anchor="middle" font-size="17" fill="#8D6E00" id="vennTray" opacity="0">¿Dónde va cada caso? Pulsa uno para llevarlo a su sitio</text>
+  <g id="vennCasos"></g>`;
+let vennOculto = false;
+const vennG = $('#vennCasos');
+CASOS_VENN.forEach((c, i) => {
+  const [n, lab, , x, y] = c;
+  const centro = x === 400;
+  const g = Clase.svg('g', {class: 'caso anima', 'data-i': i, tabindex: '0', role: 'button', 'aria-label': 'Caso ' + n + ': ' + lab});
+  g.innerHTML = `<circle r="17" fill="#1F2933" stroke="#fff" stroke-width="3"/><text text-anchor="middle" dy="6" font-size="17" font-weight="800" fill="#fff">${n}</text>` +
+    `<text class="lb" ${centro ? 'x="0" y="40" text-anchor="middle"' : 'x="24" y="6"'} font-size="17" font-weight="600" fill="#1F2933">${esc(lab)}</text>`;
+  g.style.transform = `translate(${x}px, ${y}px)`;
+  const activar = () => {
+    if (vennOculto && !g.dataset.colocado) { g.dataset.colocado = '1'; g.style.transform = `translate(${x}px, ${y}px)`; g.querySelector('.lb').style.opacity = 1; }
+    detalleVenn(i);
+  };
+  g.addEventListener('click', activar);
+  g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activar(); } });
+  vennG.append(g);
+});
+function pendientesVenn() {
+  const p = CASOS_VENN.filter((c, k) => !vennG.children[k].dataset.colocado).sort((a, b) => a[0] - b[0]);
+  return p.length ? '<div class="small" style="margin-top:.9rem"><b>Por colocar:</b></div>' + p.map(c => `<div style="margin:.25rem 0"><b>${c[0]}.</b> ${esc(c[5])}</div>`).join('') : '';
+}
+function detalleVenn(i) {
+  [...vennG.children].forEach(g => g.classList.toggle('sel', +g.dataset.i === i));
+  if (i === undefined) { $('#vennDet').innerHTML = '<div class="q">¿Dónde va cada caso? Pulsa su número para llevarlo a su sitio.</div>' + pendientesVenn(); return; }
+  const [n, , r, , , q, e] = CASOS_VENN[i];
+  $('#vennDet').innerHTML = `<div class="q">${n}. ${esc(q)}</div><span class="r" style="background:${COL_R[r]}">${r}</span><div class="e">${esc(e)}</div>` + (vennOculto ? pendientesVenn() : '');
+}
+Clase.botonPregunta($('#vennCtrl'), oculto => {
+  vennOculto = oculto;
+  $('#vennTray').setAttribute('opacity', oculto ? 1 : 0);
+  [...vennG.children].forEach((g, k) => {
+    const c = CASOS_VENN[+g.dataset.i];
+    delete g.dataset.colocado;
+    g.style.transform = oculto ? `translate(${95 + k * 87}px, 600px)` : `translate(${c[3]}px, ${c[4]}px)`;
+    g.querySelector('.lb').style.opacity = oculto ? 0 : 1;
+  });
+  detalleVenn(oculto ? undefined : 4);
+});
+detalleVenn(4);
+
+// ---------------------------------------------------------------- 3. historia
+const PARAD = {
+  reglas: {n: 'Reglas y lógica', c: '#1E88E5'},
+  estad: {n: 'Estadística y aprendizaje automático', c: '#00897B'},
+  neuro: {n: 'Redes neuronales', c: '#8E24AA'},
+  recursos: {n: 'Corpus, evaluación y uso', c: '#78909C'},
+};
+const ERAS = [
+  [1936, 1956, 'Paradigmas fundacionales'], [1957, 1970, 'Simbólico y estocástico'], [1970, 1983, 'Cuatro paradigmas'],
+  [1983, 1993, 'Vuelve el empirismo'], [1994, 1999, 'Unión de vertientes'], [2000, 2012, 'Auge del aprendizaje automático'],
+  [2013, 2026, 'Redes profundas y modelos preentrenados (ampliación)'],
+];
+const HITOS = [
+  [1936, 'reglas', 'T', 'Turing: «On computable numbers»', 'Base de la informática moderna y del concepto de autómata.', 'Turing (1936)'],
+  [1943, 'neuro', 'T', 'McCulloch y Pitts: la neurona como unidad lógica', 'Modelo simplificado de neurona descrito con lógica proposicional.', 'McCulloch y Pitts (1943)'],
+  [1948, 'estad', 'T', 'Shannon: teoría de la información', 'Cadenas de Markov aplicadas al lenguaje, entropía y canal ruidoso.', 'Shannon (1948)'],
+  [1951, 'reglas', 'T', 'Kleene: autómatas finitos y expresiones regulares', 'Herramientas formales que seguiremos usando para buscar patrones en texto.', 'Kleene (1951)'],
+  [1952, 'estad', 'T', 'Bell Labs reconoce dígitos hablados', 'Diez dígitos de un único hablante con un 97-99 % de precisión.', 'Davis et al. (1952)'],
+  [1954, 'reglas', 'A', 'Experimento Georgetown-IBM', 'Traducción ruso-inglés con 49 frases preparadas, un léxico de 250 palabras y 6 reglas; la prensa habló de más de 60 frases.', 'Hutchins (2004), AMTA'],
+  [1956, 'reglas', 'T', 'Chomsky: modelos para describir el lenguaje', 'Gramáticas de estados finitos y libres de contexto. Ese verano, la conferencia de Dartmouth bautiza la IA.', 'Chomsky (1956)'],
+  [1964, 'recursos', 'T', 'Brown Corpus', 'Un millón de palabras (1.014.312) en 500 muestras de textos de 1961, recopilado en 1963-64.', 'Kucera y Francis (1967); manual del corpus'],
+  [1966, 'reglas', 'A', 'ELIZA', 'Programa de conversación basado en patrones de palabras clave.', 'Weizenbaum (1966), CACM 9(1)'],
+  [1966, 'recursos', 'A', 'Informe ALPAC', 'Evaluación muy crítica de la traducción automática que recortó su financiación en EE. UU.', 'ALPAC (1966), NAS-NRC'],
+  [1972, 'reglas', 'T', 'SHRDLU', 'Órdenes en lenguaje natural sobre un mundo de bloques y una gramática extensa del inglés.', 'Winograd (1972)'],
+  [1975, 'estad', 'T', 'Modelos ocultos de Markov en reconocimiento de voz', 'IBM (Jelinek y colaboradores), Carnegie Mellon y Bell Labs.', 'Tema 1, apartado 1.4', 'Años 70'],
+  [1980, 'reglas', 'T', 'Gramáticas de cláusulas definidas (Prolog)', 'Expresar la gramática en un lenguaje de programación lógica.', 'Pereira y Warren (1980)'],
+  [1983, 'estad', 'T', 'Vuelve el empirismo', 'Modelos probabilísticos y de estados finitos; métricas cuantitativas para evaluar.', 'Tema 1, apartado 1.4'],
+  [1993, 'recursos', 'T', 'Penn Treebank', 'Corpus anotado sintácticamente que impulsa el aprendizaje supervisado.', 'Marcus et al. (1993)'],
+  [1996, 'estad', 'T', 'Las probabilidades se vuelven estándar', 'Análisis, etiquetado y discurso incorporan probabilidades; la web dispara la necesidad de recuperar y extraer información.', 'Tema 1, apartado 1.4', '1994-1999'],
+  [2000, 'estad', 'T', 'Aprendizaje supervisado en PLN', 'SVM, máxima entropía, regresión logística y modelos bayesianos.', 'Tema 1, apartado 1.4', 'Años 2000'],
+  [2005, 'estad', 'T', 'Aprendizaje no supervisado (desde 2005)', 'Aplicaciones sin anotación: traducción, modelado de temas, etiquetado.', 'Tema 1, apartado 1.4'],
+  [2006, 'neuro', 'T', 'Hinton, Osindero y Teh: redes profundas', 'Entrenamiento capa a capa que populariza el término deep learning. Corrección al tema: el término ya lo usaron Dechter (1986) y Aizenberg et al. (2000).', 'Hinton et al. (2006), Neural Computation 18(7)'],
+  [2013, 'neuro', 'A', 'word2vec', 'Embeddings de palabras aprendidos de grandes corpus (Tema 5).', 'Mikolov et al. (2013)'],
+  [2014, 'neuro', 'A', 'Seq2seq y atención', 'Redes que transforman secuencias y aprenden a «atender» (Temas 5 y 9).', 'Sutskever et al. (2014); Bahdanau et al. (2014)'],
+  [2016, 'neuro', 'A', 'Traducción neuronal en producción', 'Google sustituye la traducción estadística basada en frases: un 60 % menos de errores de media.', 'Wu et al. (2016)'],
+  [2017, 'neuro', 'A', 'Transformer', '«Attention is all you need»: atención sin recurrencia (Tema 5).', 'Vaswani et al. (2017)'],
+  [2018, 'neuro', 'A', 'BERT', 'Preentrenamiento bidireccional y ajuste a cada tarea (Tema 5).', 'Devlin et al. (2019), NAACL'],
+  [2019, 'recursos', 'A', 'BERT en el buscador de Google', 'Los motores de búsqueda usan PLN para entender las consultas.', 'Google (25/10/2019)'],
+  [2020, 'neuro', 'A', 'GPT-3', 'Un modelo muy grande resuelve tareas con unos pocos ejemplos en la instrucción (Tema 8).', 'Brown et al. (2020)'],
+  [2022, 'neuro', 'A', 'ChatGPT', 'Un LLM ajustado para conversar llega al gran público el 30/11/2022 (Tema 8).', 'OpenAI (2022)'],
+  [2025, 'recursos', 'A', 'ALIA', 'Infraestructura pública de modelos abiertos en español y lenguas cooficiales (BSC-CNS).', 'BSC-CNS (21/01/2025)'],
+];
+const histActivos = new Set(Object.keys(PARAD));
+const filtros = $('#histFilters');
+Object.entries(PARAD).forEach(([k, p]) => {
+  const b = el('button', {class: 'chip', type: 'button', 'aria-pressed': 'true'}, el('i', {class: 'dot', style: 'background:' + p.c}), p.n);
+  b.addEventListener('click', () => {
+    const actual = hitosVisibles()[pasosHist.k];
+    if (histActivos.has(k) && histActivos.size > 1) histActivos.delete(k); else histActivos.add(k);
+    [...filtros.children].forEach((c, i) => c.setAttribute('aria-pressed', histActivos.has(Object.keys(PARAD)[i])));
+    const vis = hitosVisibles();
+    const j = vis.findIndex(h => h[0] >= actual[0]);
+    pasosHist.ir(j < 0 ? vis.length - 1 : j);
+  });
+  filtros.append(b);
+});
+// Escala por tramos: hasta 1990 comprimida, desde 1990 ampliada (más hitos por año)
+const xAnio = y => y <= 1990 ? 230 + (y - 1930) / 60 * 440 : 670 + (y - 1990) / 37 * 510;
+const CARRIL = {reglas: 95, estad: 150, neuro: 205, recursos: 255};
+const hitosVisibles = () => HITOS.filter(h => histActivos.has(h[1]));
+// Posición de cada hito con desplazamiento vertical si se solapa con el anterior del carril
+const POS = (() => {
+  const pos = new Map(), ultimo = {};
+  HITOS.forEach(h => {
+    const x = xAnio(h[0]);
+    const filas = ultimo[h[1]] || (ultimo[h[1]] = [-1e9, -1e9, -1e9]);
+    const orden = [1, 0, 2];
+    let f = orden.find(j => x - filas[j] >= 19);
+    if (f === undefined) f = orden.reduce((a, j) => (filas[j] < filas[a] ? j : a), 1);
+    filas[f] = x;
+    pos.set(h, [x, CARRIL[h[1]] + (f - 1) * 15]);
+  });
+  return pos;
+})();
+const eraDe = y => ERAS.reduce((acc, e, i) => (y >= e[0] ? i : acc), 0);
+function dibujarHist(sel) {
+  let s = '';
+  const eraSel = sel ? eraDe(sel[0]) : -1;
+  ERAS.forEach((e, i) => {
+    const x0 = xAnio(e[0]), x1 = xAnio(i === ERAS.length - 1 ? 2027 : e[1] + 1);
+    const on = i === eraSel;
+    s += `<rect x="${x0}" y="28" width="${x1 - x0 - 2}" height="22" rx="4" fill="${on ? '#52606D' : (i === ERAS.length - 1 ? '#E9DDF0' : (i % 2 ? '#E4E7EB' : '#EEF1F4'))}"><title>${e[0]}-${e[1]}: ${esc(e[2])}</title></rect>`;
+    if (on) {
+      const etiqueta = `${e[0]}-${e[1]} · ${e[2]}`;
+      const xc = Math.min(Math.max((x0 + x1) / 2, 230 + etiqueta.length * 3.6), 1185 - etiqueta.length * 3.6);
+      s += `<text x="${xc}" y="18" text-anchor="middle" font-size="15" font-weight="700" fill="#1F2933">${esc(etiqueta)}</text>`;
+    }
+  });
+  Object.entries(CARRIL).forEach(([k, y]) => {
+    const on = histActivos.has(k);
+    s += `<line x1="230" x2="1185" y1="${y}" y2="${y}" stroke="${PARAD[k].c}" stroke-opacity="${on ? .35 : .1}" stroke-width="2"/>`;
+    s += `<text x="220" y="${y + 5}" text-anchor="end" font-size="14" font-weight="700" fill="${on ? PARAD[k].c : '#CFD8DC'}">${esc(PARAD[k].n.replace(' y aprendizaje automático', ''))}</text>`;
+  });
+  [1940, 1960, 1980, 1990, 2000, 2010, 2020].forEach(y => { s += `<line x1="${xAnio(y)}" x2="${xAnio(y)}" y1="58" y2="275" stroke="#E4E7EB"/><text x="${xAnio(y)}" y="292" font-size="14" text-anchor="middle" fill="#52606D">${y}</text>`; });
+  hitosVisibles().forEach(h => {
+    const [x, y] = POS.get(h);
+    const on = h === sel;
+    s += `<g class="hito" data-i="${HITOS.indexOf(h)}"><circle cx="${x}" cy="${y}" r="${on ? 12 : 7}" fill="${PARAD[h[1]].c}" stroke="${on ? '#1F2933' : '#fff'}" stroke-width="${on ? 3 : 2}"/><title>${h[6] || h[0]} · ${esc(h[3])}</title></g>`;
+  });
+  $('#histSvg').innerHTML = s;
+  $('#histSvg').querySelectorAll('.hito').forEach(g => g.addEventListener('click', () => {
+    Clase.marcarPasoActivo(pasosHist);
+    pasosHist.ir(hitosVisibles().indexOf(HITOS[+g.dataset.i]));
+  }));
+}
+function pintarHist(k) {
+  const h = hitosVisibles()[k];
+  dibujarHist(h);
+  const era = eraDe(h[0]);
+  const d = $('#histDet');
+  d.style.borderLeftColor = PARAD[h[1]].c;
+  d.innerHTML = `<div class="yr" style="color:${PARAD[h[1]].c}">${esc(h[6] || h[0])}</div><div>` +
+    `<div class="tt">${esc(h[3])}</div><div class="ds">${esc(h[4])}</div>` +
+    `<div class="row"><span class="tag">${h[2] === 'T' ? 'Temario' : 'Ampliación'}</span><span class="tag">${esc(PARAD[h[1]].n)}</span><span class="tag">${esc(ERAS[era][2])}</span></div>` +
+    `<div class="src">${esc(h[5])}</div></div>`;
+}
+const pasosHist = Clase.pasos($('#histPasos'), {total: () => hitosVisibles().length, pintar: pintarHist});
+
+// ---------------------------------------------------------------- 4. aplicaciones
+const APLIC = [
+  {n: 'Búsqueda de respuestas', tema: 'Temas 4 y 9', c: 'var(--aplic)',
+   in: '<div class="burb u">¿En qué año se publicó la primera parte del Quijote?</div>',
+   out: '<div class="burb a"><b>En 1605.</b></div><div class="small">Fragmento del que sale la respuesta:</div><div class="burb">«…la primera parte de <i>El ingenioso hidalgo don Quijote de la Mancha</i> se publicó en Madrid en <mark>1605</mark>…»</div>',
+   nec: ['Entender la pregunta completa', 'Extraer el fragmento que responde', 'Desambiguar y resumir varias fuentes'],
+   nota: 'El tema dice que los buscadores responden fechas y lugares «sin necesidad de aplicar PLN». Hoy sí lo aplican: Google incorporó BERT a la búsqueda el 25/10/2019.'},
+  {n: 'Autocompletado', tema: 'Temas 4 y 9', c: 'var(--aplic)',
+   in: '<div class="burb u">Nos vemos el lunes por la…</div>',
+   out: '<div class="small">Sugerencias, de más a menos probable:</div><div class="burb a">mañana</div><div class="burb a" style="opacity:.75">tarde</div><div class="burb a" style="opacity:.5">noche</div>',
+   nec: ['Las palabras escritas hasta ahora', 'Qué suele venir después (modelo del lenguaje)']},
+  {n: 'Filtrado de correo', tema: 'Tema 7', c: 'var(--aplic)',
+   in: '<div class="burb">¡Enhorabuena! Has ganado un móvil. Pulsa aquí</div><div class="burb">50 % en zapatillas este fin de semana</div><div class="burb">Cambio de aula de la tutoría del jueves</div>',
+   out: '<div class="burb">¡Enhorabuena! Has ganado… <span class="etq" style="background:var(--bad)">spam</span></div><div class="burb">50 % en zapatillas… <span class="etq" style="background:var(--aplic)">promociones</span></div><div class="burb">Cambio de aula… <span class="etq" style="background:var(--ok)">importante</span></div>',
+   nec: ['Remitente, asunto y contenido', 'Clasificar cada documento']},
+  {n: 'Traducción automática', tema: 'Tema 9', c: 'var(--aplic)',
+   in: '<div class="burb u">Me estás tomando el pelo.</div>',
+   out: '<div class="burb a">You\'re pulling my leg.</div><div class="small">Palabra a palabra saldría «You are taking my hair»: hay que traducir la expresión, no las palabras.</div>',
+   nec: ['Contexto de la frase o del documento', 'Expresiones hechas y ambigüedad'],
+   nota: 'El tema dice que los mejores resultados son de métodos estadísticos basados en frases. Desde 2016 domina la traducción neuronal (Wu et al., 2016: un 60 % menos de errores de media); hoy, con Transformers.'},
+  {n: 'Agentes conversacionales', tema: 'Temas 8 y 9', c: 'var(--neuronal)',
+   in: '<div class="burb u">Quiero reservar una tutoría el jueves.</div><div class="burb u">A las cinco.</div>',
+   out: '<div class="burb a">¿A qué hora te viene bien?</div><div class="burb a">Hecho: tutoría el <mark>jueves</mark> a las <mark>17:00</mark>.</div>',
+   nec: ['Entender cada turno', 'Mantener el estado (el jueves viene del turno anterior)', 'Generar la respuesta']},
+  {n: 'Análisis de redes sociales', tema: 'Tema 7', c: 'var(--estad)',
+   in: '<div class="burb">«Me encanta la batería nueva»</div><div class="burb">«Llegó roto, no lo recomiendo»</div><div class="burb">«Lo compré el martes»</div><div class="burb">«Buena pantalla, pero caro»</div>',
+   out: '<div class="small">Opinión sobre el producto en estos cuatro mensajes:</div><div class="barra"><span style="width:25%;background:var(--ok)">1 +</span><span style="width:25%;background:var(--gris)">1 =</span><span style="width:25%;background:var(--bad)">1 −</span><span style="width:25%;background:var(--warn)">1 mixta</span></div><div class="small">«Buena pantalla, pero caro» opina de dos aspectos distintos: lo veremos en el Tema 7.</div>',
+   nec: ['Extraer lo relevante de cada mensaje', 'Clasificarlo: positivo, negativo o neutro']},
+  {n: 'Correctores', tema: 'Temas 2 y 4', c: 'var(--texto)',
+   in: '<div class="burb u">Vamos haber qué pasa.</div><div class="burb u">Haber si vienes.</div>',
+   out: '<div class="burb a">Vamos <mark>a ver</mark> qué pasa.</div><div class="burb a"><mark>A ver</mark> si vienes.</div>',
+   nec: ['Las palabras previas', 'Conocimiento de la lengua', 'Sintaxis y semántica']},
+  {n: 'Análisis de encuestas', tema: 'Temas 3 y 6', c: 'var(--estad)',
+   in: '<div class="burb">«El horario de tarde no me encaja»</div><div class="burb">«Las tutorías, muy útiles»</div><div class="burb">«Más ejemplos con datos reales»</div><div class="small">… y 20.000 respuestas más</div>',
+   out: '<div class="small">Temas que aparecen en las respuestas:</div><div class="burb">horarios</div><div class="burb">tutorías</div><div class="burb">ejemplos y materiales</div>',
+   nec: ['Procesar miles de textos libres', 'Extraer y agrupar lo relevante']},
+  {n: 'Casos de un dominio', tema: 'Temas 3 y 6', c: 'var(--texto)',
+   in: '<div class="burb">«Pte. de 67 a. con HTA. Se pauta enalapril 10 mg.»</div><div class="burb">Currículos de 300 candidaturas en formatos distintos</div>',
+   out: '<div class="burb">Diagnóstico: <mark>hipertensión arterial</mark> · Fármaco: <mark>enalapril 10 mg</mark></div><div class="burb">Candidaturas ordenadas según la oferta</div><div class="small">La criba curricular es IA de alto riesgo en el Reglamento europeo: lo vemos en la pestaña 7 (caso 5).</div>',
+   nec: ['Vocabulario y abreviaturas del dominio', 'Extracción de entidades', 'Cuidado con sesgos y datos personales']},
+];
+const appsNav = $('#appsNav');
+APLIC.forEach((a, i) => appsNav.append(el('button', {class: 'chip', type: 'button', 'aria-pressed': 'false', onclick: () => { Clase.marcarPasoActivo(pasosApl); pasosApl.ir(i); }}, a.n)));
+function pintarApl(k) {
+  const a = APLIC[k];
+  [...appsNav.children].forEach((c, i) => c.setAttribute('aria-pressed', String(i === k)));
+  $('#appEscena').innerHTML = `<div class="esc-in"><div class="esc-lbl">Entrada</div>${a.in}</div>` +
+    `<div class="esc-sis"><b>${esc(a.n)}</b><ul>${a.nec.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` +
+    `<div class="esc-out"><div class="esc-lbl">Salida</div>${a.out}</div>`;
+  $('#appTema').textContent = a.tema;
+  $('#appNota').innerHTML = a.nota ? `<div class="warnbox"><b>Actualización del tema:</b> ${esc(a.nota)}</div>` : '';
+}
+const pasosApl = Clase.pasos($('#appsPasos'), {total: APLIC.length, pintar: pintarApl, etiqueta: k => APLIC[k].n});
+
+// ---------------------------------------------------------------- 5. niveles
+const LEVELS = [
+  {n: 'Fonética y fonología', s: 'sonidos', c: '#1E88E5', w: ['habrá', 'banco'],
+   d: 'Distinguir los sonidos y el acento para reconocer las palabras. «habrá» lleva el acento en la última sílaba y «abra», en la primera: no suenan igual. En cambio, «baca» y «vaca» sí son homófonas y necesitan contexto.'},
+  {n: 'Morfología', s: 'partes de la palabra', c: '#1E88E5', w: ['habrá cerrado'],
+   d: '«habrá cerrado» es el futuro perfecto de «cerrar» (haber + participio). Aquí no habla del futuro: expresa una suposición, «creo que ya ha cerrado».'},
+  {n: 'Sintaxis', s: 'relaciones', c: '#00897B', w: ['que está al lado del banco'],
+   d: '«que está al lado del banco» es una oración de relativo que modifica a «la farmacia», no a «llamar»: identifica qué farmacia.'},
+  {n: 'Semántica', s: 'significado', c: '#00897B', w: ['llamar', 'banco'],
+   d: '«llamar» significa aquí telefonear, no dar nombre. «banco» es un lugar de referencia (una sucursal o un asiento de la calle), no una entidad abstracta.'},
+  {n: 'Pragmática', s: 'intención', c: '#8E24AA', w: ['¿Puedes llamar'],
+   d: '«¿Puedes…?» no pregunta por la capacidad del agente: es una petición. Responder «Sí, puedo» y no hacer nada sería un error.'},
+  {n: 'Discurso', s: 'más de un enunciado', c: '#8E24AA', w: ['habrá cerrado'],
+   d: 'El sujeto omitido de «habrá cerrado» es «la farmacia» de la frase anterior. Un buen agente quizá debería avisar antes de llamar: la persona duda de que esté abierta.'},
+];
+const UTTER = '«¿Puedes llamar a la farmacia que está al lado del banco? Creo que ya habrá cerrado.»';
+const levelsBox = $('#levels');
+LEVELS.forEach((L, i) => levelsBox.append(el('button', {class: 'lvl', type: 'button', 'aria-pressed': 'false', style: 'border-top-color:' + L.c,
+  onclick: () => { Clase.marcarPasoActivo(pasosNiv); pasosNiv.ir(i); }}, el('b', {}, L.n), el('span', {}, L.s))));
+function pintarNiv(k) {
+  const L = LEVELS[k];
+  [...levelsBox.children].forEach((c, i) => c.setAttribute('aria-pressed', String(i === k)));
+  let html = esc(UTTER);
+  L.w.forEach(w => { html = html.replace(esc(w), '<mark>' + esc(w) + '</mark>'); });
+  $('#utter').innerHTML = html;
+  $('#levelMsg').innerHTML = `<b style="color:${L.c}">${esc(L.n)}:</b> ${esc(L.d)}`;
+}
+const pasosNiv = Clase.pasos($('#nivPasos'), {total: LEVELS.length, pintar: pintarNiv, etiqueta: k => LEVELS[k].n});
+
+const FALLOS = [
+  {q: 'El asistente transcribe «Pon la maleta en la vaca».', a: 0, e: '«baca» y «vaca» suenan igual: falta usar el contexto al pasar del sonido a la escritura.'},
+  {q: 'No relaciona «cantábamos» con el verbo «cantar».', a: 1, e: 'Reconocer variaciones de una palabra (raíz y terminaciones) es conocimiento morfológico.'},
+  {q: 'Genera «Las puerta están abiertas».', a: 1, b: 2, e: 'Falla la concordancia de número: se apoya en la morfología (el plural «-s») y en la sintaxis (qué palabras deben concordar). El test del Tema 1 acepta ambas.'},
+  {q: 'Entiende que en «Al niño lo muerde el perro» el que muerde es el niño.', a: 2, e: 'La «a» marca al niño como complemento directo aunque vaya delante: es una relación estructural.'},
+  {q: 'Traduce «Me senté en el banco del parque» como «I sat on the park bank».', a: 3, e: 'Ha elegido el sentido equivocado de «banco» (semántica léxica): aquí es un asiento, «bench».'},
+  {q: 'Clasifica «No está nada mal» como una opinión negativa.', a: 3, e: 'El significado de la combinación (semántica composicional) es positivo aunque aparezcan «no» y «mal».'},
+  {q: 'Ante «¿Me pasas la sal?» responde «Sí, puedo».', a: 4, e: 'Es una petición indirecta, no una pregunta sobre capacidad.'},
+  {q: 'En «Llamé a la farmacia. Estaba cerrada.» no sabe qué estaba cerrado.', a: 5, e: 'Resolver una referencia a algo dicho en el enunciado anterior es conocimiento del discurso.'},
+];
+const colocados = new Set(FALLOS.map((_, i) => i));
+let tableroOculto = false;
+function tarjetaFallo(i) {
+  const f = FALLOS[i];
+  return el('button', {class: 'fallo', type: 'button', 'data-i': i, onclick: () => {
+    if (tableroOculto && !colocados.has(i)) colocados.add(i);
+    dibujarTablero(i);
+  }}, f.q, (!tableroOculto || colocados.has(i)) && f.b !== undefined ? el('span', {class: 'tambien'}, 'también: ' + LEVELS[f.b].n) : '');
+}
+function dibujarTablero(sel) {
+  const t = $('#tablero'); t.innerHTML = '';
+  LEVELS.forEach((L, k) => {
+    const col = el('div', {class: 'col', style: 'border-top-color:' + L.c}, el('h3', {style: 'color:' + L.c}, L.n));
+    FALLOS.forEach((f, i) => { if (f.a === k && colocados.has(i)) col.append(tarjetaFallo(i)); });
+    t.append(col);
+  });
+  const b = $('#bandeja'); b.innerHTML = '';
+  const pendientes = FALLOS.map((_, i) => i).filter(i => !colocados.has(i));
+  b.hidden = !pendientes.length;
+  if (pendientes.length) { b.append(el('span', {class: 'small', style: 'width:100%'}, '¿Qué nivel falla? Pulsa un fallo para llevarlo a su columna.')); pendientes.forEach(i => b.append(tarjetaFallo(i))); }
+  document.querySelectorAll('#p-niv .fallo').forEach(x => x.classList.toggle('sel', +x.dataset.i === sel));
+  if (sel !== undefined && colocados.has(sel)) {
+    const f = FALLOS[sel];
+    $('#falloMsg').innerHTML = `<b style="color:${LEVELS[f.a].c}">${esc(LEVELS[f.a].n)}${f.b !== undefined ? ' y ' + esc(LEVELS[f.b].n) : ''}:</b> ${esc(f.e)}`;
+  } else if (sel === undefined) {
+    $('#falloMsg').textContent = tableroOculto ? 'Pregunta a la clase qué nivel falla y pulsa el fallo.' : 'Pulsa un fallo para ver la explicación.';
+  }
+}
+Clase.botonPregunta($('#tableroCtrl'), oculto => {
+  tableroOculto = oculto;
+  colocados.clear();
+  if (!oculto) FALLOS.forEach((_, i) => colocados.add(i));
+  dibujarTablero();
+});
+dibujarTablero();
+
+// ---------------------------------------------------------------- 6. ambigüedad
+// Dibuja una fila de palabras y un arco desde el grupo [g0, g1] hasta la palabra destino
+function filaConArco(host, palabras, grupo, destino, color, nota) {
+  const caja = el('div', {class: 'arcos'});
+  palabras.forEach((w, i) => caja.append(el('span', {class: 'w' + (i >= grupo[0] && i <= grupo[1] ? ' g' : '') + (i === destino ? ' d' : '')}, w)));
+  host.append(caja);
+  if (nota) host.append(el('p', {class: 'small', style: 'text-align:center;margin-top:.5rem'}, nota));
+  requestAnimationFrame(() => {
+    if (!caja.offsetParent) return;
+    const r0 = caja.getBoundingClientRect();
+    const ws = [...caja.querySelectorAll('.w')].map(w => w.getBoundingClientRect());
+    const top = ws[0].top - r0.top;
+    const xg = (ws[grupo[0]].left + ws[grupo[1]].right) / 2 - r0.left;
+    const xd = (ws[destino].left + ws[destino].right) / 2 - r0.left;
+    const alto = Math.min(60, 18 + Math.abs(xg - xd) * 0.22);
+    const svg = Clase.svg('svg', {width: r0.width, height: top + 4});
+    svg.innerHTML = `<defs><marker id="pf${destino}${grupo[0]}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9z" fill="${color}"/></marker></defs>` +
+      `<path d="M${xg} ${top - 2} C ${xg} ${top - alto}, ${xd} ${top - alto}, ${xd} ${top - 4}" fill="none" stroke="${color}" stroke-width="3.5" marker-end="url(#pf${destino}${grupo[0]})"/>`;
+    caja.prepend(svg);
+  });
+}
+const alumnos = (verdes, total) => '<div class="alumnos">' + Array.from({length: total}, (_, i) => `<span style="background:${i < verdes ? 'var(--ok)' : 'var(--bad)'}">${i < verdes ? '✓' : '✗'}</span>`).join('') + '</div>';
+const AMB = [
+  {s: '«Vi a tu hermano con los prismáticos.»', t: 'Sintáctica', et: 'Ambigüedad sintáctica', c: '#00897B',
+   l: [['Yo usaba los prismáticos', h => filaConArco(h, ['Vi', 'a', 'tu', 'hermano', 'con', 'los', 'prismáticos'], [4, 6], 0, '#00897B', '«con los prismáticos» complementa a «vi»: es el instrumento.')],
+       ['Tu hermano llevaba los prismáticos', h => filaConArco(h, ['Vi', 'a', 'tu', 'hermano', 'con', 'los', 'prismáticos'], [4, 6], 3, '#00897B', '«con los prismáticos» complementa a «hermano»: lo describe.')]],
+   x: 'Lo resuelve el contexto: quién tenía los prismáticos. Es el problema de dónde se engancha un sintagma preposicional.'},
+  {s: '«Te espero en el banco.»', t: 'Léxica', et: 'Ambigüedad léxica', c: '#1E88E5',
+   l: [['banco = asiento', h => h.innerHTML = '<p class="ctx">«Te espero en el banco <mark>de la plaza, junto a la fuente</mark>.»</p>'],
+       ['banco = entidad bancaria', h => h.innerHTML = '<p class="ctx">«Te espero en el banco, <mark>que tengo que sacar dinero</mark>.»</p>']],
+   x: 'Lo resuelve el contexto de la conversación. Los sistemas actuales usan representaciones contextuales de las palabras (Tema 5).'},
+  {s: '«Ana le dijo a Marta que ella ganaría.»', t: 'Referencial', et: 'Ambigüedad referencial', c: '#8E24AA',
+   l: [['Ganaría Ana', h => filaConArco(h, ['Ana', 'le', 'dijo', 'a', 'Marta', 'que', 'ella', 'ganaría'], [6, 6], 0, '#8E24AA', '«ella» se refiere a quien habla.')],
+       ['Ganaría Marta', h => filaConArco(h, ['Ana', 'le', 'dijo', 'a', 'Marta', 'que', 'ella', 'ganaría'], [6, 6], 4, '#8E24AA', '«ella» se refiere a quien escucha (o a una tercera persona).')]],
+   x: 'Lo resuelve el discurso previo. Es un problema de resolución de correferencias.'},
+  {s: '«¿Tienes hora?»', t: 'Pragmática', et: 'Ambigüedad pragmática', c: '#8E24AA',
+   l: [['Pregunta literal', h => h.innerHTML = '<div class="burb u">¿Tienes hora?</div><div class="burb a">Sí.</div><p class="small">Responde a lo que se ha dicho, no a lo que se quería.</p>'],
+       ['Petición indirecta', h => h.innerHTML = '<div class="burb u">¿Tienes hora?</div><div class="burb a">Son las cinco y diez.</div><p class="small">Responde a la intención: casi siempre es esta.</p>']],
+   x: 'Lo resuelve la intención del hablante: casi siempre es una petición indirecta.'},
+  {s: '«Genial: dos horas esperando la cena.»', t: 'Ironía', et: 'Lenguaje figurado: ironía', c: '#F57C00',
+   l: [['Elogio sincero', h => h.innerHTML = '<p style="text-align:center"><span class="pol" style="background:var(--ok-l);color:var(--ok)">Genial<sup>+</sup></span> dos horas esperando la cena</p><p class="small" style="text-align:center">Un método que suma palabras positivas y negativas ve «genial» y concluye: positiva.</p>'],
+       ['Queja irónica', h => h.innerHTML = '<p style="text-align:center"><span class="pol" style="background:var(--ok-l);color:var(--ok)">Genial<sup>+</sup></span> <span class="pol" style="background:var(--bad-l);color:var(--bad)">dos horas esperando<sup>−</sup></span> la cena</p><p class="small" style="text-align:center">Lo que se dice es positivo; lo que se quiere decir, negativo.</p>']],
+   x: 'Las palabras positivas engañan a un clasificador que solo cuenta palabras. Lo veremos en análisis de sentimientos (Tema 7).'},
+  {s: '«Todos los alumnos no aprobaron.»', t: 'Alcance de la negación', et: 'Ambigüedad del alcance de la negación', c: '#00897B',
+   l: [['Ninguno aprobó', h => h.innerHTML = alumnos(0, 10) + '<p class="small" style="text-align:center">La negación va con el verbo: para cada alumno, «no aprobó».</p>'],
+       ['No aprobaron todos', h => h.innerHTML = alumnos(6, 10) + '<p class="small" style="text-align:center">La negación va con «todos»: no es cierto que todos aprobaran (por ejemplo, 6 de 10).</p>']],
+   x: 'Depende de si la negación afecta a «todos» o al verbo. La entonación y el contexto lo deciden.'},
+];
+let ambOculto = false, ambVisto = false;
+const ambNav = $('#ambNav');
+AMB.forEach((a, i) => ambNav.append(el('button', {class: 'chip', type: 'button', 'aria-pressed': 'false', onclick: () => { Clase.marcarPasoActivo(pasosAmb); pasosAmb.ir(i); }},
+  el('i', {class: 'dot', style: 'background:' + a.c}), a.t)));
+function pintarAmb(k) {
+  const a = AMB[k];
+  [...ambNav.children].forEach((c, i) => c.setAttribute('aria-pressed', String(i === k)));
+  $('#ambFrase').textContent = a.s;
+  $('#ambTipo').innerHTML = `<span style="background:${a.c}">${esc(a.et)}</span>`;
+  const box = $('#ambLect'); box.innerHTML = '';
+  if (ambOculto && !ambVisto) {
+    box.append(el('div', {class: 'oculta-lect'}, el('p', {style: 'font-size:1.2rem;margin-bottom:.8rem'}, '¿Qué entendéis? ¿Hay otra lectura?'),
+      el('button', {class: 'btn btn-gray', type: 'button', onclick: () => { ambVisto = true; pintarAmb(k); }}, 'Mostrar las dos lecturas')));
+    $('#ambTipo').innerHTML = '';
+    $('#ambRes').innerHTML = '';
+    return;
+  }
+  const grid = el('div', {class: 'lecturas'});
+  a.l.forEach(([tit, dibujo], i) => {
+    const caja = el('div', {class: 'lectura', style: 'border-color:' + a.c},
+      el('h3', {}, el('span', {class: 'l', style: 'background:' + a.c}, 'AB'[i]), tit));
+    const cuerpo = el('div');
+    caja.append(cuerpo);
+    grid.append(caja);
+    dibujo(cuerpo);
+  });
+  box.append(grid);
+  $('#ambRes').innerHTML = '<b>Qué la resuelve:</b> ' + esc(a.x);
+}
+const pasosAmb = Clase.pasos($('#ambPasos'), {total: AMB.length, pintar: k => { ambVisto = false; pintarAmb(k); }, etiqueta: k => AMB[k].t});
+Clase.botonPregunta($('#ambCtrl'), oculto => { ambOculto = oculto; ambVisto = false; pintarAmb(pasosAmb.k); }, {ver: 'Ocultar las lecturas para preguntar', ocultas: 'Mostrar siempre las lecturas'});
+alMostrar['p-amb'] = () => pintarAmb(pasosAmb.k);
+window.addEventListener('resize', () => { if (!$('#p-amb').hidden) pintarAmb(pasosAmb.k); });
+
+// ---------------------------------------------------------------- 7. retos
+const RETOS = [
+  ['Ambigüedad', 'Ambigüedad', 'c'], ['Variación y normalización', 'Variación', 'c'], ['Lenguaje figurado (ironía)', 'Lenguaje figurado', 'c'], ['Contexto y discurso', 'Contexto y discurso', 'c'],
+  ['Veracidad (alucinaciones)', 'Veracidad', 'a'], ['Sesgos', 'Sesgos', 'a'], ['Pocos recursos', 'Pocos recursos', 'a'], ['Privacidad y regulación', 'Privacidad y regulación', 'a'], ['Coste y evaluación', 'Coste y evaluación', 'a'],
+];
+const CASOS = [
+  {app: 'Opiniones de un restaurante', inp: '«Genial, solo tardaron dos horas en traer la cena 🙃»', out: 'La clasifica como opinión positiva.', c: 'var(--aplic)', tema: 'Tema 7',
+   sol: {a: 'Análisis de sentimiento', n: ['Pragmática', 'Semántica'], r: ['Lenguaje figurado (ironía)'], alt: ['Contexto y discurso']},
+   e: 'Las palabras «genial» y «solo» parecen positivas; la intención es una queja. El emoji ayuda a una persona, pero un modelo de bolsa de palabras lo ignora o lo trata como una palabra más.'},
+  {app: 'Mensajes de clientes', inp: '«q tal, mñn kdamos x la tarde??»', out: 'No reconoce casi ninguna palabra.', c: 'var(--texto)', tema: 'Tema 2',
+   sol: {a: 'Atención al cliente', n: ['Morfología'], r: ['Variación y normalización'], alt: ['Pocos recursos']},
+   e: 'Abreviaturas y grafías de chat («q», «mñn», «kdamos», «x») que no están en el vocabulario. Hace falta normalizar o modelos entrenados con este registro.'},
+  {app: 'Traductor', inp: '«El banco estaba lleno» → «The bench was full»', out: 'Se refería a la oficina de un banco.', c: 'var(--estad)', tema: 'Tema 9',
+   sol: {a: 'Traducción automática', n: ['Semántica'], r: ['Ambigüedad'], alt: ['Contexto y discurso']},
+   e: 'Ambigüedad léxica sin contexto suficiente: una frase aislada no basta. Los traductores neuronales usan el contexto de la frase o del documento.'},
+  {app: 'Asistente generativo', inp: '«Dame tres artículos sobre PLN clínico en español»', out: 'Uno de los tres artículos citados no existe.', c: 'var(--neuronal)', tema: 'Tema 8',
+   sol: {a: 'Agente conversacional', n: ['Semántica', 'Discurso'], r: ['Veracidad (alucinaciones)'], alt: ['Coste y evaluación']},
+   e: 'El modelo genera texto plausible que no se corresponde con hechos verificables: una alucinación (Ji et al., 2023; Huang et al., 2025). Siempre hay que comprobar las fuentes.'},
+  {app: 'Criba de currículos', inp: 'El mismo currículo enviado con dos nombres de pila distintos.', out: 'Menos puntuación con el nombre femenino.', c: 'var(--neuronal)', tema: 'Temas 5 y 8',
+   sol: {a: 'Criba curricular', n: ['Semántica'], r: ['Sesgos', 'Privacidad y regulación'], alt: ['Coste y evaluación']},
+   e: 'Las representaciones aprendidas de textos reproducen estereotipos (Bolukbasi et al., 2016). Además, la selección de personal es IA de alto riesgo en el Reglamento europeo de IA.'},
+  {app: 'Notas clínicas', inp: '«Pte. con IC, niega dolor torácico. No DM.»', out: 'Extrae «dolor torácico» y «DM» como presentes.', c: 'var(--estad)', tema: 'Tema 3',
+   sol: {a: 'Extracción de información clínica', n: ['Sintaxis', 'Morfología'], r: ['Contexto y discurso', 'Pocos recursos', 'Privacidad y regulación'], alt: ['Variación y normalización', 'Ambigüedad']},
+   e: '«niega» y «No» niegan lo que sigue (alcance de la negación); IC (insuficiencia cardiaca) y DM (diabetes mellitus) son abreviaturas del dominio, con pocos corpus anotados en español; y son datos de salud.'},
+];
+let retosOculto = false;
+const retoVisto = new Set();
+let retoSel = 0;
+function dibujarMatriz() {
+  const m = $('#matriz');
+  const visto = k => !retosOculto || retoVisto.has(k);
+  let h = '<colgroup><col style="width:3rem"><col style="width:20rem"><col style="width:8rem">' + RETOS.map(() => '<col>').join('') + '</colgroup><thead><tr class="grupo"><th colspan="2" rowspan="2" style="text-align:left">Caso</th><th rowspan="2">Nivel (1.6)</th>' +
+    '<th colspan="4" style="background:#1565C0">Retos del lenguaje (siempre han estado)</th><th colspan="5" style="background:#6A1B9A">Retos de los sistemas actuales</th></tr><tr>' +
+    RETOS.map(r => `<th style="background:${r[2] === 'c' ? '#1E88E5' : '#8E24AA'}">${esc(r[1])}</th>`).join('') + '</tr></thead><tbody>';
+  CASOS.forEach((cs, k) => {
+    h += `<tr data-k="${k}" class="${k === retoSel ? 'sel' : ''}"><td><span class="num" style="background:${cs.c}">${k + 1}</span></td>` +
+      `<td class="caso-t"><b>${esc(cs.app)}</b><span class="io">${esc(cs.inp)}<br><span style="color:var(--bad)">✗</span> ${esc(cs.out)}</span></td>` +
+      `<td>${visto(k) ? cs.sol.n.map(n => `<span class="niv-chip">${esc(n)}</span>`).join('') : `<button class="ver-sol" type="button" data-k="${k}">Ver solución</button>`}</td>` +
+      RETOS.map(r => `<td class="m">${!visto(k) ? '' : cs.sol.r.includes(r[0]) ? '<span class="marca p" title="reto principal"></span>' : cs.sol.alt.includes(r[0]) ? '<span class="marca a" title="también defendible"></span>' : ''}</td>`).join('') + '</tr>';
+  });
+  m.innerHTML = h + '</tbody>';
+  m.querySelectorAll('tbody tr').forEach(tr => tr.addEventListener('click', () => { retoSel = +tr.dataset.k; if (retosOculto) retoVisto.add(retoSel); dibujarMatriz(); }));
+  const cs = CASOS[retoSel];
+  $('#retoDet').innerHTML = !visto(retoSel)
+    ? `<b>Caso ${retoSel + 1}.</b> ¿Qué aplicación es, qué nivel de conocimiento falla y qué reto hay detrás?`
+    : `<b>Caso ${retoSel + 1} · ${esc(cs.sol.a)}</b> (${esc(cs.tema)}). Nivel: ${esc(cs.sol.n.join(' o '))}. Reto principal: ${esc(cs.sol.r.join(', '))}${cs.sol.alt.length ? '; también defendible: ' + esc(cs.sol.alt.join(', ')) : ''}.<br>${esc(cs.e)}`;
+}
+Clase.botonPregunta($('#retosCtrl'), oculto => { retosOculto = oculto; retoVisto.clear(); dibujarMatriz(); });
+dibujarMatriz();
+</script>
+</body>
+</html>

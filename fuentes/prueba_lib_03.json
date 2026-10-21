@@ -1,0 +1,68 @@
+{
+ "fecha": "2026-10-12T12:04:11.875Z",
+ "node": "v22.22.0",
+ "ejemplos": {
+  "e0": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e1": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e2": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e3": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e4": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e5": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e6": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  },
+  "e7": {
+   "chunks_ingles": true,
+   "chunks_espanol": true,
+   "iob_espanol": true,
+   "relaciones": true,
+   "clinicas": true
+  }
+ },
+ "etiquetador_reglas": {
+  "comparadas": 6000,
+  "diferencias": 0,
+  "ejemplos": []
+ },
+ "resultado": "OK"
+}

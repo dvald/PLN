@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 2 · El texto como dato — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1.1rem; font: inherit; font-weight: 600; font-size: .93rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--unir); }
+  .content { max-width: 1100px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .8rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--texto-l); border-left: 4px solid var(--texto); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #0D47A1; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-blue { background: var(--texto); color: #fff; }
+  .btn-blue:hover { background: #1565C0; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible { outline: 3px solid #90CAF9; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 110px; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .feedback.neutral { background: var(--soft); color: var(--ink); border: 1px solid var(--line); }
+  /* fichas de tokens */
+  .tokens { display: flex; flex-wrap: wrap; gap: .35rem; margin: .7rem 0; max-height: 22rem; overflow-y: auto; padding: .2rem; }
+  .tok { padding: .2rem .5rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; font-size: 1rem; font-family: Menlo, Consolas, monospace; white-space: pre; }
+  .tok .lab { display: block; font-size: .68rem; color: var(--ink2); line-height: 1.1; font-family: system-ui, sans-serif; }
+  .tok.diff { background: var(--aplic-l); border-color: var(--aplic); border-width: 2px; }
+  .tok.gone { text-decoration: line-through; color: var(--muted); background: var(--soft); border-style: dashed; }
+  .tok.neg { background: var(--bad-l); border-color: var(--bad); color: #8E1B1B; }
+  .tok.changed { background: var(--estad-l); border-color: var(--estad); }
+  .legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .85rem; color: var(--ink2); margin-top: .3rem; }
+  .legend span { display: inline-flex; align-items: center; gap: .35rem; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  .seg:disabled { opacity: .45; cursor: not-allowed; }
+  ol.sents { margin: .3rem 0 .3rem 1.4rem; font-size: .95rem; }
+  ol.sents li { margin: .15rem 0; }
+  /* morfología */
+  .morf { display: flex; flex-wrap: wrap; gap: .25rem; margin: .7rem 0; align-items: stretch; }
+  .mor { padding: .35rem .6rem; border-radius: 8px; font-size: 1.25rem; font-weight: 700; border: 2px solid; text-align: center; }
+  .mor small { display: block; font-size: .7rem; font-weight: 600; }
+  .mor.lex { background: var(--texto-l); border-color: var(--texto); color: #0D47A1; }
+  .mor.gram { background: var(--estad-l); border-color: var(--estad); color: #004D40; }
+  .mor.cero { background: #fff; border-style: dashed; border-color: var(--estad); color: #004D40; }
+  .mor.clit { background: var(--neuronal-l); border-color: var(--neuronal); color: #4A148C; }
+  .wordlist { display: flex; flex-wrap: wrap; gap: .4rem; }
+  /* gráficos */
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  /* quiz */
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .score { font-weight: 700; color: var(--ink); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .45rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .checks { display: flex; flex-direction: column; gap: .35rem; margin: .5rem 0; }
+  .checks label { display: flex; gap: .5rem; align-items: baseline; cursor: pointer; }
+  .checks .sub { margin-left: 1.7rem; font-size: .9rem; color: var(--ink2); }
+  footer { max-width: 1100px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .7rem; font-size: .85rem; } }
+  /* modo clase: ejemplos visuales */
+  .waffle { display: grid; grid-template-columns: repeat(20, 1fr); gap: 4px; max-width: 30rem; margin: .6rem 0; }
+  .waffle span { aspect-ratio: 1; border-radius: 3px; background: #E4E7EB; transition: background-color .25s; }
+  .waffle span.v { background: var(--texto); }
+  .gran-msg { font-size: 1.25rem; font-weight: 600; margin-top: .4rem; }
+  .gran-msg b { color: var(--texto); font-size: 1.6rem; }
+  .sentidos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: .6rem; }
+  .sentido { border-radius: 12px; padding: 1rem 1.1rem; border-top: 6px solid; background: var(--soft); }
+  .sentido .fr { font-size: 1.35rem; line-height: 1.6; }
+  .sentido .w-banco { background: #FFE082; border-radius: 4px; padding: 0 .2rem; font-weight: 800; }
+  .sentido .pista { font-weight: 800; border-bottom: 4px solid; }
+  .sentido .sent { display: inline-block; margin-top: .7rem; font-weight: 800; color: #fff; padding: .15rem .8rem; border-radius: 999px; }
+  .sentido.oculto .pista { border-bottom-color: transparent !important; color: inherit !important; font-weight: 400; }
+  .sentido.oculto .sent { visibility: hidden; }
+  .grupos { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: .5rem; }
+  .grupo { border: 2px solid var(--line); border-radius: 10px; padding: .5rem .7rem; background: #fff; }
+  .grupo .cab { font-family: Menlo, Consolas, monospace; font-weight: 800; font-size: 1.15rem; margin-bottom: .3rem; }
+  .grupo .cab small { font-family: system-ui, sans-serif; font-weight: 600; font-size: .75rem; color: var(--ink2); margin-left: .4rem; }
+  .chipw { display: inline-block; padding: .15rem .5rem; border-radius: 6px; margin: .15rem; font-size: 1.05rem; border: 2px solid; background: #fff; text-align: center; vertical-align: top; }
+  .chipw small { display: block; font-family: Menlo, Consolas, monospace; font-size: .75rem; color: var(--ink2); }
+  .cara-frase { font-size: 1.5rem; margin: .5rem 0 1rem; }
+  .cara-frase u { text-decoration: none; background: #FFE082; border-radius: 4px; padding: 0 .2rem; font-weight: 800; }
+  .cara { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .cara .caja { border-radius: 12px; padding: 1rem; text-align: center; border: 2px solid; }
+  .cara .caja .t { font-weight: 700; color: var(--ink2); }
+  .cara .caja .v { font-size: 2.6rem; font-weight: 800; font-family: Menlo, Consolas, monospace; }
+  .cara.oculto .caja .v { visibility: hidden; }
+  .recursos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; margin-top: .5rem; }
+  .recurso { border-radius: 12px; border-top: 6px solid; background: var(--soft); padding: .8rem .9rem; }
+  .recurso h3 { margin: 0 0 .3rem; }
+  .recurso .def { font-size: .88rem; color: var(--ink2); margin-bottom: .6rem; }
+  .recurso .ej { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .6rem .7rem; font-size: .95rem; }
+  .recurso .ej-n { font-size: .78rem; color: var(--ink2); margin-top: .4rem; }
+  .corpus-bar { display: grid; grid-template-columns: 11rem 1fr; gap: .6rem; align-items: center; margin: .45rem 0; }
+  .corpus-bar .b { height: 1.9rem; border-radius: 5px; background: var(--texto); color: #fff; font-weight: 700; display: flex; align-items: center; padding-left: .6rem; white-space: nowrap; }
+  @media (max-width: 900px) { .sentidos, .recursos, .cara { grid-template-columns: 1fr; } }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-texto">
+
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato" aria-current="page">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="01_introduccion.html">‹ Tema 1 · Introducción</a><a class="sig" href="03_extraccion_informacion.html">Tema 3 · Extracción de información ›</a></nav>
+  <h1><span class="num-tema">TEMA 2</span>El texto como dato</h1>
+  <p>Cómo se convierte un texto en datos: frecuencias, morfología, tokenización, normalización, raíces y lemas, y los recursos en español. <span class="cuando">Clases 3 y 4 · semanas 2 y 3</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="15" height="10" rx="3"/><rect x="20" y="5" width="9" height="10" rx="3"/><rect x="31" y="5" width="14" height="10" rx="3"/></g><g fill="currentColor"><rect x="5" y="20" width="6" height="23" rx="1.5"/><rect x="13" y="30" width="6" height="13" rx="1.5"/><rect x="21" y="35" width="6" height="8" rx="1.5"/><rect x="29" y="38" width="6" height="5" rx="1.5"/><rect x="37" y="39.5" width="6" height="3.5" rx="1.2"/></g></svg></div>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Secciones de la demo">
+  <button class="tab" role="tab" id="t-dato" aria-controls="p-dato" aria-selected="true"><span class="tab-n">1</span> El texto como dato</button>
+  <button class="tab" role="tab" id="t-morf" aria-controls="p-morf" aria-selected="false" tabindex="-1"><span class="tab-n">2</span> Morfología</button>
+  <button class="tab" role="tab" id="t-tok" aria-controls="p-tok" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Tokenizar</button>
+  <button class="tab" role="tab" id="t-norm" aria-controls="p-norm" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Normalizar</button>
+  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Raíz o lema</button>
+  <button class="tab" role="tab" id="t-rec" aria-controls="p-rec" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Recursos y corpus</button>
+</div>
+
+<div class="content">
+
+<!-- =============================================================== 1 -->
+<section class="panel active" id="p-dato" role="tabpanel" aria-labelledby="t-dato">
+  <div class="card">
+    <h2>Mismas palabras, distinto significado</h2>
+    <div class="meta"><span class="tag">Apartado 2.2 · aspecto secuencial</span><span class="tag real">Cálculo real en el navegador</span></div>
+    <p>Si representamos cada frase como una <b>bolsa de palabras</b> (qué palabras aparecen y cuántas veces), ¿se distinguen estas dos frases?</p>
+    <div class="grid2">
+      <div class="box"><h3>Frase A</h3><p id="bowA" class="mono"></p></div>
+      <div class="box"><h3>Frase B</h3><p id="bowB" class="mono"></p></div>
+    </div>
+    <div class="row">
+      <button class="btn btn-blue" id="bowBolsa" type="button">Ver como bolsa de palabras</button>
+      <button class="btn btn-gray" id="bowSec" type="button">Ver como secuencia</button>
+    </div>
+    <div id="bowOut"></div>
+    <div class="feedback neutral" id="bowFb"></div>
+  </div>
+
+  <div class="card">
+    <h2>¿Qué palabras dominan un texto? La ley de Zipf en el Quijote</h2>
+    <div class="meta"><span class="tag">Apartado 2.2 · frecuencia (Zipf, 1949)</span><span class="tag pre">Precalculado con el cuaderno de la Clase 3</span></div>
+    <p>¿Qué parte de las palabras del Quijote son <b>palabras vacías</b> (artículos, preposiciones, conjunciones, pronombres…) según la lista española de NLTK? Cada casilla es el 1 % de las palabras.</p>
+    <div class="row"><button class="btn btn-blue" id="zipfBtn" type="button">Mostrar la proporción</button></div>
+    <div class="waffle" id="waffle" aria-label="Proporción de palabras vacías en el Quijote"></div>
+    <p class="gran-msg" id="zipfMsg"></p>
+    <div class="row">
+      <label for="zipfN">Palabras en el gráfico</label>
+      <input type="range" id="zipfN" min="10" max="30" value="20">
+      <span id="zipfNv" class="small"></span>
+      <label><input type="checkbox" id="zipfCol" checked> Colorear las palabras vacías</label>
+    </div>
+    <div class="grid2">
+      <div><svg id="zipfBars" class="chart" viewBox="0 0 520 560" role="img" aria-label="Frecuencia de las palabras más frecuentes del Quijote"></svg></div>
+      <div><svg id="zipfLog" class="chart" viewBox="0 0 520 420" role="img" aria-label="Rango frente a frecuencia en escala logarítmica"></svg>
+        <div class="stats" id="zipfStats"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>El contexto decide el sentido</h2>
+    <div class="meta"><span class="tag">Apartado 2.2 · perspectiva distribucional</span><span class="tag illus">Ejemplos sin modelo</span></div>
+    <p>La perspectiva distribucional dice que el significado de una palabra se puede inferir de las palabras que la rodean. La misma forma, <b>banco</b>, con tres sentidos: las palabras subrayadas son las que lo deciden.</p>
+    <div class="row" id="bancoCtrl"></div>
+    <div class="sentidos" id="bancoOut"></div>
+  </div>
+</section>
+
+<!-- =============================================================== 2 -->
+<section class="panel" id="p-morf" role="tabpanel" aria-labelledby="t-morf" hidden>
+  <div class="card">
+    <h2>Lexema, morfemas gramaticales y lema</h2>
+    <div class="meta"><span class="tag">Apartado 2.3</span><span class="tag">Análisis docente simplificado</span><span class="tag real">Raíz Snowball calculada en el navegador</span></div>
+    <p>Elige una palabra. Verás su segmentación en morfemas, el lema (la forma de diccionario) y la raíz que obtiene el algoritmo Snowball, que <b>no busca morfemas</b>: recorta sufijos con reglas.</p>
+    <div class="wordlist" id="morfWords" role="group" aria-label="Palabras"></div>
+    <div id="morfOut"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--texto-l);border-color:var(--texto)"></i>lexema</span>
+      <span><i class="sw" style="background:var(--estad-l);border-color:var(--estad)"></i>morfema gramatical</span>
+      <span><i class="sw" style="background:#fff;border-color:var(--estad);border-style:dashed"></i>morfema cero</span>
+      <span><i class="sw" style="background:var(--neuronal-l);border-color:var(--neuronal)"></i>pronombre átono pegado (clítico)</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>La raíz de Snowball con las palabras que proponga la clase</h2>
+    <div class="meta"><span class="tag real">Snowball español, idéntico a NLTK 3.10.3 (comprobado con 23 066 palabras)</span></div>
+    <p>Escribe palabras separadas por comas o espacios. Cada caja es una raíz: las palabras que caen en la misma caja se tratarán como una sola.</p>
+    <input type="text" id="stemIn" style="width:100%" value="cantábamos, cantar, canto, cantante, mujer, mujeres, piénsalo, pensar, haciéndola">
+    <div id="stemOut"></div>
+  </div>
+</section>
+
+<!-- =============================================================== 3 -->
+<section class="panel" id="p-tok" role="tabpanel" aria-labelledby="t-tok" hidden>
+  <div class="card">
+    <h2>Tokenizar un texto con cinco métodos</h2>
+    <div class="meta"><span class="tag">Apartado 2.4 · tokenización</span><span class="tag real">Espacios, regex y reglas: cálculo real en el navegador</span><span class="tag pre">NLTK y spaCy: precalculados para los ejemplos</span></div>
+    <div class="row">
+      <label for="tokPreset">Ejemplo</label>
+      <select id="tokPreset"></select>
+    </div>
+    <textarea id="tokText" aria-label="Texto que se tokeniza"></textarea>
+    <p class="small" id="tokNote"></p>
+    <div class="row"><b>Método A</b></div>
+    <div class="seggroup" id="tokMetA" role="group" aria-label="Método A"></div>
+    <div class="row"><label><input type="checkbox" id="tokCmp"> Comparar con</label></div>
+    <div class="seggroup" id="tokMetB" role="group" aria-label="Método B"></div>
+    <div class="stats" id="tokStats"></div>
+    <div class="tokens" id="tokOut" aria-live="polite"></div>
+    <div class="legend" id="tokLegend"><span><i class="sw" style="background:var(--aplic-l);border-color:var(--aplic)"></i>token que el método A produce y el método B no</span></div>
+  </div>
+  <div class="card">
+    <h2>¿Cuántos tokens da cada método?</h2>
+    <div class="meta"><span class="tag real">Calculado con el texto de arriba</span></div>
+    <p>El mismo texto, cinco cuentas distintas. Cada barra es un método; la resaltada es el método A.</p>
+    <svg id="tokBarras" class="chart" viewBox="0 0 900 250" role="img" aria-label="Número de tokens por método"></svg>
+    <div class="info" id="tokConclusion" hidden></div>
+  </div>
+  <div class="card">
+    <h2>Segmentar en oraciones</h2>
+    <div class="meta"><span class="tag">Apartado 2.4 · signos y abreviaturas</span><span class="tag real">Reglas: en el navegador</span><span class="tag pre">NLTK (punkt_tab) y spaCy: precalculados</span></div>
+    <p>Un punto no siempre cierra una oración: «Dra.», «EE. UU.», «Pte.»… Compara las tres segmentaciones del ejemplo elegido arriba.</p>
+    <div class="grid2" id="segOut"></div>
+  </div>
+</section>
+
+<!-- =============================================================== 4 -->
+<section class="panel" id="p-norm" role="tabpanel" aria-labelledby="t-norm" hidden>
+  <div class="card">
+    <h2>Construye tu flujo de normalización</h2>
+    <div class="meta"><span class="tag">Apartado 2.4 · flujo (pipeline) de normalización</span><span class="tag real">Pasos calculados en el navegador</span><span class="tag pre">Tokens, categorías y lemas de spaCy precalculados</span></div>
+    <div class="row">
+      <label for="normPreset">Ejemplo</label>
+      <select id="normPreset"></select>
+    </div>
+    <p class="mono box" id="normText"></p>
+    <div class="checks">
+      <label><input type="checkbox" id="nMin" checked> 1 · Pasar a minúsculas</label>
+      <label class="sub"><input type="checkbox" id="nProp"> …salvo los nombres propios (categoría PROPN de spaCy)</label>
+      <label><input type="checkbox" id="nSig" checked> 2 · Quitar signos de puntuación, símbolos y emojis</label>
+      <label><input type="checkbox" id="nNum"> 3 · Sustituir los números por &lt;NUM&gt;</label>
+      <label><input type="checkbox" id="nVac"> 4 · Quitar palabras vacías (lista española de NLTK, 313 palabras)</label>
+      <label class="sub"><input type="checkbox" id="nNeg"> …pero conservar las de negación (no, ni, sin, nada, nunca…)</label>
+      <div>5 · Reducir cada palabra a:
+        <span class="seggroup" id="nRed" role="group" aria-label="Reducción" style="display:inline-flex;margin:0 0 0 .4rem"></span></div>
+    </div>
+    <div class="row"><label><input type="checkbox" id="nShow" checked> Mostrar los tokens eliminados</label></div>
+    <div class="stats" id="normStats"></div>
+    <div class="tokens" id="normOut" aria-live="polite"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--estad-l);border-color:var(--estad)"></i>token transformado</span>
+      <span><i class="sw" style="background:var(--soft);border-color:var(--muted);border-style:dashed"></i>token eliminado</span>
+      <span><i class="sw" style="background:var(--bad-l);border-color:var(--bad)"></i>negación eliminada</span>
+    </div>
+    <div id="normWarn"></div>
+  </div>
+  <div class="card">
+    <h2>El mismo flujo sobre todo el Quijote</h2>
+    <div class="meta"><span class="tag pre">Precalculado con el cuaderno de la Clase 3 (spaCy sin parser ni NER)</span></div>
+    <svg id="normBarras" class="chart" viewBox="0 0 1000 330" role="img" aria-label="Tokens y tipos del Quijote tras cada paso"></svg>
+    <details style="margin-top:.6rem"><summary class="small">Ver la tabla con los tipos que aparecen una sola vez</summary>
+    <table id="normQ"><thead><tr><th>Paso</th><th class="num">Tokens</th><th class="num">Tipos</th><th class="num">Tipos que aparecen una vez</th></tr></thead><tbody></tbody></table></details>
+    <p class="small" style="margin-top:.6rem">Quitar las palabras vacías reduce a menos de la mitad las ocurrencias, pero apenas el vocabulario; reducir a raíz o a lema es lo que más reduce el número de tipos.</p>
+  </div>
+</section>
+
+<!-- =============================================================== 5 -->
+<section class="panel" id="p-raiz" role="tabpanel" aria-labelledby="t-raiz" hidden>
+  <div class="card">
+    <h2>Raíz y lema, cara a cara</h2>
+    <div class="meta"><span class="tag">Apartado 2.4 · lematización y stemming</span><span class="tag real">Raíz: Snowball en el navegador</span><span class="tag pre">Lema: spaCy con su frase, precalculado</span></div>
+    <p>La palabra resaltada, dentro de su frase. A la izquierda, lo que recorta Snowball; a la derecha, el lema que da spaCy mirando la frase.</p>
+    <div class="row"><span id="lemaPasos"></span><span id="lemaCtrl"></span></div>
+    <div id="lemaOut"></div>
+  </div>
+  <div class="card">
+    <h2>Lo que agrupa cada método</h2>
+    <div class="meta"><span class="tag real">Raíces calculadas en el navegador</span></div>
+    <div class="grid2">
+      <div class="box"><h3>Sobrerradicación: una raíz para palabras distintas</h3><p class="small">Cada caja es una raíz de Snowball; el color es la palabra de diccionario. Dos colores en una caja = mezcla palabras distintas.</p><div class="grupos" id="sobre"></div></div>
+      <div class="box"><h3>Infrarradicación: un lema, varias raíces</h3><p class="small">Cada caja es un lema; debajo de cada forma, su raíz. Muchas raíces distintas = la familia se rompe.</p><div class="grupos" id="infra"></div></div>
+    </div>
+    <p class="small" style="margin-top:.7rem">La lematización necesita un diccionario y la categoría gramatical; el stemming solo recorta. Ninguno es mejor siempre: la comparación sistemática es el problema de la Clase 4.</p>
+  </div>
+</section>
+
+<!-- =============================================================== 6 -->
+<section class="panel" id="p-rec" role="tabpanel" aria-labelledby="t-rec" hidden>
+  <div class="card">
+    <h2>Cinco tipos de recurso lingüístico, un ejemplo de cada uno</h2>
+    <div class="meta"><span class="tag">Apartado 2.5 · Figuras 1 y 2</span><span class="tag illus">Entradas de ejemplo escritas para la clase</span></div>
+    <div class="recursos" id="recMapa"></div>
+  </div>
+  <div class="card">
+    <h2>Corpus en español</h2>
+    <div class="meta"><span class="tag">Apartado 2.6</span><span class="tag">Datos comprobados el 11/10/2026</span></div>
+    <p>Tamaño de los dos corpus de referencia de la RAE, en millones de formas:</p>
+    <div class="corpus-bar"><b>CREA (1975-2004)</b><div class="b" style="width:35%">algo más de 160 millones</div></div>
+    <div class="corpus-bar"><b>CORPES XXI (desde 2001)</b><div class="b" style="width:100%;background:var(--estad)">unos 455 millones · casi 420 000 documentos</div></div>
+    <table style="margin-top:1rem">
+      <thead><tr><th>Corpus</th><th>Qué contiene</th><th>Anotación y acceso</th></tr></thead>
+      <tbody>
+        <tr><td><b>CREA</b> (RAE)</td><td>Textos escritos y orales de todos los países hispanohablantes, 1975-2004; versión 3.2 (2008), algo más de 160 millones de formas</td><td>Versión anotada 1.0 (dic. 2023): búsqueda por forma, lema y categoría. Consulta web en rae.es</td></tr>
+        <tr><td><b>CORPES XXI</b> (RAE y ASALE)</td><td>Textos desde 2001 de España, América, Filipinas y Guinea Ecuatorial; versión 1.5 (junio de 2026), unos 455 millones de formas y casi 420 000 documentos</td><td>Consulta por forma, lema y categoría; estadísticas e inventarios descargables</td></tr>
+        <tr><td><b>IMPACT-es</b></td><td>86 obras de la Biblioteca Virtual Miguel de Cervantes impresas entre 1482 y 1647</td><td>Lexicón con más de 10 000 lemas enlazados a sus variantes históricas (Sánchez-Martínez et al., 2013)</td></tr>
+        <tr><td><b>UD Spanish AnCora</b> 2.8</td><td>Corpus periodístico anotado con lemas, categorías, rasgos morfológicos y dependencias</td><td>Con él (y WikiNER) se entrenó <code>es_core_news_sm</code>; licencia GPL 3.0</td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:.6rem">Fuentes: rae.es/banco-de-datos/crea y /corpes-xxi (consultadas el 11/10/2026); metadatos del modelo es_core_news_sm 3.8.0; Tema 2, apartado 2.6.</p>
+  </div>
+  <div class="card">
+    <h2>Herramientas: qué hace cada una con el español</h2>
+    <div class="meta"><span class="tag">Apartado 2.7</span><span class="tag real">Versiones probadas en el entorno de la asignatura</span></div>
+    <table>
+      <thead><tr><th>Herramienta</th><th>Para qué la usamos</th><th>Lo que hay que saber</th></tr></thead>
+      <tbody>
+        <tr><td><b>NLTK</b> 3.10.3 (Apache 2.0)</td><td>Tokenizar y segmentar, palabras vacías, Snowball, corpus y WordNet</td><td>Desde la 3.9 necesita el recurso <code>punkt_tab</code> (el antiguo <code>punkt</code> ya no basta). No trae lematizador para el español.</td></tr>
+        <tr><td><b>spaCy</b> 3.8.16 (MIT)</td><td>Flujo completo: tokens, categorías, lemas, dependencias y entidades</td><td>Cuatro modelos para el español; usamos <code>es_core_news_sm</code> 3.8.0 (GPL 3.0, unos 13 MB). No separa los clíticos («Dímelo»).</td></tr>
+        <tr><td><b>Stanford CoreNLP</b> 4.6.0 (Java)</td><td>Alternativa con modelos para 8 lenguas, entre ellas el español</td><td>Separa contracciones como «del» = de + el; se integra desde Python por línea de órdenes o servidor</td></tr>
+        <tr><td><b>Gensim</b> («Generate Similar»)</td><td>Modelos de tópicos y similitud entre documentos</td><td>Lo usaremos en los Temas 5 y 6</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+</div>
+
+<footer>
+  <p id="foot"></p>
+  <p>Corpus de la Clase 3: noticia, reseñas, mensajes y notas clínicas escritos para la clase (ficticios) y el Quijote (dominio público, Project Gutenberg, ebook 2000). Lista de palabras vacías: corpus <i>stopwords</i> de NLTK (listas de Snowball). Funciona sin conexión y no envía datos.</p>
+</footer>
+
+<script src="02_texto_como_dato_lib.js"></script>
+<script src="02_texto_como_dato_datos.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const L = window.LIB02, D = window.DATOS02;
+const SW = new Set(D.stopwords_es);
+const fmt = n => n < 10000 ? String(n) : n.toLocaleString("es-ES").replace(/\./g, "\u00A0");
+document.getElementById("foot").textContent =
+  `Resultados precalculados con NLTK ${D.versiones.nltk}, spaCy ${D.versiones.spacy} y ${D.versiones.modelo} (${D.generado}).`;
+
+// ---------------------------------------------------------------- pestañas
+const tabs = [...document.querySelectorAll(".tab")];
+function selectTab(tab) {
+  tabs.forEach(t => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on);
+    t.tabIndex = on ? 0 : -1;
+    const p = document.getElementById(t.getAttribute("aria-controls"));
+    p.hidden = !on; p.classList.toggle("active", on);
+  });
+  history.replaceState(null, "", "#" + tab.id.slice(2));
+}
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => selectTab(t));
+  t.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(n); n.focus();
+    }
+  });
+});
+const initial = tabs.find(t => "#" + t.id.slice(2) === location.hash);
+if (initial) selectTab(initial);
+
+const esc = Clase.esc;
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k === "html") e.innerHTML = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  kids.flat().forEach(k => e.append(k instanceof Node ? k : document.createTextNode(k)));
+  return e;
+}
+function svgEl(tag, attrs = {}, text) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function segmented(container, options, initialValue, onChange) {
+  container.innerHTML = "";
+  const btns = options.map(([value, label]) => {
+    const b = el("button", {class: "seg", type: "button", "aria-pressed": value === initialValue}, label);
+    b.dataset.value = value;
+    b.addEventListener("click", () => {
+      if (b.disabled) return;
+      btns.forEach(x => x.setAttribute("aria-pressed", x === b));
+      onChange(value);
+    });
+    container.append(b);
+    return b;
+  });
+  return {
+    get: () => (btns.find(b => b.getAttribute("aria-pressed") === "true") || {}).dataset?.value,
+    set: v => btns.forEach(b => b.setAttribute("aria-pressed", b.dataset.value === v)),
+    enable: (v, on, title) => { const b = btns.find(x => x.dataset.value === v); b.disabled = !on; b.title = on ? "" : title; },
+  };
+}
+// Cuestionario de opción única
+function buildQuiz(container, items, scoreEl, label) {
+  const answered = new Map();
+  container.innerHTML = "";
+  items.forEach((it, idx) => {
+    const fb = el("div", {class: "feedback"});
+    const opts = el("div", {class: "opts", role: "group", "aria-label": "Opciones"});
+    it.o.forEach(o => {
+      const b = el("button", {class: "opt", type: "button"}, o);
+      b.addEventListener("click", () => {
+        [...opts.children].forEach(c => c.classList.remove("sel-ok", "sel-bad"));
+        const ok = it.a.includes(o);
+        b.classList.add(ok ? "sel-ok" : "sel-bad");
+        fb.className = "feedback show " + (ok ? "ok" : "bad");
+        fb.textContent = (ok ? "✓ " : "✗ Respuesta propuesta: " + it.a.join(" o ") + ". ") + it.e;
+        answered.set(idx, ok);
+        scoreEl.textContent = label + [...answered.values()].filter(Boolean).length + " de " + items.length;
+      });
+      opts.append(b);
+    });
+    const q = el("div", {class: "q"});
+    q.append(...(it.qNodes || [it.q]));
+    container.append(el("div", {class: "quiz-item"}, q, opts, fb));
+  });
+}
+const ej = id => D.ejemplos.find(e => e.id === id);
+const palabras = toks => toks.filter(L.esPalabra);
+
+// ================================================================ 1 · El texto como dato
+(function () {
+  const A = ej("f3").texto, B = ej("f4").texto;
+  const tA = palabras(L.tokReglas(A)).map(t => t.toLowerCase()), tB = palabras(L.tokReglas(B)).map(t => t.toLowerCase());
+  document.getElementById("bowA").textContent = A;
+  document.getElementById("bowB").textContent = B;
+  const out = document.getElementById("bowOut"), fb = document.getElementById("bowFb");
+  const bag = ts => { const c = {}; ts.forEach(t => c[t] = (c[t] || 0) + 1); return Object.entries(c).sort((a, b) => a[0].localeCompare(b[0], "es")); };
+  document.getElementById("bowBolsa").addEventListener("click", () => {
+    const ba = bag(tA), bb = bag(tB);
+    out.innerHTML = "";
+    out.append(el("div", {class: "grid2"},
+      el("div", {class: "tokens"}, ba.map(([w, n]) => el("span", {class: "tok"}, `${w} ×${n}`))),
+      el("div", {class: "tokens"}, bb.map(([w, n]) => el("span", {class: "tok"}, `${w} ×${n}`)))));
+    const iguales = JSON.stringify(ba) === JSON.stringify(bb);
+    fb.className = "feedback show neutral";
+    fb.textContent = iguales ? `Las dos bolsas son idénticas: ${tA.length} palabras con las mismas frecuencias. Un modelo que solo cuente palabras no puede distinguir qué se quiere y qué no.` : "Las bolsas son distintas.";
+  });
+  document.getElementById("bowSec").addEventListener("click", () => {
+    out.innerHTML = "";
+    const row = (ts, other) => el("div", {class: "tokens"}, ts.map((t, i) => el("span", {class: "tok" + (t !== other[i] ? " diff" : "")}, t)));
+    out.append(row(tA, tB), row(tB, tA));
+    fb.className = "feedback show neutral";
+    fb.textContent = "En secuencia, las posiciones marcadas cambian: lo que va detrás de «no» es lo que se rechaza. El orden importa (y en «Al campo no he ido, he ido a la playa» la pista llega después: el aspecto secuencial es bidireccional).";
+  });
+
+  // Zipf
+  const q = D.quijote;
+  document.getElementById("zipfStats").append(
+    el("div", {}, el("div", {class: "big"}, fmt(q.palabras)), el("div", {class: "small"}, "palabras (tokens)")),
+    el("div", {}, el("div", {class: "big"}, fmt(q.tipos)), el("div", {class: "small"}, "tipos distintos")),
+    el("div", {}, el("div", {class: "big"}, (100 * q.hapax / q.tipos).toFixed(1).replace(".", ",") + " %"), el("div", {class: "small"}, "de los tipos aparecen una sola vez")));
+  const waffle = document.getElementById("waffle");
+  for (let i = 0; i < 100; i++) waffle.append(el("span"));
+  document.getElementById("zipfBtn").addEventListener("click", () => {
+    const real = q.porcentaje_vacias, n = Math.round(real), celdas = [...waffle.children];
+    celdas.forEach(c => c.classList.remove("v"));
+    celdas.forEach((c, i) => { if (i < n) setTimeout(() => c.classList.add("v"), 18 * i); });
+    setTimeout(() => {
+      document.getElementById("zipfMsg").innerHTML = `<b>${String(real).replace(".", ",")} %</b> de las ${fmt(q.palabras)} palabras del Quijote está en la lista de palabras vacías de NLTK: al quitarlas, el texto se queda en menos de la mitad.`;
+    }, 18 * n + 150);
+  });
+  function drawBars() {
+    const n = Number(document.getElementById("zipfN").value), col = document.getElementById("zipfCol").checked;
+    document.getElementById("zipfNv").textContent = n;
+    const svg = document.getElementById("zipfBars"); svg.innerHTML = "";
+    const top = q.top30.slice(0, n), max = top[0][1], h = 520 / n, x0 = 90, w = 340;
+    top.forEach(([word, f], i) => {
+      const y = 20 + i * h, bw = w * f / max, isSw = SW.has(word);
+      svg.append(svgEl("text", {x: x0 - 8, y: y + h * 0.68, "text-anchor": "end", "font-size": Math.min(15, h * 0.75), fill: "#1F2933"}, word));
+      svg.append(svgEl("rect", {x: x0, y: y + h * 0.12, width: bw, height: h * 0.76, rx: 2, fill: col ? (isSw ? "#1E88E5" : "#9AA5B1") : "#00897B"}));
+      svg.append(svgEl("text", {x: x0 + bw + 6, y: y + h * 0.68, "font-size": Math.min(13, h * 0.7), fill: "#52606D"}, fmt(f)));
+    });
+    if (col) {
+      svg.append(svgEl("text", {x: 515, y: 300, "text-anchor": "end", "font-size": 14, "font-weight": 700, fill: "#1E88E5"}, "azul: palabra vacía (NLTK)"));
+      svg.append(svgEl("text", {x: 515, y: 322, "text-anchor": "end", "font-size": 14, "font-weight": 700, fill: "#7B8794"}, "gris: no está en la lista"));
+    }
+  }
+  function drawLog() {
+    const svg = document.getElementById("zipfLog"); svg.innerHTML = "";
+    const pts = q.curva, X = r => 60 + 430 * Math.log10(r) / Math.log10(pts[pts.length - 1][0]), Y = f => 370 - 340 * Math.log10(f) / Math.log10(pts[0][1]);
+    for (let k = 0; k <= 4; k++) {
+      svg.append(svgEl("line", {x1: X(10 ** k), x2: X(10 ** k), y1: 30, y2: 370, stroke: "#E4E7EB"}));
+      svg.append(svgEl("text", {x: X(10 ** k), y: 390, "text-anchor": "middle", "font-size": 13, fill: "#52606D"}, fmt(10 ** k)));
+      svg.append(svgEl("line", {x1: 60, x2: 490, y1: Y(10 ** k), y2: Y(10 ** k), stroke: "#E4E7EB"}));
+      svg.append(svgEl("text", {x: 54, y: Y(10 ** k) + 4, "text-anchor": "end", "font-size": 13, fill: "#52606D"}, fmt(10 ** k)));
+    }
+    svg.append(svgEl("line", {x1: X(1), y1: Y(pts[0][1]), x2: X(pts[pts.length - 1][0]), y2: Y(pts[0][1] / pts[pts.length - 1][0]), stroke: "#9AA5B1", "stroke-dasharray": "6 4"}));
+    svg.append(svgEl("polyline", {points: pts.map(([r, f]) => `${X(r)},${Y(f)}`).join(" "), fill: "none", stroke: "#00897B", "stroke-width": 3}));
+    svg.append(svgEl("text", {x: 275, y: 412, "text-anchor": "middle", "font-size": 13, fill: "#1F2933"}, "rango (1 = la palabra más frecuente), escala logarítmica"));
+    svg.append(svgEl("text", {x: 250, y: 60, "font-size": 14, fill: "#52606D"}, "discontinua: frecuencia ∝ 1/rango"));
+  }
+  document.getElementById("zipfN").addEventListener("input", drawBars);
+  document.getElementById("zipfCol").addEventListener("change", drawBars);
+  drawBars(); drawLog();
+
+  // Frases con «banco»: {x} marca una palabra de contexto que decide el sentido
+  const BANCO = [
+    {f: "«[…] fue al banco a {contratar} una {hipoteca}.»", s: "entidad financiera", c: "#1E88E5"},
+    {f: "«[…] en el {mar} pude ver un banco de {peces} rojos.»", s: "conjunto de peces", c: "#00897B"},
+    {f: "«[…] ellos se {sentaron} en un banco de {madera}.»", s: "asiento", c: "#8E24AA"},
+  ];
+  const bancoOut = document.getElementById("bancoOut");
+  BANCO.forEach(b => {
+    const html = esc(b.f).replace(/banco/, '<span class="w-banco">banco</span>').replace(/\{([^}]+)\}/g, `<span class="pista" style="color:${b.c};border-color:${b.c}">$1</span>`);
+    bancoOut.append(el("div", {class: "sentido", style: "border-top-color:" + b.c, html: `<div class="fr">${html}</div><span class="sent" style="background:${b.c}">${esc(b.s)}</span>`}));
+  });
+  Clase.botonPregunta(document.getElementById("bancoCtrl"), oculto => {
+    [...bancoOut.children].forEach(x => x.classList.toggle("oculto", oculto));
+    if (oculto) [...bancoOut.children].forEach(x => x.addEventListener("click", () => x.classList.remove("oculto"), {once: true}));
+  }, {ver: "Ocultar los sentidos para preguntar", ocultas: "Mostrar todos los sentidos"});
+})();
+
+// ================================================================ 2 · Morfología
+const MORF = [
+  {w: "mujeres", seg: [["mujer", "lex", "lexema"], ["es", "gram", "número: plural"]], lema: "mujer", nota: "El lexema aporta el significado léxico; -es, el significado gramatical de plural."},
+  {w: "mujer", seg: [["mujer", "lex", "lexema"], ["∅", "cero", "número: singular"]], lema: "mujer", nota: "El singular tiene un morfema cero: significado gramatical sin forma. Snowball recorta «muj» en el singular y «mujer» en el plural: no las agrupa."},
+  {w: "cantábamos", seg: [["cant", "lex", "lexema"], ["aba", "gram", "indicativo, pretérito imperfecto"], ["mos", "gram", "1.ª persona del plural"]], lema: "cantar", nota: "Así lo segmenta el Tema 2. En un análisis más fino, -aba- = vocal temática -a- + -ba- (tiempo, modo y aspecto)."},
+  {w: "perros", seg: [["perr", "lex", "lexema"], ["o", "gram", "género: masculino"], ["s", "gram", "número: plural"]], lema: "perro", nota: "Dos morfemas gramaticales encadenados: género y número."},
+  {w: "jugaron", seg: [["jug", "lex", "lexema"], ["aron", "gram", "pret. perfecto simple, 3.ª plural"]], lema: "jugar", nota: "Snowball obtiene «jug», que aquí coincide con el lexema."},
+  {w: "juego", seg: [["jueg", "lex", "lexema con diptongo"], ["o", "gram", "presente, 1.ª singular"]], lema: "jugar", nota: "La raíz cambia (jug- → jueg-): una de las alteraciones de la raíz que hacen el español más difícil que el inglés (apartado 2.3). Snowball da «jueg» y ya no la une con «jugaron»."},
+  {w: "piénsalo", seg: [["piens", "lex", "lexema con diptongo"], ["a", "gram", "imperativo, 2.ª singular"], ["lo", "clit", "pronombre átono pegado"]], lema: "pensar (+ lo)", nota: "Un token, dos palabras gramaticales. Snowball solo quita el pronombre tras infinitivo o gerundio («haciéndola» → «hac»); aquí deja «piensal»."},
+  {w: "ingenieras", seg: [["ingenier", "lex", "lexema"], ["a", "gram", "género: femenino"], ["s", "gram", "número: plural"]], lema: "ingeniero (DLE: «ingeniero, ra»)", nota: "spaCy 3.8 (es_core_news_sm) devuelve el lema «ingeniera» en la frase del Tema 2: el resultado depende del convenio de cada lematizador."},
+];
+(function () {
+  const words = document.getElementById("morfWords"), out = document.getElementById("morfOut");
+  const btns = MORF.map((m, i) => {
+    const b = el("button", {class: "seg", type: "button", "aria-pressed": i === 2}, m.w);
+    b.addEventListener("click", () => { btns.forEach(x => x.setAttribute("aria-pressed", x === b)); show(m); });
+    words.append(b); return b;
+  });
+  function show(m) {
+    out.innerHTML = "";
+    out.append(el("div", {class: "morf"}, m.seg.map(([t, k, lab]) => el("div", {class: "mor " + k}, t, el("small", {}, lab)))));
+    out.append(el("div", {class: "stats"},
+      el("div", {}, el("div", {class: "small"}, "Lema (forma de diccionario)"), el("div", {class: "big"}, m.lema)),
+      el("div", {}, el("div", {class: "small"}, "Raíz Snowball (calculada)"), el("div", {class: "big mono"}, L.stemEs(m.w)))));
+    out.append(el("p", {}, m.nota));
+  }
+  show(MORF[2]);
+
+  const inp = document.getElementById("stemIn"), so = document.getElementById("stemOut");
+  function groups() {
+    const ws = inp.value.split(/[\s,;]+/).filter(Boolean);
+    const g = new Map();
+    ws.forEach(w => { const s = L.stemEs(w); if (!g.has(s)) g.set(s, []); g.get(s).push(w); });
+    so.innerHTML = "";
+    const caja = el("div", {class: "grupos"});
+    for (const [s, list] of g) caja.append(el("div", {class: "grupo", style: list.length > 1 ? "border-color:var(--estad)" : ""},
+      el("div", {class: "cab"}, s, el("small", {}, list.length > 1 ? list.length + " palabras" : "")),
+      list.map(w => el("span", {class: "chipw", style: "border-color:" + (list.length > 1 ? "var(--estad)" : "#CFD8DC")}, w))));
+    so.append(caja);
+  }
+  inp.addEventListener("input", groups); groups();
+})();
+
+// ================================================================ 3 · Tokenizar
+(function () {
+  const sel = document.getElementById("tokPreset"), ta = document.getElementById("tokText");
+  D.ejemplos.forEach(e => sel.append(el("option", {value: e.id}, e.titulo + (e.id.startsWith("f") ? ": " + e.texto.slice(0, 50) + (e.texto.length > 50 ? "…" : "") : ""))));
+  sel.append(el("option", {value: "libre"}, "Texto libre (solo métodos del navegador)"));
+  const METODOS = [["espacios", "Espacios"], ["regex", "Regex simple"], ["reglas", "Reglas para el español"], ["nltk", "NLTK word_tokenize"], ["spacy", "spaCy"]];
+  let A = "espacios", B = "spacy";
+  const segA = segmented(document.getElementById("tokMetA"), METODOS, A, v => { A = v; render(); });
+  const segB = segmented(document.getElementById("tokMetB"), METODOS, B, v => { B = v; render(); });
+  const cmp = document.getElementById("tokCmp");
+  function current() { const e = ej(sel.value); return e && ta.value === e.texto ? e : null; }
+  function toks(m) {
+    const e = current(), t = ta.value;
+    if (m === "espacios") return L.tokEspacios(t);
+    if (m === "regex") return L.tokRegexSimple(t);
+    if (m === "reglas") return L.tokReglas(t);
+    if (!e) return null;
+    return m === "nltk" ? e.nltk : e.spacy.map(x => x[0]);
+  }
+  function render() {
+    const e = current();
+    ["nltk", "spacy"].forEach(m => { segA.enable(m, !!e, "Precalculado solo para los ejemplos sin modificar"); segB.enable(m, !!e, "Precalculado solo para los ejemplos sin modificar"); });
+    if (!e && (A === "nltk" || A === "spacy")) { A = "reglas"; segA.set(A); }
+    if (!e && (B === "nltk" || B === "spacy")) { B = "reglas"; segB.set(B); }
+    document.getElementById("tokNote").textContent = e ? "Ejemplo predefinido: los cinco métodos disponibles." : "Texto modificado: NLTK y spaCy no se ejecutan en el navegador; usa el cuaderno de la Clase 3 para probarlos.";
+    const ta_ = toks(A), tb_ = cmp.checked ? toks(B) : null;
+    const st = document.getElementById("tokStats"); st.innerHTML = "";
+    st.append(el("div", {}, el("div", {class: "big"}, String(ta_.length)), el("div", {class: "small"}, "tokens · método A")),
+              el("div", {}, el("div", {class: "big"}, String(new Set(ta_).size)), el("div", {class: "small"}, "tipos · método A")));
+    if (tb_) st.append(el("div", {}, el("div", {class: "big"}, String(tb_.length)), el("div", {class: "small"}, "tokens · método B")));
+    const cnt = new Map(); (tb_ || []).forEach(t => cnt.set(t, (cnt.get(t) || 0) + 1));
+    const out = document.getElementById("tokOut"); out.innerHTML = "";
+    ta_.forEach(t => {
+      let cls = "tok";
+      if (tb_) { const c = cnt.get(t) || 0; if (c > 0) cnt.set(t, c - 1); else cls += " diff"; }
+      out.append(el("span", {class: cls}, t));
+    });
+    document.getElementById("tokLegend").hidden = !tb_;
+    pintarConteo(e);
+    // Segmentación
+    const so = document.getElementById("segOut"); so.innerHTML = "";
+    const col = (tit, list, note) => el("div", {class: "box"}, el("h3", {}, `${tit} · ${list ? list.length : "—"}`),
+      list ? el("ol", {class: "sents"}, list.map(s => el("li", {}, s))) : el("p", {class: "small"}, note));
+    so.append(col("Reglas de la clase", L.unidades(ta.value).flatMap(L.segReglas)),
+              col("NLTK sent_tokenize", e ? e.oraciones.nltk : null, "Solo para ejemplos predefinidos."),
+              col("spaCy", e ? e.oraciones.spacy : null, "Solo para ejemplos predefinidos."));
+  }
+  sel.addEventListener("change", () => { const e = ej(sel.value); if (e) ta.value = e.texto; render(); });
+  ta.addEventListener("input", render);
+  cmp.addEventListener("change", render);
+  ta.value = D.ejemplos[0].texto; render();
+
+  function pintarConteo(e) {
+    const svg = document.getElementById("tokBarras"); svg.innerHTML = "";
+    const datos = METODOS.map(([m, n]) => [m, n, toks(m)]).filter(d => d[2]);
+    const max = Math.max(...datos.map(d => d[2].length), 1), alto = 230 / METODOS.length;
+    datos.forEach(([m, n, t], i) => {
+      const y = 10 + i * alto, w = 600 * t.length / max, on = m === A;
+      svg.append(svgEl("text", {x: 230, y: y + alto * 0.62, "text-anchor": "end", "font-size": 17, "font-weight": on ? 800 : 500, fill: "#1F2933"}, n));
+      svg.append(svgEl("rect", {x: 245, y: y + alto * 0.15, width: w, height: alto * 0.7, rx: 4, fill: on ? "#1E88E5" : "#9AA5B1"}));
+      svg.append(svgEl("text", {x: 255 + w, y: y + alto * 0.62, "font-size": 17, "font-weight": 800, fill: "#1F2933"}, String(t.length)));
+    });
+    if (datos.length < METODOS.length) svg.append(svgEl("text", {x: 245, y: 245, "font-size": 15, fill: "#52606D"}, "NLTK y spaCy solo están precalculados para los ejemplos sin modificar."));
+    const c = document.getElementById("tokConclusion");
+    c.hidden = !(e && e.id === "f0");
+    if (e && e.id === "f0") c.textContent = `NLTK da ${e.nltk.length}: deja «¿Me» pegado y parte «EE. UU.» en «EE», «.» y «UU.». spaCy (${e.spacy.length}) y las reglas de la clase separan «¿» y mantienen «EE. UU.» como un solo token. Separar por espacios (${L.tokEspacios(e.texto).length}) deja la puntuación pegada a las palabras.`;
+  }
+})();
+
+// ================================================================ 4 · Normalizar
+(function () {
+  const sel = document.getElementById("normPreset");
+  D.ejemplos.forEach(e => sel.append(el("option", {value: e.id}, e.titulo + (e.id.startsWith("f") ? ": " + e.texto.slice(0, 50) + (e.texto.length > 50 ? "…" : "") : ""))));
+  sel.value = "f11";
+  let red = "no";
+  segmented(document.getElementById("nRed"), [["no", "nada"], ["raiz", "raíz (Snowball)"], ["lema", "lema (spaCy)"]], red, v => { red = v; render(); });
+  const ids = ["nMin", "nProp", "nSig", "nNum", "nVac", "nNeg", "nShow"];
+  ids.forEach(i => document.getElementById(i).addEventListener("change", render));
+  sel.addEventListener("change", render);
+  function render() {
+    const e = ej(sel.value), c = i => document.getElementById(i).checked;
+    document.getElementById("normText").textContent = e.texto;
+    document.getElementById("nProp").disabled = !c("nMin");
+    document.getElementById("nNeg").disabled = !c("nVac");
+    const toks = e.spacy.map(([text, lemma, pos]) => ({text, lemma, pos}));
+    const res = L.normalizar(toks, {minusculas: c("nMin") ? (c("nProp") ? "propios" : "todas") : "no", signos: c("nSig"), numeros: c("nNum"), vacias: c("nVac"), negacion: c("nNeg"), reducir: red, stopwords: SW});
+    const kept = res.filter(r => !r.quitado).map(r => r.out);
+    const st = document.getElementById("normStats"); st.innerHTML = "";
+    st.append(el("div", {}, el("div", {class: "big"}, `${toks.length} → ${kept.length}`), el("div", {class: "small"}, "tokens")),
+              el("div", {}, el("div", {class: "big"}, `${new Set(toks.map(t => t.text)).size} → ${new Set(kept).size}`), el("div", {class: "small"}, "tipos")));
+    const out = document.getElementById("normOut"); out.innerHTML = "";
+    res.forEach(r => {
+      if (r.quitado && !c("nShow")) return;
+      const cls = "tok" + (r.quitado ? (r.motivo === "negación quitada" ? " gone neg" : " gone") : (r.out !== r.orig ? " changed" : ""));
+      out.append(el("span", {class: cls, title: r.quitado ? r.motivo : (r.out !== r.orig ? "antes: " + r.orig : "")}, r.quitado ? r.orig : r.out, r.out !== r.orig && !r.quitado ? el("span", {class: "lab"}, r.orig) : ""));
+    });
+    const warn = document.getElementById("normWarn"); warn.innerHTML = "";
+    const negs = res.filter(r => r.motivo === "negación quitada").map(r => r.orig);
+    if (negs.length) warn.append(el("div", {class: "warnbox"}, `Se han eliminado palabras de negación (${negs.join(", ")}): el texto puede pasar a decir lo contrario. Activa «conservar las de negación» o no quites palabras vacías en tareas de opinión.`));
+    if (c("nMin") && !c("nProp")) {
+      const props = e.spacy.filter(x => x[2] === "PROPN").map(x => x[0]);
+      const merged = props.filter(p => e.spacy.some(x => x[0] !== p && x[0].toLowerCase() === p.toLowerCase()));
+      if (merged.length) warn.append(el("div", {class: "warnbox"}, `Al pasar todo a minúsculas, «${merged.join("», «")}» se confunde con la palabra común.`));
+    }
+    const propios = [...new Set(e.spacy.filter(x => x[2] === "PROPN").map(x => x[0]))];
+    if (c("nMin") && c("nProp") && propios.length) warn.append(el("div", {class: "warnbox"}, `spaCy ha marcado como nombre propio (PROPN): «${propios.join("», «")}». Revisa si acierta: la regla «conservar nombres propios» hereda sus errores (por ejemplo, «Días» o «Dímelo» a principio de frase).`));
+    if (red === "lema") {
+      const sinLema = [...new Set(e.spacy.filter(x => x[2] === "PROPN" && x[1] === x[0]).map(x => x[0]))];
+      if (sinLema.length) warn.append(el("div", {class: "warnbox"}, `spaCy no lematiza lo que toma por nombre propio: ${sinLema.join(", ")}.`));
+    }
+  }
+  render();
+  const tb = document.querySelector("#normQ tbody");
+  const ET = {"0 tokens": "Tokens tal cual (spaCy)", "1 minúsculas": "Minúsculas", "2 sin signos": "Sin signos ni símbolos", "3 sin palabras vacías": "Sin palabras vacías", "3b vacías sin quitar negación": "Sin palabras vacías, conservando la negación", "4a raíz (Snowball)": "Raíz (Snowball)", "4b lema (spaCy)": "Lema (spaCy)"};
+  for (const [k, v] of Object.entries(D.quijote.normalizacion)) tb.append(el("tr", {}, el("td", {}, ET[k] || k), el("td", {class: "num"}, fmt(v.tokens)), el("td", {class: "num"}, fmt(v.tipos)), el("td", {class: "num"}, fmt(v.hapax))));
+  // Dos paneles con su propia escala: tokens (ocurrencias) y tipos (vocabulario)
+  const svg = document.getElementById("normBarras"), filas = Object.entries(D.quijote.normalizacion);
+  const maxT = Math.max(...filas.map(f => f[1].tokens)), maxV = Math.max(...filas.map(f => f[1].tipos)), h = 270 / filas.length;
+  svg.append(svgEl("text", {x: 375, y: 22, "font-size": 18, "font-weight": 800, fill: "#1E88E5"}, "Tokens (ocurrencias)"));
+  svg.append(svgEl("text", {x: 720, y: 22, "font-size": 18, "font-weight": 800, fill: "#00897B"}, "Tipos (vocabulario)"));
+  filas.forEach(([k, v], i) => {
+    const y = 40 + i * h;
+    svg.append(svgEl("text", {x: 362, y: y + h * 0.62, "text-anchor": "end", "font-size": 16, fill: "#1F2933"}, ET[k] || k));
+    const wt = 225 * v.tokens / maxT, wv = 200 * v.tipos / maxV;
+    svg.append(svgEl("rect", {x: 375, y: y + h * 0.15, width: wt, height: h * 0.7, rx: 3, fill: "#1E88E5"}));
+    svg.append(svgEl("text", {x: 381 + wt, y: y + h * 0.62, "font-size": 14, fill: "#1F2933"}, fmt(v.tokens)));
+    svg.append(svgEl("rect", {x: 720, y: y + h * 0.15, width: wv, height: h * 0.7, rx: 3, fill: "#00897B"}));
+    svg.append(svgEl("text", {x: 726 + wv, y: y + h * 0.62, "font-size": 14, fill: "#1F2933"}, fmt(v.tipos)));
+  });
+})();
+
+// ================================================================ 5 · Raíz o lema
+(function () {
+  // Cada caso: frase, palabra, lo que se espera (lema correcto según el diccionario) y la explicación
+  const CASOS = [
+    ["f9", "jugaron", "jugar", "Lema y raíz agrupan «jugaron» y «jugado»."],
+    ["f9", "juego", "jugar", "El lema la une a «jugar»; la raíz «jueg» ya no coincide con «jug»."],
+    ["f8", "fui", "ser", "Error del modelo: en «fui feliz» el verbo es «ser», pero el modelo pequeño elige «ir» en los dos casos."],
+    ["f10", "ingenieras", "ingeniero", "El Tema 2 dice «ingeniero», como el diccionario; spaCy conserva el femenino. Depende del convenio del lematizador."],
+    ["f2", "Dímelo", "decir", "No separa el pronombre pegado y lo toma por nombre propio: sin buena tokenización no hay buen lema."],
+    ["f6", "Días", "día", "La mayúscula inicial engaña al modelo: lo toma por nombre propio y no lo lematiza; «días» en minúscula sí da «día»."],
+  ];
+  let lemaOculto = false;
+  const out = document.getElementById("lemaOut");
+  function pintarLema(k) {
+    const [id, w, esperado, expl] = CASOS[k], e = ej(id);
+    const occ = CASOS.slice(0, k).filter(c => c[0] === id && c[1] === w).length;
+    let n = -1, idx = e.spacy.findIndex(t => t[0] === w && ++n === occ);
+    if (idx < 0) idx = e.spacy.findIndex(t => t[0] === w);
+    const tok = e.spacy[idx], raiz = L.stemEs(tok[0]), bien = tok[1].toLowerCase() === esperado;
+    out.innerHTML = "";
+    out.append(el("div", {class: "cara-frase", html: e.spacy.map((t, i) => i === idx ? `<u>${esc(t[0])}</u>` : esc(t[0])).join(" ")}));
+    const cara = el("div", {class: "cara" + (lemaOculto ? " oculto" : "")},
+      el("div", {class: "caja", style: "border-color:var(--gris);background:var(--soft)"}, el("div", {class: "t"}, "Raíz (Snowball, recorta)"), el("div", {class: "v"}, raiz)),
+      el("div", {class: "caja", style: `border-color:${bien ? "var(--ok)" : "var(--bad)"};background:${bien ? "var(--ok-l)" : "var(--bad-l)"}`},
+        el("div", {class: "t"}, `Lema (spaCy, categoría ${tok[2]})`), el("div", {class: "v"}, tok[1]),
+        el("div", {class: "small"}, bien ? "coincide con el diccionario" : "el diccionario da «" + esperado + "»")));
+    out.append(cara);
+    const nota = el("p", {class: "gran-msg", style: "font-weight:400;font-size:1.1rem"}, expl);
+    if (lemaOculto) { nota.hidden = true; cara.addEventListener("click", () => { cara.classList.remove("oculto"); nota.hidden = false; }); cara.title = "Pulsa para mostrar"; }
+    out.append(nota);
+  }
+  const pasosLema = Clase.pasos(document.getElementById("lemaPasos"), {total: CASOS.length, pintar: pintarLema, etiqueta: k => "«" + CASOS[k][1] + "»"});
+  Clase.botonPregunta(document.getElementById("lemaCtrl"), o => { lemaOculto = o; pintarLema(pasosLema.k); }, {ver: "Ocultar raíz y lema para preguntar", ocultas: "Mostrar siempre raíz y lema"});
+
+  // Sobrerradicación: color = palabra de diccionario (lema), caja = raíz
+  const LEMA = {casa: "casa", casas: "casa", casar: "casar", casado: "casar", casaron: "casar", sol: "sol", solo: "solo", sola: "solo", "solía": "soler", soler: "soler",
+    parte: "parte", partes: "parte", partido: "partido", partir: "partir", "partió": "partir", generoso: "generoso", generosa: "generoso", "generación": "generación",
+    universidad: "universidad", universo: "universo"};
+  const PALETA = ["#1E88E5", "#F57C00", "#8E24AA", "#00897B", "#C62828", "#6D4C41"];
+  const so = document.getElementById("sobre"), io = document.getElementById("infra");
+  D.familias.sobrerradicacion.forEach(f => {
+    const lemas = [...new Set(f.formas.map(w => LEMA[w] || w))];
+    so.append(el("div", {class: "grupo", style: "border-color:var(--bad)"}, el("div", {class: "cab"}, L.stemEs(f.formas[0]), el("small", {}, lemas.length + " palabras de diccionario")),
+      f.formas.map(w => { const c = PALETA[lemas.indexOf(LEMA[w] || w) % PALETA.length]; return el("span", {class: "chipw", style: `border-color:${c};color:${c};font-weight:700`}, w); })));
+  });
+  D.familias.infrarradicacion.forEach(f => {
+    const raices = [...new Set(f.formas.map(w => L.stemEs(w)))];
+    io.append(el("div", {class: "grupo", style: "border-color:var(--aplic)"}, el("div", {class: "cab"}, f.lema, el("small", {}, raices.length + " raíces distintas")),
+      f.formas.map(w => { const r = L.stemEs(w), c = PALETA[raices.indexOf(r) % PALETA.length]; return el("span", {class: "chipw", style: `border-color:${c}`}, w, el("small", {}, r)); })));
+  });
+})();
+
+// ================================================================ 6 · Recursos
+// ================================================================ 6 · Recursos: un ejemplo dibujado de cada tipo
+(function () {
+  const RECURSOS = [
+    ["Diccionario", "#1E88E5", "Palabras ordenadas con su definición, pensadas para una persona.",
+     '<b>banco</b> <i>m.</i><br>1. Asiento para varias personas.<br>2. Entidad financiera.<br>3. Conjunto de peces que nadan juntos.', "Ejemplo real: el DLE de la RAE."],
+    ["Lexicón", "#00897B", "Diccionario con información morfológica de cada pieza.",
+     '<span class="mono">-mos</span> → 1.ª persona del plural<br><span class="mono">-es</span> → plural<br><span class="mono">-aba</span> → pretérito imperfecto', "Lo que necesita un analizador morfológico (Tema 2.3)."],
+    ["Tesauro", "#8E24AA", "Palabras con sus sinónimos y antónimos (Figura 2 del tema).",
+     '<b>rápido</b><br>sinónimos: veloz, ligero, raudo<br>antónimo: lento', "Tesauro en sentido literario."],
+    ["Base de relaciones léxicas", "#F57C00", "Sentidos de las palabras y relaciones entre ellos.",
+     '<svg viewBox="0 0 220 130" width="100%" role="img" aria-label="rueda es parte de coche; coche es un vehículo"><g font-size="15" font-family="system-ui"><rect x="5" y="10" width="70" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="40" y="30" text-anchor="middle">rueda</text><rect x="145" y="10" width="70" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="180" y="30" text-anchor="middle">coche</text><rect x="135" y="90" width="80" height="30" rx="6" fill="#FFF3E0" stroke="#F57C00"/><text x="175" y="110" text-anchor="middle">vehículo</text><line x1="75" y1="25" x2="143" y2="25" stroke="#52606D" stroke-width="2"/><text x="110" y="19" text-anchor="middle" font-size="12" fill="#52606D">parte de</text><line x1="180" y1="40" x2="177" y2="88" stroke="#52606D" stroke-width="2"/><text x="172" y="68" text-anchor="end" font-size="12" fill="#52606D">es un</text></g></svg>', "Ejemplo real: WordNet."],
+    ["Corpus", "#52606D", "Colección de textos reales, a veces anotada palabra a palabra.",
+     '<span class="mono">El/DET juez/NOUN archivó/VERB la/DET causa/NOUN</span>', "Ejemplos reales: CORPES XXI (sin anotar a mano) y UD Spanish AnCora (anotado; con él se entrenó el modelo de spaCy)."],
+  ];
+  const caja = document.getElementById("recMapa");
+  RECURSOS.forEach(([n, c, def, ejem, nota]) => caja.append(el("div", {class: "recurso", style: "border-top-color:" + c},
+    el("h3", {style: "color:" + c}, n), el("div", {class: "def"}, def), el("div", {class: "ej", html: ejem}), el("div", {class: "ej-n"}, nota))));
+})();
+</script>
+</body>
+</html>

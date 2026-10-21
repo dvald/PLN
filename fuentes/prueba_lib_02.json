@@ -1,0 +1,281 @@
+{
+ "fecha": "2026-10-12T12:04:11.561Z",
+ "node": "v22.22.0",
+ "tokenizadores": {
+  "tokens": {
+   "noticia": {
+    "tokens_py": 138,
+    "tokens_js": 138,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "resenas": {
+    "tokens_py": 112,
+    "tokens_js": 112,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "mensajes": {
+    "tokens_py": 61,
+    "tokens_js": 61,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "notas_clinicas": {
+    "tokens_py": 66,
+    "tokens_js": 66,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_cap01": {
+    "tokens_py": 2183,
+    "tokens_js": 2183,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_completo": {
+    "tokens_py": 450518,
+    "tokens_js": 450518,
+    "iguales": true,
+    "primera_diferencia": null
+   }
+  },
+  "espacios": {
+   "noticia": {
+    "tokens_py": 116,
+    "tokens_js": 116,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "resenas": {
+    "tokens_py": 90,
+    "tokens_js": 90,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "mensajes": {
+    "tokens_py": 47,
+    "tokens_js": 47,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "notas_clinicas": {
+    "tokens_py": 50,
+    "tokens_js": 50,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_cap01": {
+    "tokens_py": 1896,
+    "tokens_js": 1896,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_completo": {
+    "tokens_py": 386614,
+    "tokens_js": 386614,
+    "iguales": true,
+    "primera_diferencia": null
+   }
+  },
+  "regex_simple": {
+   "noticia": {
+    "tokens_py": 162,
+    "tokens_js": 162,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "resenas": {
+    "tokens_py": 116,
+    "tokens_js": 116,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "mensajes": {
+    "tokens_py": 75,
+    "tokens_js": 75,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "notas_clinicas": {
+    "tokens_py": 69,
+    "tokens_js": 69,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_cap01": {
+    "tokens_py": 2185,
+    "tokens_js": 2185,
+    "iguales": true,
+    "primera_diferencia": null
+   },
+   "quijote_completo": {
+    "tokens_py": 450650,
+    "tokens_js": 450650,
+    "iguales": true,
+    "primera_diferencia": null
+   }
+  }
+ },
+ "stems": {
+  "comparados": 23066,
+  "diferencias": 0,
+  "ejemplos": []
+ },
+ "ejemplos_demo": {
+  "f0": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f1": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f2": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f3": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f4": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f5": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f6": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f7": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f8": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f9": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f10": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "f11": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "noticia": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "resenas": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "mensajes": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "notas_clinicas": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  },
+  "quijote_cap01": {
+   "segmentacion_igual": true,
+   "normalizacion_igual": {
+    "3 sin palabras vacías": true,
+    "3b vacías sin quitar negación": true,
+    "4a raíz (Snowball)": true,
+    "4b lema (spaCy)": true
+   }
+  }
+ },
+ "resultado": "OK"
+}

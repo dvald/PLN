@@ -1,0 +1,1418 @@
+{
+ "mulberry32_42": [
+  0.6011037519201636,
+  0.44829055899754167,
+  0.8524657934904099,
+  0.6697340414393693,
+  0.17481389874592423,
+  0.5265925421845168
+ ],
+ "tokens_prueba": {
+  "El cielo está despejado y el sol brilla.": [
+   "el",
+   "cielo",
+   "está",
+   "despejado",
+   "y",
+   "el",
+   "sol",
+   "brilla"
+  ],
+  "Las redes 5G prometen un internet más rápido; año 2026.": [
+   "las",
+   "redes",
+   "prometen",
+   "un",
+   "internet",
+   "más",
+   "rápido",
+   "año"
+  ],
+  "—¿Quién es? —respondió Sancho—. ¡Vuestra merced!": [
+   "quién",
+   "es",
+   "respondió",
+   "sancho",
+   "vuestra",
+   "merced"
+  ]
+ },
+ "vecinos5": {
+  "e01": [
+   "e20",
+   "e18",
+   "e11",
+   "t03",
+   "d20"
+  ],
+  "d06": [
+   "e05",
+   "d19",
+   "d07",
+   "s12",
+   "t14"
+  ],
+  "s07": [
+   "s14",
+   "s18",
+   "c05",
+   "s16",
+   "t12"
+  ],
+  "c02": [
+   "c08",
+   "c10",
+   "c09",
+   "d10",
+   "c07"
+  ]
+ },
+ "peor_par": {
+  "a": "d15",
+  "b": "e13",
+  "seccion_a": "deportes",
+  "seccion_b": "economía",
+  "titular_a": "El Rally de Teruel, para el piloto Iván Salas",
+  "titular_b": "El Atlético Ribera cierra el ejercicio con beneficios",
+  "coseno": 0.0,
+  "puesto_de_b_entre_los_vecinos_de_a": 33,
+  "lemas_compartidos": []
+ },
+ "radviz_primeros": [
+  [
+   0.0,
+   -0.4196
+  ],
+  [
+   0.0,
+   -0.7595
+  ],
+  [
+   -0.0374,
+   -0.9626
+  ],
+  [
+   0.1753,
+   -0.7305
+  ],
+  [
+   0.2282,
+   -0.6746
+  ]
+ ],
+ "pca_mano": {
+  "varianza": [
+   0.4346009760869302,
+   0.3836954181461426
+  ],
+  "Y": [
+   [
+    -1.665981257428939,
+    -1.3017537920182094
+   ],
+   [
+    -0.8573414824693852,
+    -1.0701611971199418
+   ],
+   [
+    -0.23063097587665266,
+    1.7197274579014068
+   ],
+   [
+    -0.68026099043536,
+    1.5890109671323671
+   ],
+   [
+    1.7171073531051682,
+    -0.46841171794781156
+   ],
+   [
+    1.7171073531051682,
+    -0.46841171794781133
+   ]
+  ],
+  "componentes": [
+   [
+    -0.4043198874797769,
+    -0.5085606845804513,
+    -0.11503357849641321,
+    -0.16034370557534372,
+    0.5191091554712169,
+    0.5191091554712169
+   ],
+   [
+    -0.11579629744913389,
+    -0.541468486005364,
+    0.5739572921101753,
+    0.5590370987902697,
+    -0.16039583094619916,
+    -0.16039583094619933
+   ]
+  ]
+ },
+ "relevancia": {
+  "1.0": [
+   [
+    "médico",
+    "caso",
+    "paciente",
+    "persona",
+    "pedir",
+    "crónico",
+    "hospital",
+    "reducir"
+   ],
+   [
+    "ganar",
+    "equipo",
+    "victoria",
+    "gol",
+    "decisivo",
+    "liga",
+    "partido",
+    "oro"
+   ],
+   [
+    "precio",
+    "millón",
+    "euros",
+    "bajar",
+    "venta",
+    "crecer",
+    "año",
+    "verano"
+   ],
+   [
+    "artificial",
+    "inteligencia",
+    "centro",
+    "público",
+    "detectar",
+    "exposición",
+    "empresa",
+    "español"
+   ]
+  ],
+  "0.6": [
+   [
+    "caso",
+    "médico",
+    "paciente",
+    "crónico",
+    "persona",
+    "mayor",
+    "hospital",
+    "recordar"
+   ],
+   [
+    "ganar",
+    "equipo",
+    "victoria",
+    "decisivo",
+    "oro",
+    "gol",
+    "partido",
+    "liga"
+   ],
+   [
+    "precio",
+    "euros",
+    "bajar",
+    "millón",
+    "venta",
+    "crecer",
+    "subir",
+    "alquiler"
+   ],
+   [
+    "inteligencia",
+    "artificial",
+    "exposición",
+    "detectar",
+    "artista",
+    "centro",
+    "obra",
+    "público"
+   ]
+  ],
+  "0.0": [
+   [
+    "recordar",
+    "vacuna",
+    "mayor",
+    "resolver",
+    "caso",
+    "crónico",
+    "evitar",
+    "consulta"
+   ],
+   [
+    "victoria",
+    "equipo",
+    "decisivo",
+    "oro",
+    "ganar",
+    "delantero",
+    "líder",
+    "punto"
+   ],
+   [
+    "alquiler",
+    "caída",
+    "extranjero",
+    "precio",
+    "subir",
+    "agosto",
+    "rebaja",
+    "compensar"
+   ],
+   [
+    "inteligencia",
+    "artificial",
+    "exposición",
+    "artista",
+    "recorrer",
+    "automático",
+    "fotografía",
+    "servidor"
+   ]
+  ]
+ },
+ "serie_duquesa": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.4274,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.3066,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  6.0673,
+  5.0201,
+  3.6879,
+  7.0816,
+  4.0234,
+  1.1381,
+  6.6986,
+  5.4274,
+  1.3239,
+  2.0964,
+  1.0081,
+  2.3955,
+  0.0,
+  0.0,
+  3.0694,
+  0.0,
+  3.5211,
+  0.3179,
+  2.2386,
+  0.0,
+  5.1484,
+  0.6454,
+  4.2129,
+  0.0,
+  0.3487,
+  1.1338,
+  0.5559,
+  4.2445,
+  0.24,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.5488,
+  0.0,
+  0.0,
+  1.6313,
+  1.5373,
+  0.0,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "serie_duquesa_suave5": [
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0855,
+  0.0855,
+  0.0855,
+  0.0855,
+  0.0855,
+  0.0613,
+  0.0613,
+  0.0613,
+  0.0613,
+  0.0613,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  0.0,
+  1.2135,
+  2.2175,
+  2.9551,
+  4.3714,
+  5.1761,
+  4.1902,
+  4.5259,
+  4.8738,
+  3.7223,
+  3.3369,
+  3.3109,
+  2.4503,
+  1.3648,
+  1.1,
+  1.2946,
+  1.093,
+  1.3181,
+  1.3817,
+  1.8294,
+  1.2155,
+  2.2452,
+  1.6701,
+  2.4491,
+  2.0013,
+  2.0711,
+  1.2682,
+  1.2503,
+  1.2566,
+  1.3046,
+  1.2348,
+  1.0081,
+  0.8969,
+  0.048,
+  0.0,
+  0.0,
+  0.0,
+  0.1098,
+  0.1098,
+  0.1098,
+  0.436,
+  0.7435,
+  0.6337,
+  0.6337,
+  0.6337,
+  0.3075,
+  0.0,
+  0.0
+ ],
+ "partes": {
+  "tokens_contenido": [
+   66952,
+   73513
+  ],
+  "comunes_en_las_100": 69,
+  "mas_de_la_parte_I": [
+   [
+    "camila",
+    148,
+    0,
+    -7.358
+   ],
+   [
+    "lotario",
+    142,
+    0,
+    -7.2988
+   ],
+   [
+    "anselmo",
+    138,
+    0,
+    -7.2578
+   ],
+   [
+    "fernando",
+    135,
+    0,
+    -7.2263
+   ],
+   [
+    "dorotea",
+    110,
+    0,
+    -6.9333
+   ],
+   [
+    "cardenio",
+    101,
+    0,
+    -6.8113
+   ],
+   [
+    "luscinda",
+    99,
+    0,
+    -6.7827
+   ],
+   [
+    "zoraida",
+    78,
+    0,
+    -6.4427
+   ],
+   [
+    "ventero",
+    98,
+    20,
+    -2.3759
+   ],
+   [
+    "barbero",
+    132,
+    31,
+    -2.1942
+   ]
+  ],
+  "mas_de_la_parte_II": [
+   [
+    "vuesa",
+    0,
+    202,
+    7.5265
+   ],
+   [
+    "duquesa",
+    0,
+    186,
+    7.408
+   ],
+   [
+    "teresa",
+    1,
+    83,
+    5.2534
+   ],
+   [
+    "sansón",
+    1,
+    72,
+    5.0509
+   ],
+   [
+    "gobernador",
+    9,
+    165,
+    3.9142
+   ],
+   [
+    "gobierno",
+    6,
+    103,
+    3.7542
+   ],
+   [
+    "rucio",
+    9,
+    110,
+    3.3336
+   ],
+   [
+    "bachiller",
+    9,
+    98,
+    3.1685
+   ],
+   [
+    "duque",
+    22,
+    176,
+    2.8052
+   ],
+   [
+    "ínsula",
+    21,
+    92,
+    1.9408
+   ]
+  ],
+  "equilibradas": [
+   [
+    "suelo",
+    67,
+    74,
+    0.0025
+   ],
+   [
+    "digo",
+    151,
+    167,
+    0.0055
+   ],
+   [
+    "hija",
+    77,
+    84,
+    -0.0149
+   ],
+   [
+    "muerte",
+    69,
+    78,
+    0.0356
+   ],
+   [
+    "mano",
+    145,
+    154,
+    -0.0526
+   ],
+   [
+    "cuerpo",
+    68,
+    78,
+    0.0564
+   ],
+   [
+    "vos",
+    87,
+    100,
+    0.0599
+   ],
+   [
+    "camino",
+    118,
+    124,
+    -0.0679
+   ],
+   [
+    "desta",
+    110,
+    115,
+    -0.0753
+   ],
+   [
+    "caballo",
+    91,
+    107,
+    0.0924
+   ]
+  ]
+ },
+ "top_positivas": [
+  [
+   "no",
+   29
+  ],
+  [
+   "bien",
+   15
+  ],
+  [
+   "móvil",
+   6
+  ],
+  [
+   "noche",
+   5
+  ],
+  [
+   "habitación",
+   5
+  ],
+  [
+   "pequeño",
+   4
+  ],
+  [
+   "cocina",
+   4
+  ],
+  [
+   "buena",
+   4
+  ],
+  [
+   "precio",
+   4
+  ],
+  [
+   "casa",
+   4
+  ],
+  [
+   "hotel",
+   4
+  ],
+  [
+   "desayuno",
+   4
+  ]
+ ],
+ "tamanos_rs05": [
+  [
+   "don",
+   200
+  ],
+  [
+   "sancho",
+   183
+  ],
+  [
+   "quijote",
+   181
+  ],
+  [
+   "respondió",
+   137
+  ],
+  [
+   "señor",
+   136
+  ],
+  [
+   "merced",
+   126
+  ],
+  [
+   "caballero",
+   108
+  ],
+  [
+   "dios",
+   98
+  ],
+  [
+   "señora",
+   97
+  ],
+  [
+   "cosa",
+   90
+  ],
+  [
+   "mundo",
+   85
+  ],
+  [
+   "vida",
+   81
+  ]
+ ],
+ "tamanos_rs1": [
+  [
+   "don",
+   200
+  ],
+  [
+   "sancho",
+   166
+  ],
+  [
+   "quijote",
+   163
+  ],
+  [
+   "respondió",
+   83
+  ],
+  [
+   "señor",
+   82
+  ],
+  [
+   "merced",
+   70
+  ],
+  [
+   "caballero",
+   50
+  ],
+  [
+   "dios",
+   41
+  ],
+  [
+   "señora",
+   40
+  ],
+  [
+   "cosa",
+   34
+  ],
+  [
+   "mundo",
+   30
+  ],
+  [
+   "vida",
+   27
+  ]
+ ],
+ "tamanos_rs0": [
+  [
+   "don",
+   200
+  ],
+  [
+   "sancho",
+   200
+  ],
+  [
+   "quijote",
+   200
+  ],
+  [
+   "respondió",
+   200
+  ],
+  [
+   "señor",
+   200
+  ],
+  [
+   "merced",
+   200
+  ],
+  [
+   "caballero",
+   200
+  ],
+  [
+   "dios",
+   200
+  ],
+  [
+   "señora",
+   200
+  ],
+  [
+   "cosa",
+   200
+  ],
+  [
+   "mundo",
+   200
+  ],
+  [
+   "vida",
+   200
+  ]
+ ],
+ "ej8": {
+  "frases": 15,
+  "vecinos_procedimiento_del_tema": [
+   "azul",
+   "nocturno",
+   "nublado"
+  ],
+  "adyacentes_con_recuento": [
+   [
+    "nocturno",
+    2
+   ],
+   [
+    "azul",
+    1
+   ],
+   [
+    "nublado",
+    1
+   ]
+  ],
+  "misma_frase": [
+   [
+    "sol",
+    2
+   ],
+   [
+    "brilla",
+    2
+   ],
+   [
+    "estrellas",
+    2
+   ],
+   [
+    "lluvia",
+    2
+   ],
+   [
+    "nocturno",
+    2
+   ],
+   [
+    "despejado",
+    1
+   ],
+   [
+    "increíbles",
+    1
+   ],
+   [
+    "noche",
+    1
+   ],
+   [
+    "puso",
+    1
+   ],
+   [
+    "puesta",
+    1
+   ],
+   [
+    "rojo",
+    1
+   ],
+   [
+    "voló",
+    1
+   ]
+  ],
+  "ventana_2_sin_vacias": [
+   [
+    "nocturno",
+    2
+   ],
+   [
+    "despejado",
+    1
+   ],
+   [
+    "sol",
+    1
+   ],
+   [
+    "estrellas",
+    1
+   ],
+   [
+    "increíbles",
+    1
+   ],
+   [
+    "noche",
+    1
+   ],
+   [
+    "puso",
+    1
+   ],
+   [
+    "rojo",
+    1
+   ],
+   [
+    "voló",
+    1
+   ],
+   [
+    "alto",
+    1
+   ],
+   [
+    "azul",
+    1
+   ],
+   [
+    "nubes",
+    1
+   ]
+  ]
+ },
+ "dulcinea_pmi": [
+  [
+   "desencanto",
+   20,
+   5.0063
+  ],
+  [
+   "desencantada",
+   6,
+   4.9214
+  ],
+  [
+   "toboso",
+   122,
+   4.9147
+  ],
+  [
+   "aldonza",
+   5,
+   4.6584
+  ],
+  [
+   "encantada",
+   14,
+   4.2507
+  ],
+  [
+   "encomendándose",
+   5,
+   4.1438
+  ],
+  [
+   "encanto",
+   7,
+   4.1438
+  ],
+  [
+   "labradora",
+   15,
+   4.0507
+  ],
+  [
+   "par",
+   27,
+   4.0161
+  ],
+  [
+   "merlín",
+   10,
+   3.8808
+  ]
+ ],
+ "arbol_vuestra_merced": {
+  "raiz": "vuestra merced",
+  "n": 604,
+  "hijos": [
+   {
+    "palabra": "señor",
+    "n": 64,
+    "hijos": [
+     {
+      "palabra": "don",
+      "n": 19,
+      "hijos": [
+       {
+        "palabra": "quijote",
+        "n": 12,
+        "hijos": []
+       }
+      ]
+     },
+     {
+      "palabra": "mío",
+      "n": 10,
+      "hijos": []
+     },
+     {
+      "palabra": "caballero",
+      "n": 8,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "que",
+    "n": 39,
+    "hijos": [
+     {
+      "palabra": "me",
+      "n": 8,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "dice",
+    "n": 27,
+    "hijos": []
+   },
+   {
+    "palabra": "se",
+    "n": 24,
+    "hijos": []
+   }
+  ]
+ },
+ "arbol_sin_par": {
+  "raiz": "la sin par",
+  "n": 28,
+  "hijos": [
+   {
+    "palabra": "dulcinea",
+    "n": 20,
+    "hijos": [
+     {
+      "palabra": "del",
+      "n": 13,
+      "hijos": [
+       {
+        "palabra": "toboso",
+        "n": 13,
+        "hijos": []
+       }
+      ]
+     },
+     {
+      "palabra": "con",
+      "n": 1,
+      "hijos": [
+       {
+        "palabra": "la",
+        "n": 1,
+        "hijos": []
+       }
+      ]
+     },
+     {
+      "palabra": "ni",
+      "n": 1,
+      "hijos": [
+       {
+        "palabra": "jamás",
+        "n": 1,
+        "hijos": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "palabra": "y",
+    "n": 1,
+    "hijos": [
+     {
+      "palabra": "hermosa",
+      "n": 1,
+      "hijos": [
+       {
+        "palabra": "doña",
+        "n": 1,
+        "hijos": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "palabra": "doña",
+    "n": 1,
+    "hijos": [
+     {
+      "palabra": "dulcinea",
+      "n": 1,
+      "hijos": [
+       {
+        "palabra": "para",
+        "n": 1,
+        "hijos": []
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "arbol_calidad": {
+  "raiz": "calidad",
+  "n": 8,
+  "hijos": [
+   {
+    "palabra": "precio",
+    "n": 2,
+    "hijos": [
+     {
+      "palabra": "para",
+      "n": 1,
+      "hijos": []
+     },
+     {
+      "palabra": "si",
+      "n": 1,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "de",
+    "n": 2,
+    "hijos": [
+     {
+      "palabra": "juguete",
+      "n": 1,
+      "hijos": []
+     },
+     {
+      "palabra": "la",
+      "n": 1,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "que",
+    "n": 1,
+    "hijos": [
+     {
+      "palabra": "ofrecen",
+      "n": 1,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "del",
+    "n": 1,
+    "hijos": [
+     {
+      "palabra": "producto",
+      "n": 1,
+      "hijos": []
+     }
+    ]
+   },
+   {
+    "palabra": "las",
+    "n": 1,
+    "hijos": [
+     {
+      "palabra": "tallas",
+      "n": 1,
+      "hijos": []
+     }
+    ]
+   }
+  ]
+ },
+ "cng_n4_L300": {
+  "Parte I (cap. 15-22)": 90.264,
+  "Curioso impertinente (I-33 a I-35)": 162.0198,
+  "Parte II (cap. 1-8)": 123.2008,
+  "Parte II (cap. 60-67)": 112.631,
+  "Noticias ficticias (Tema 6)": 505.233,
+  "Reseñas ficticias (Tema 7)": 352.2862
+ },
+ "cng_sensibilidad": {
+  "n2_L100": {
+   "Parte I (cap. 15-22)": 5.3697,
+   "Curioso impertinente (I-33 a I-35)": 9.8977,
+   "Parte II (cap. 1-8)": 5.804,
+   "Parte II (cap. 60-67)": 5.3586,
+   "Noticias ficticias (Tema 6)": 40.2473,
+   "Reseñas ficticias (Tema 7)": 20.6071
+  },
+  "n2_L300": {
+   "Parte I (cap. 15-22)": 77.1541,
+   "Curioso impertinente (I-33 a I-35)": 109.9415,
+   "Parte II (cap. 1-8)": 82.3124,
+   "Parte II (cap. 60-67)": 71.0734,
+   "Noticias ficticias (Tema 6)": 234.4726,
+   "Reseñas ficticias (Tema 7)": 160.3727
+  },
+  "n2_L500": {
+   "Parte I (cap. 15-22)": 470.6189,
+   "Curioso impertinente (I-33 a I-35)": 487.4088,
+   "Parte II (cap. 1-8)": 440.3405,
+   "Parte II (cap. 60-67)": 422.0014,
+   "Noticias ficticias (Tema 6)": 657.4749,
+   "Reseñas ficticias (Tema 7)": 581.3857
+  },
+  "n3_L100": {
+   "Parte I (cap. 15-22)": 6.7691,
+   "Curioso impertinente (I-33 a I-35)": 17.7203,
+   "Parte II (cap. 1-8)": 9.9083,
+   "Parte II (cap. 60-67)": 9.9467,
+   "Noticias ficticias (Tema 6)": 82.276,
+   "Reseñas ficticias (Tema 7)": 43.654
+  },
+  "n3_L300": {
+   "Parte I (cap. 15-22)": 51.6429,
+   "Curioso impertinente (I-33 a I-35)": 79.7592,
+   "Parte II (cap. 1-8)": 57.6339,
+   "Parte II (cap. 60-67)": 59.8276,
+   "Noticias ficticias (Tema 6)": 295.7829,
+   "Reseñas ficticias (Tema 7)": 174.9926
+  },
+  "n3_L500": {
+   "Parte I (cap. 15-22)": 134.704,
+   "Curioso impertinente (I-33 a I-35)": 208.8024,
+   "Parte II (cap. 1-8)": 128.7516,
+   "Parte II (cap. 60-67)": 136.3101,
+   "Noticias ficticias (Tema 6)": 525.5461,
+   "Reseñas ficticias (Tema 7)": 333.0017
+  },
+  "n4_L100": {
+   "Parte I (cap. 15-22)": 18.7876,
+   "Curioso impertinente (I-33 a I-35)": 46.4423,
+   "Parte II (cap. 1-8)": 21.1012,
+   "Parte II (cap. 60-67)": 31.3357,
+   "Noticias ficticias (Tema 6)": 164.688,
+   "Reseñas ficticias (Tema 7)": 117.0696
+  },
+  "n4_L300": {
+   "Parte I (cap. 15-22)": 90.264,
+   "Curioso impertinente (I-33 a I-35)": 162.0198,
+   "Parte II (cap. 1-8)": 123.2008,
+   "Parte II (cap. 60-67)": 112.631,
+   "Noticias ficticias (Tema 6)": 505.233,
+   "Reseñas ficticias (Tema 7)": 352.2862
+  },
+  "n4_L500": {
+   "Parte I (cap. 15-22)": 206.3591,
+   "Curioso impertinente (I-33 a I-35)": 330.5637,
+   "Parte II (cap. 1-8)": 235.8227,
+   "Parte II (cap. 60-67)": 232.9875,
+   "Noticias ficticias (Tema 6)": 851.8023,
+   "Reseñas ficticias (Tema 7)": 601.8988
+  },
+  "n5_L100": {
+   "Parte I (cap. 15-22)": 41.9775,
+   "Curioso impertinente (I-33 a I-35)": 76.766,
+   "Parte II (cap. 1-8)": 51.0562,
+   "Parte II (cap. 60-67)": 56.7384,
+   "Noticias ficticias (Tema 6)": 218.1835,
+   "Reseñas ficticias (Tema 7)": 175.2621
+  },
+  "n5_L300": {
+   "Parte I (cap. 15-22)": 174.6455,
+   "Curioso impertinente (I-33 a I-35)": 274.6659,
+   "Parte II (cap. 1-8)": 217.2646,
+   "Parte II (cap. 60-67)": 215.5675,
+   "Noticias ficticias (Tema 6)": 672.618,
+   "Reseñas ficticias (Tema 7)": 533.0478
+  },
+  "n5_L500": {
+   "Parte I (cap. 15-22)": 368.1749,
+   "Curioso impertinente (I-33 a I-35)": 526.9257,
+   "Parte II (cap. 1-8)": 468.8922,
+   "Parte II (cap. 60-67)": 414.2901,
+   "Noticias ficticias (Tema 6)": 1167.2417,
+   "Reseñas ficticias (Tema 7)": 938.8371
+  }
+ },
+ "muestra_base_ttr_mattr": [
+  0.3357562202963377,
+  0.5266010396361274
+ ]
+}

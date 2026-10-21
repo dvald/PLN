@@ -1,0 +1,27 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/07_sentimientos.html (+ 07_sentimientos_lib.js y 07_sentimientos_datos.js)",
+ "navegador": "Navegador integrado de la aplicación Claude (Chromium) con servidor local temporal http://127.0.0.1:8796; y Google Chrome sin interfaz (--headless=new --virtual-time-budget=5000 --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Selector de 180 reseñas con filtros de dominio y polaridad; r001 con 5 estrellas, positiva, sus frases (subjetividad, polaridad, fenómenos) y aspectos; categorías de Benamara en el corpus (S 283, OO 98, O 3, SN 30)",
+  "pestaña_2": "Umbrales ≥ 4 / ≤ 2: 164 de 180 coinciden (mixta = neutra) y 140 de 148 polares; reparto 80 · 28 · 72; tabla de cruce igual a la de la Clase 12; lista de discordancias con sus notas; umbral negativo ≥ positivo → aviso",
+  "pestaña_3": "Frase de la Clase 12: +1,50 positiva, 2 de 11 palabras; sin negación +4,50; «Muy amables, oye.» +3,00 positiva (ironía); hecho sin palabras de opinión → aviso de que el léxico no puede decidir; «No es excelente.» con desplazamiento → 0; traza con el valor de cada palabra y cada regla, igual a Python (91 trazas comprobadas en probar_lib_07.js)",
+  "pestaña_4": "Regla española frente a mark_negation de NLTK con tres frases (NLTK no marca «No» inicial ni «Nunca»); reseñas con marca: 94 frente a 52",
+  "pestaña_5": "40 reseñas de prueba: léxico 23, NB 25, NB + negación 22, NB + NLTK 21, BETO 36; filtro negación: 27 reseñas, 16 / 21 / 17 / 17 / 25 (= resultados_c12.json); ironía: aviso de 1 reseña; solo errores: 28 reseñas; detalle con texto, predicciones y traza del léxico",
+  "pestaña_6": "11 reseñas en las que las reglas discrepan (40 sin el filtro); r097: suma -0,105, mayoría, última y solo subjetivas negativas, clasificador de documento positiva; tabla global 36 / 31 / 32 / 31 / 29 (= resultados_c13.json)",
+  "pestaña_7": "Umbral 2: precisión 0,49 (23 de 47), exhaustividad 0,19 (23 de 123), 30 candidatos en restaurantes; umbral 1: 0,46 (39 de 84) y 0,32; frases de prueba con aspectos anotados y extraídos; resumen por aspecto de los cuatro dominios",
+  "pestaña_8": "excelente/pésimo: 0 y 2 reseñas, 161 de 164 frases sin coincidencia, 0 reseñas de prueba puntuables; bueno/malo: 2 y 1, 157 de 164; tabla de las frases con alguna coincidencia y su SO",
+  "pestaña_9": "Diez ejemplos con rasgos; con las reglas por defecto se marcan s01 (enlace), s02 (pregunta), s04 y s05 (marca); con «4 o más palabras positivas», también s06 y s07; s08 y las genuinas, sin marcar",
+  "pestaña_10": "Diez preguntas del test (pp. 67-71) con su clave razonada; respuesta correcta y errónea con retroalimentación",
+  "teclado": "Flechas izquierda y derecha cambian de pestaña (de «1 · Niveles», dos pulsaciones → «3 · Léxico paso a paso» con el foco en la pestaña)",
+  "indice": "Demos/index.html tiene la tarjeta del Tema 7 (clic probado) y la demo enlaza el índice; las siete demos responden 200",
+  "consola": "Sin errores tras recargar y recorrer las diez pestañas",
+  "defectos_corregidos": [
+   "«Solo 1 reseñas» → singular",
+   "La columna «palabra (valor)» de la traza mostraba solo la palabra"
+  ]
+ },
+ "prueba_file": "DOM volcado con file:// tras ejecutar los scripts: 10 pestañas, 164 de 180 y 140 de 148 en estrellas, +1,50 en el léxico, 23 y 25 de 40 en la comparación, 36 en la agregación, 0,49 en aspectos, 161 de 164 en PMI, marcas NO_ y spam marcado",
+ "biblioteca": "node Demos/fuentes/probar_lib_07.js → Demos/fuentes/prueba_lib_07.json con resultado OK: tokens y oraciones (13 frases y 180 reseñas), léxico (1674 puntuaciones: 180 reseñas × 7 combinaciones de reglas y 414 frases), 91 trazas paso a paso, negación (386 casos, regla española y mark_negation de NLTK 3.10.3), estrellas (6 umbrales), agregación (4 reglas), aspectos (4 umbrales) y PMI de Turney (4 pares), comparados con Demos/fuentes/referencia_python_07.json",
+ "limites": "No probado en Safari, Firefox ni Edge, ni en móvil. Las predicciones de Naive Bayes y de BETO congelado + regresión logística, las probabilidades por frase y los sustantivos, lemas y frases de dos palabras de spaCy están precalculados en Python; la página no ejecuta scikit-learn, spaCy ni BETO. Los ejemplos de spam son ficticios y no sirven para medir."
+}

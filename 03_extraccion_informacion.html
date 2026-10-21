@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 3 · Extracción de información de textos — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1.1rem; font: inherit; font-weight: 600; font-size: .93rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--unir); }
+  .content { max-width: 1100px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .8rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--texto-l); border-left: 4px solid var(--texto); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #0D47A1; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-blue { background: var(--texto); color: #fff; }
+  .btn-blue:hover { background: #1565C0; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible { outline: 3px solid #90CAF9; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 110px; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .feedback.neutral { background: var(--soft); color: var(--ink); border: 1px solid var(--line); }
+  /* fichas de tokens */
+  .tokens { display: flex; flex-wrap: wrap; gap: .35rem; margin: .7rem 0; max-height: 22rem; overflow-y: auto; padding: .2rem; }
+  .tok { padding: .2rem .5rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; font-size: 1rem; font-family: Menlo, Consolas, monospace; white-space: pre; }
+  .tok .lab { display: block; font-size: .68rem; color: var(--ink2); line-height: 1.1; font-family: system-ui, sans-serif; }
+  .tok.diff { background: var(--aplic-l); border-color: var(--aplic); border-width: 2px; }
+  .tok.gone { text-decoration: line-through; color: var(--muted); background: var(--soft); border-style: dashed; }
+  .tok.neg { background: var(--bad-l); border-color: var(--bad); color: #8E1B1B; }
+  .tok.changed { background: var(--estad-l); border-color: var(--estad); }
+  .legend { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .85rem; color: var(--ink2); margin-top: .3rem; }
+  .legend span { display: inline-flex; align-items: center; gap: .35rem; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  .seg:disabled { opacity: .45; cursor: not-allowed; }
+  ol.sents { margin: .3rem 0 .3rem 1.4rem; font-size: .95rem; }
+  ol.sents li { margin: .15rem 0; }
+  /* morfología */
+  .morf { display: flex; flex-wrap: wrap; gap: .25rem; margin: .7rem 0; align-items: stretch; }
+  .mor { padding: .35rem .6rem; border-radius: 8px; font-size: 1.25rem; font-weight: 700; border: 2px solid; text-align: center; }
+  .mor small { display: block; font-size: .7rem; font-weight: 600; }
+  .mor.lex { background: var(--texto-l); border-color: var(--texto); color: #0D47A1; }
+  .mor.gram { background: var(--estad-l); border-color: var(--estad); color: #004D40; }
+  .mor.cero { background: #fff; border-style: dashed; border-color: var(--estad); color: #004D40; }
+  .mor.clit { background: var(--neuronal-l); border-color: var(--neuronal); color: #4A148C; }
+  .wordlist { display: flex; flex-wrap: wrap; gap: .4rem; }
+  /* gráficos */
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  /* quiz */
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .score { font-weight: 700; color: var(--ink); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .45rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .checks { display: flex; flex-direction: column; gap: .35rem; margin: .5rem 0; }
+  .checks label { display: flex; gap: .5rem; align-items: baseline; cursor: pointer; }
+  .checks .sub { margin-left: 1.7rem; font-size: .9rem; color: var(--ink2); }
+  footer { max-width: 1100px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .7rem; font-size: .85rem; } }
+</style>
+<style>
+  .ent { padding: .05rem .3rem; border-radius: 5px; border: 2px solid; margin: 0 .05rem; }
+  .ent small { font-size: .65rem; font-weight: 700; margin-left: .25rem; vertical-align: super; }
+  .ent.PER { background: #E3F2FD; border-color: #1E88E5; }
+  .ent.LOC { background: #E0F2F1; border-color: #00897B; }
+  .ent.ORG { background: #F3E5F5; border-color: #8E24AA; }
+  .ent.MISC { background: #FFF3E0; border-color: #F57C00; }
+  .ent.ENFERMEDAD, .ent.SÍNTOMA, .ent.FÁRMACO, .ent.PRUEBA { background: #FFF8E1; border-color: #8D6E00; }
+  .ent.neg { text-decoration: line-through; background: #FFEBEE; border-color: #C62828; }
+  .chunk { border: 2px solid var(--estad); background: var(--estad-l); border-radius: 6px; padding: .05rem .25rem; margin: 0 .05rem; }
+  .chunk small { color: #004D40; font-weight: 700; font-size: .65rem; vertical-align: super; }
+  .flow { line-height: 2.3; font-size: 1.05rem; }
+  .steps { display: flex; flex-wrap: wrap; gap: .4rem; margin: .6rem 0; }
+  table.tags td, table.tags th { font-family: Menlo, Consolas, monospace; font-size: .86rem; padding: .25rem .45rem; }
+  table.tags { display: block; overflow-x: auto; }
+  table.tags td, table.tags th { white-space: nowrap; }
+  .err { color: var(--bad); font-weight: 700; }
+  .okc { color: var(--ok); font-weight: 700; }
+  .rule { font-family: Menlo, Consolas, monospace; width: 100%; }
+  /* modo clase */
+  .salidas { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
+  .salida { border-radius: 12px; border-top: 6px solid; background: var(--soft); padding: .8rem; }
+  .salida .o { font-family: Menlo, Consolas, monospace; font-size: .95rem; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .5rem; min-height: 4.2rem; }
+  .salida .t { display: inline-block; margin-top: .6rem; font-weight: 800; color: #fff; padding: .1rem .7rem; border-radius: 999px; }
+  .oculto .t, .oculto .cat, .oculto .spc { visibility: hidden; }
+  .pares { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .par { border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; background: #fff; cursor: pointer; }
+  .par .fr { font-size: 1.3rem; line-height: 2.8; }
+  .par .w { position: relative; display: inline-block; background: #FFE082; border-radius: 4px; padding: 0 .2rem; font-weight: 800; line-height: 1.4; }
+  .par .cat { position: absolute; left: 50%; transform: translateX(-50%); top: 1.75rem; font-size: .72rem; font-weight: 800; color: #fff; padding: 0 .4rem; border-radius: 999px; white-space: nowrap; line-height: 1.5; }
+  .par .spc { font-size: .85rem; margin-top: .3rem; }
+  .cadena { overflow-x: auto; }
+  .cadena table { border-collapse: separate; border-spacing: 3px; width: auto; font-size: .82rem; }
+  .cadena th { background: none; color: var(--ink); text-align: right; white-space: nowrap; font-size: .85rem; padding: .2rem .5rem; }
+  .cadena thead th { text-align: center; font-size: 1rem; font-family: system-ui, sans-serif; }
+  .cadena thead th.nueva { text-decoration: underline dashed var(--aplic); text-underline-offset: 4px; }
+  .cadena td { font-family: Menlo, Consolas, monospace; text-align: center; padding: .3rem .35rem; border-radius: 5px; border: none; }
+  .cadena td.ok { background: var(--ok-l); color: #1B5E20; }
+  .cadena td.mal { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  .cadena td.nada { background: #ECEFF1; color: var(--muted); }
+  .cadena td.gold { background: var(--dark); color: #fff; }
+  .cadena td.n { background: none; font-family: system-ui, sans-serif; font-weight: 800; text-align: left; white-space: nowrap; }
+  .cadena tr[hidden] { display: none; }
+  .arbol { width: 100%; height: auto; display: block; margin: .4rem 0 .8rem; }
+  .ciclo { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.4rem; margin: .8rem 0; }
+  .ciclo div { border: 2px solid var(--line); border-radius: 12px; padding: .7rem .8rem; background: #fff; position: relative; }
+  .ciclo div b { display: block; font-size: 1rem; }
+  .ciclo div.on { border-color: var(--estad); background: var(--estad-l); box-shadow: 0 0 0 3px #B2DFDB; }
+  .ciclo div:not(:last-child)::after { content: "▶"; position: absolute; right: -1.15rem; top: 40%; color: var(--muted); }
+  .ciclo-vuelta { text-align: center; color: var(--ink2); font-size: .85rem; margin-top: -.4rem; }
+  .snow-det { font-size: 1.15rem; padding: .8rem 1rem; border-radius: 10px; background: var(--soft); border: 1px solid var(--line); margin-top: .5rem; }
+  .chipg { display: inline-block; padding: .15rem .55rem; border-radius: 6px; margin: .15rem; font-size: 1.05rem; border: 2px solid; font-weight: 700; background: #fff; }
+  .grupoc { display: inline-block; border: 2px solid var(--line); border-radius: 10px; padding: .4rem .6rem; margin: .3rem; background: #fff; vertical-align: top; }
+  .grupoc .cab { font-family: Menlo, Consolas, monospace; font-weight: 800; }
+  @media (max-width: 900px) { .salidas, .pares, .ciclo { grid-template-columns: 1fr; } }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-texto">
+
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información" aria-current="page">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="02_texto_como_dato.html">‹ Tema 2 · El texto como dato</a><a class="sig" href="04_modelado_lenguaje.html">Tema 4 · Modelado del lenguaje ›</a></nav>
+  <h1><span class="num-tema">TEMA 3</span>Extracción de información de textos</h1>
+  <p>De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema. <span class="cuando">Clase 4 · semana 3</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 12h13M4 19h9M4 26h13M4 33h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 22.5h7m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="29" y="8" width="15" height="30" rx="2.5" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M29 18h15M29 28h15M36.5 8v30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+</header>
+
+<div class="tabs" role="tablist" aria-label="Secciones de la demo">
+  <button class="tab" role="tab" id="t-flujo" aria-controls="p-flujo" aria-selected="true"><span class="tab-n">1</span> Del texto a la tabla</button>
+  <button class="tab" role="tab" id="t-pos" aria-controls="p-pos" aria-selected="false" tabindex="-1"><span class="tab-n">2</span> Etiquetado gramatical</button>
+  <button class="tab" role="tab" id="t-chunk" aria-controls="p-chunk" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Chunking</button>
+  <button class="tab" role="tab" id="t-ner" aria-controls="p-ner" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Entidades</button>
+  <button class="tab" role="tab" id="t-rel" aria-controls="p-rel" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Relaciones</button>
+  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Raíz o lema (Clase 4)</button>
+</div>
+
+<div class="content">
+
+<!-- =============================================================== 1 -->
+<section class="panel active" id="p-flujo" role="tabpanel" aria-labelledby="t-flujo">
+  <div class="card">
+    <h2>De un texto a información estructurada, paso a paso</h2>
+    <div class="meta"><span class="tag">Apartado 3.2 · arquitectura de extracción</span><span class="tag pre">Salidas reales de spaCy, precalculadas</span><span class="tag real">Relaciones con patrones: en el navegador</span></div>
+    <div class="row"><label for="fluSel">Texto</label><select id="fluSel"></select></div>
+    <p class="box" id="fluText"></p>
+    <div class="steps" id="fluSteps" role="group" aria-label="Pasos"></div>
+    <div id="fluPasos"></div>
+    <div id="fluOut" aria-live="polite"></div>
+  </div>
+  <div class="card">
+    <h2>Cinco salidas, cinco tareas</h2>
+    <div class="meta"><span class="tag">Apartados 3.3-3.6</span><span class="tag illus">Ejemplos escritos para la clase</span></div>
+    <p>Las mismas frases, «Gandalf viajó a Hobbiton» y «El viajero intrépido comió un postre delicioso», según la tarea que se les aplique.</p>
+    <div class="row" id="tareaCtrl"></div>
+    <div class="salidas" id="tareaOut"></div>
+  </div>
+</section>
+
+<!-- =============================================================== 2 -->
+<section class="panel" id="p-pos" role="tabpanel" aria-labelledby="t-pos" hidden>
+  <div class="card">
+    <h2>La misma palabra, distinta categoría</h2>
+    <div class="meta"><span class="tag">Apartado 3.3 · desambiguación</span><span class="tag pre">Respuesta de spaCy precalculada</span></div>
+    <p>La misma forma con dos categorías (etiquetas UD). Debajo, lo que ha respondido spaCy: no siempre acierta.</p>
+    <div class="row" id="ambCtrl"></div>
+    <div class="pares" id="ambOut"></div>
+  </div>
+  <div class="card">
+    <h2>Dos juegos de etiquetas para la misma frase</h2>
+    <div class="meta"><span class="tag pre">UD: spaCy · EAGLES: etiquetador de n-gramas entrenado con CESS-ESP</span></div>
+    <p>El Tema 3 usa las etiquetas del Penn Treebank, pensadas para el inglés. Para el español hay dos sistemas habituales: <b>UD</b> (categoría universal, la que da spaCy) y <b>EAGLES</b> (categoría, tipo, género, número, persona… en un código, la de CESS-ESP).</p>
+    <div class="row"><label for="tagSel">Frase</label><select id="tagSel"></select></div>
+    <div id="tagOut"></div>
+  </div>
+  <div class="card">
+    <h2>La misma frase, seis etiquetadores (EAGLES)</h2>
+    <div class="meta"><span class="tag">Apartado 3.3 · Figuras 8-11</span><span class="tag pre">Salidas reales de NLTK 3.10.3 entrenado con CESS-ESP (90 % / 10 %), frase de prueba</span></div>
+    <p>Arriba, la etiqueta correcta; cada fila, un etiquetador. Verde, acierta; rojo, falla; gris, no sabe (no devuelve nada). Las palabras subrayadas no aparecían en el entrenamiento. Avanza fila a fila para construir la cadena con respaldo.</p>
+    <div class="row"><label for="cadSel">Frase</label><select id="cadSel"></select></div>
+    <div id="cadPasos"></div>
+    <div class="cadena" id="cadOut"></div>
+    <div class="info" id="cadMsg"></div>
+    <p class="small">EAGLES: n = nombre, v = verbo (vm principal, vs ser, va haber), a = adjetivo, d = determinante, s = preposición, c = conjunción, p = pronombre, r = adverbio, F = puntuación.</p>
+  </div>
+  <div class="card">
+    <h2>¿Cuánto acierta cada etiquetador?</h2>
+    <div class="meta"><span class="tag pre">Entrenados y evaluados con CESS-ESP (90 % / 10 %) en el cuaderno de la Clase 4</span></div>
+    <svg id="accChart" class="chart" viewBox="0 0 900 330" role="img" aria-label="Exactitud de los etiquetadores"></svg>
+    <h3>Prueba el etiquetador de reglas morfológicas</h3>
+    <p class="small">Mismas reglas que el cuaderno (terminaciones -ar/-er/-ir, -mente, -ción…). Observa qué palabras etiqueta mal: «mar», «lugar», «tos»…</p>
+    <input type="text" id="rxIn" style="width:100%" value="Amar y respetar la vida en el mar es rápidamente una obligación de los lugares">
+    <div class="tokens" id="rxOut"></div>
+  </div>
+</section>
+
+<!-- =============================================================== 3 -->
+<section class="panel" id="p-chunk" role="tabpanel" aria-labelledby="t-chunk" hidden>
+  <div class="card">
+    <h2>Agrupar en sintagmas con una regla</h2>
+    <div class="meta"><span class="tag">Apartado 3.4 · chunking basado en reglas e IOB</span><span class="tag real">Regla aplicada en el navegador</span><span class="tag pre">Etiquetas UD de spaCy precalculadas</span></div>
+    <div class="row"><label for="chSel">Frase</label><select id="chSel"></select></div>
+    <div class="seggroup" id="chRule" role="group" aria-label="Regla"></div>
+    <input type="text" id="chCustom" class="rule" aria-label="Regla personalizada" value="SN: {<DET>?<NOUN|PROPN><ADJ>*}">
+    <p class="small" id="chErr"></p>
+    <h3>Resultado de la regla</h3>
+    <div class="flow box" id="chOut"></div>
+    <svg id="chArbol" class="arbol" role="img" aria-label="Árbol de los grupos encontrados"></svg>
+    <table class="tags" id="chIob"></table>
+    <h3>Grupos nominales de spaCy (analizador sintáctico)</h3>
+    <div class="flow box" id="chSpacy"></div>
+    <p class="small">Observa la regla con orden inglés (<code>&lt;DET&gt;?&lt;ADJ&gt;*&lt;NOUN&gt;</code>): en español los adjetivos suelen ir detrás del nombre y se quedan fuera. Y en «He comido…», «He» es el verbo auxiliar <i>haber</i>, no un pronombre: no forma sintagma nominal.</p>
+  </div>
+  <div class="card">
+    <h2>Chinking: quitar lo que no es del grupo</h2>
+    <div class="meta"><span class="tag">Apartado 3.4 · Figura 18</span><span class="tag real">Calculado en el navegador con las etiquetas de spaCy</span></div>
+    <p>Al revés que la regla de arriba: se empieza con <b>toda la frase como un único trozo</b> y se sacan («chink») los verbos, preposiciones, conjunciones y signos. Lo que queda forma los grupos.</p>
+    <pre class="box mono" style="font-size:1rem">SN:
+  {&lt;.*&gt;+}                                   # todo es un trozo
+  }&lt;VERB|AUX|ADP|CCONJ|SCONJ|PUNCT&gt;+{       # se sacan verbos, preposiciones, conjunciones y signos</pre>
+    <div class="row"><label for="chiSel">Frase</label><select id="chiSel"></select></div>
+    <svg id="chiArbol" class="arbol" role="img" aria-label="Árbol tras el chinking"></svg>
+  </div>
+</section>
+
+<!-- =============================================================== 4 -->
+<section class="panel" id="p-ner" role="tabpanel" aria-labelledby="t-ner" hidden>
+  <div class="card">
+    <h2>Entidades nombradas generales</h2>
+    <div class="meta"><span class="tag">Apartado 3.5</span><span class="tag pre">spaCy es_core_news_sm: PER, LOC, ORG, MISC</span><span class="tag real">BIO y BIOES calculados en el navegador</span></div>
+    <div class="row"><label for="nerSel">Texto</label><select id="nerSel"></select>
+      <span class="seggroup" id="nerCod" role="group" aria-label="Codificación" style="display:inline-flex;margin:0"></span></div>
+    <div class="flow box" id="nerOut"></div>
+    <table class="tags" id="nerTags"></table>
+    <p class="small">El modelo español solo distingue cuatro tipos. El tema usa además GPE, MONEY y DATE, que son etiquetas de modelos ingleses (OntoNotes).</p>
+  </div>
+  <div class="card">
+    <h2>Lo que declara el modelo y lo que mide otro corpus</h2>
+    <div class="meta"><span class="tag pre">Evaluación real con CoNLL-2002 (esp.testb) en el cuaderno de la Clase 4</span></div>
+    <svg id="nerChart" class="chart" viewBox="0 0 900 320" role="img" aria-label="Precisión, exhaustividad y F1 por tipo"></svg>
+  </div>
+  <div class="card">
+    <h2>Entidades generales frente a clínicas</h2>
+    <div class="meta"><span class="tag real">Glosario y negación: en el navegador</span><span class="tag illus">Reglas didácticas, no un sistema clínico validado</span></div>
+    <p>Un modelo general entrenado con noticias y Wikipedia no sabe qué es «IC» o «DM»: los etiqueta como organizaciones. Un sistema clínico necesita <b>otros tipos</b> (enfermedad, síntoma, fármaco, prueba) y saber si cada hallazgo está <b>negado</b>.</p>
+    <textarea id="cliIn" aria-label="Notas clínicas"></textarea>
+    <div class="grid2">
+      <div class="box"><h3>spaCy (modelo general) · texto original</h3><div class="flow" id="cliSpacy"></div></div>
+      <div class="box"><h3>Reglas clínicas de la clase</h3><div id="cliOut"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================== 5 -->
+<section class="panel" id="p-rel" role="tabpanel" aria-labelledby="t-rel" hidden>
+  <div class="card">
+    <h2>Relaciones con patrones: (X, relación, Y)</h2>
+    <div class="meta"><span class="tag">Apartado 3.6 · aproximación basada en reglas</span><span class="tag real">Patrones aplicados en el navegador</span><span class="tag pre">Entidades de spaCy precalculadas</span></div>
+    <div class="checks" id="relPat"></div>
+    <div class="grid2">
+      <div class="box"><h3>Entidades detectadas</h3><div class="flow" id="relEnts"></div></div>
+      <div class="box"><h3>Relaciones extraídas</h3><table id="relTab"><thead><tr><th>X</th><th>Relación</th><th>Y</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <h3>Las relaciones como grafo</h3>
+    <svg id="relGrafo" class="arbol" role="img" aria-label="Grafo de personas y lugares unidos por sus relaciones"></svg>
+    <div class="warnbox" id="relWarn"></div>
+  </div>
+  <div class="card">
+    <h2>Snowball: aprender patrones a partir de semillas</h2>
+    <div class="meta"><span class="tag">Apartado 3.6 · semisupervisado (Agichtein y Gravano, 2000)</span><span class="tag illus">Ilustración: no ejecuta el algoritmo completo</span></div>
+    <p>Partimos de una tupla semilla y buscamos el texto que separa sus dos entidades. Ese texto se convierte en patrón y se aplica al resto, y las tuplas nuevas sirven de semilla en la vuelta siguiente (Figura 26). ¿Qué pasa si la semilla es errónea?</p>
+    <div class="seggroup" id="snowSeed" role="group" aria-label="Semilla"></div>
+    <div class="ciclo" id="snowCiclo"></div>
+    <div class="ciclo-vuelta">↺ las tuplas nuevas vuelven a ser semillas</div>
+    <div id="snowPasos"></div>
+    <div class="snow-det" id="snowOut"></div>
+    <p class="small" id="snowCorpus"></p>
+    <p class="small">No confundir con el stemmer Snowball del Tema 2: comparten nombre, no algoritmo.</p>
+  </div>
+</section>
+
+<!-- =============================================================== 6 -->
+<section class="panel" id="p-raiz" role="tabpanel" aria-labelledby="t-raiz" hidden>
+  <div class="card">
+    <h2>¿Agrupa bien? Precisión y exhaustividad por pares</h2>
+    <div class="meta"><span class="tag">Problema de la Clase 4 · apartado 2.4</span><span class="tag real">Cálculo en el navegador</span><span class="tag pre">Raíces de NLTK y lemas de spaCy precalculados</span></div>
+    <p>Dos formas forman un <b>par</b> si un método les da la misma clave. Comparamos los pares de cada método con los de la referencia (lema correcto).</p>
+    <div class="seggroup" id="parMet" role="group" aria-label="Método"></div>
+    <div class="grid2">
+      <div><table id="parTab"><thead><tr><th>Forma</th><th>Lema correcto</th><th>Clave del método</th></tr></thead><tbody></tbody></table></div>
+      <div><div class="stats" id="parStats"></div><p class="small">Cada caja es una clave del método; el color, el lema correcto. Dos colores en una caja = pares mal unidos; un color repartido en varias cajas = pares perdidos.</p><div id="parGroups"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Resultados con datos reales</h2>
+    <div class="meta"><span class="tag pre">Cuaderno de la Clase 4</span></div>
+    <svg id="raizChart" class="chart" viewBox="0 0 900 330" role="img" aria-label="Raíz frente a lema en cinco medidas"></svg>
+    <details><summary class="small">Ver las cifras en una tabla</summary><div id="raizRes"></div></details>
+  </div>
+</section>
+</div>
+
+<footer>
+  <p id="foot"></p>
+  <p>Textos: noticia y notas clínicas ficticias de la Clase 3, biografías con datos verificados (nobelprize.org, Universidad de Salamanca, Museo Casa Natal de Fuente Vaqueros). Datos de evaluación: CESS-ESP y CoNLL-2002 (distribuidos con NLTK, uso de investigación). Funciona sin conexión y no envía datos.</p>
+</footer>
+
+<script src="03_extraccion_informacion_lib.js"></script>
+<script src="03_extraccion_informacion_datos.js"></script>
+<script src="03_extraccion_informacion_cadena.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const L = window.LIB03, D = window.DATOS03;
+const pct = x => (100 * x).toFixed(1).replace(".", ",") + " %";
+const dec = x => x.toFixed(2).replace(".", ",");
+document.getElementById("foot").textContent =
+  `Resultados precalculados con NLTK ${D.versiones.nltk}, spaCy ${D.versiones.spacy} y ${D.versiones.modelo} (${D.generado}).`;
+
+// ---------------------------------------------------------------- pestañas
+const tabs = [...document.querySelectorAll(".tab")];
+function selectTab(tab) {
+  tabs.forEach(t => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on);
+    t.tabIndex = on ? 0 : -1;
+    const p = document.getElementById(t.getAttribute("aria-controls"));
+    p.hidden = !on; p.classList.toggle("active", on);
+  });
+  history.replaceState(null, "", "#" + tab.id.slice(2));
+}
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => selectTab(t));
+  t.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      const n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+      selectTab(n); n.focus();
+    }
+  });
+});
+const initial = tabs.find(t => "#" + t.id.slice(2) === location.hash);
+if (initial) selectTab(initial);
+
+const esc = Clase.esc;
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v;
+    else if (k === "html") e.innerHTML = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v);
+  }
+  kids.flat().forEach(k => e.append(k instanceof Node ? k : document.createTextNode(k)));
+  return e;
+}
+function svgEl(tag, attrs = {}, text) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function segmented(container, options, initialValue, onChange) {
+  container.innerHTML = "";
+  const btns = options.map(([value, label]) => {
+    const b = el("button", {class: "seg", type: "button", "aria-pressed": value === initialValue}, label);
+    b.dataset.value = value;
+    b.addEventListener("click", () => { btns.forEach(x => x.setAttribute("aria-pressed", x === b)); onChange(value); });
+    container.append(b);
+    return b;
+  });
+}
+function buildQuiz(container, items, scoreEl, label) {
+  const answered = new Map();
+  container.innerHTML = "";
+  items.forEach((it, idx) => {
+    const fb = el("div", {class: "feedback"});
+    const opts = el("div", {class: "opts", role: "group", "aria-label": "Opciones"});
+    it.o.forEach(o => {
+      const b = el("button", {class: "opt", type: "button"}, o);
+      b.addEventListener("click", () => {
+        [...opts.children].forEach(c => c.classList.remove("sel-ok", "sel-bad"));
+        const ok = it.a.includes(o);
+        b.classList.add(ok ? "sel-ok" : "sel-bad");
+        fb.className = "feedback show " + (ok ? "ok" : "bad");
+        fb.textContent = (ok ? "✓ " : "✗ Respuesta correcta: " + it.a.join(" o ") + ". ") + it.e;
+        answered.set(idx, ok);
+        scoreEl.textContent = label + [...answered.values()].filter(Boolean).length + " de " + items.length;
+      });
+      opts.append(b);
+    });
+    const q = el("div", {class: "q"});
+    q.append(...(it.qNodes || [it.q]));
+    container.append(el("div", {class: "quiz-item"}, q, opts, fb));
+  });
+}
+const ej = id => D.ejemplos.find(e => e.id === id);
+const spanTxt = (e, s) => L.textoSpan(e.tokens, s[0], s[1]);
+function fillSelect(sel, ids) {
+  ids.forEach(id => { const e = ej(id); sel.append(el("option", {value: id}, e.titulo)); });
+}
+// Texto con tramos marcados: spans [[ini, fin, etiqueta, clase]]
+function marcar(e, spans, cls) {
+  const box = document.createDocumentFragment();
+  const ini = new Map(spans.map(s => [s[0], s]));
+  for (let i = 0; i < e.tokens.length; i++) {
+    const s = ini.get(i);
+    if (s) {
+      const node = el("span", {class: cls(s)}, spanTxt(e, s), el("small", {}, s[2] || ""));
+      box.append(node, e.tokens[s[1] - 1].ws);
+      i = s[1] - 1;
+    } else box.append(e.tokens[i].t + e.tokens[i].ws);
+  }
+  return box;
+}
+function barChart(svg, cats, series, colors, names, ref) {
+  svg.innerHTML = "";
+  const W = 900, H = 280, x0 = 40, top = 40, gw = (W - x0) / cats.length, bw = Math.min(46, gw / (series.length + 1));
+  names.forEach((n, k) => { svg.append(svgEl("rect", {x: x0 + k * 170, y: 6, width: 14, height: 14, fill: colors[k]}));
+    svg.append(svgEl("text", {x: x0 + k * 170 + 20, y: 18, "font-size": 14, fill: "#1F2933"}, n)); });
+  if (ref) { const y = top + (H - top) * (1 - ref.v); svg.append(svgEl("line", {x1: x0, x2: W, y1: y, y2: y, stroke: "#9AA5B1", "stroke-dasharray": "6 4"}));
+    svg.append(svgEl("text", {x: W - 4, y: y - 6, "text-anchor": "end", "font-size": 13, fill: "#52606D"}, ref.label)); }
+  cats.forEach((c, i) => {
+    series.forEach((vals, k) => {
+      const v = vals[i], h = (H - top) * v, x = x0 + i * gw + (gw - bw * series.length) / 2 + k * bw;
+      svg.append(svgEl("rect", {x, y: H - h, width: bw - 4, height: h, fill: colors[k]}));
+      svg.append(svgEl("text", {x: x + (bw - 4) / 2, y: H - h - 5, "text-anchor": "middle", "font-size": 12, fill: "#1F2933"}, dec(v)));
+    });
+    svg.append(svgEl("text", {x: x0 + i * gw + gw / 2, y: H + 22, "text-anchor": "middle", "font-size": 14, fill: "#1F2933"}, c));
+  });
+}
+
+// Árbol de grupos al estilo de NLTK (Figuras 15-18): S arriba, grupos en medio y palabras/etiquetas abajo
+function dibujarArbol(svg, tokens, spans, etiqueta) {
+  const toks = tokens.map(t => [t.t, t.pos]);
+  const ancho = toks.map(([w, p]) => Math.max(w.length, p.length) * 11 + 26);
+  const W = ancho.reduce((a, b) => a + b, 0) + 40, xs = [];
+  let x = 20; ancho.forEach(a => { xs.push(x + a / 2); x += a; });
+  const yS = 28, yG = 100, yW = 178;
+  let h = "";
+  const grupoDe = i => spans.findIndex(sp => i >= sp[0] && i < sp[1]);
+  spans.forEach(sp => {
+    const xg = (xs[sp[0]] + xs[sp[1] - 1]) / 2;
+    h += `<line x1="${W / 2}" y1="${yS + 10}" x2="${xg}" y2="${yG - 16}" stroke="#9AA5B1" stroke-width="2"/>`;
+    for (let i = sp[0]; i < sp[1]; i++) h += `<line x1="${xg}" y1="${yG + 10}" x2="${xs[i]}" y2="${yW - 22}" stroke="#00897B" stroke-width="2"/>`;
+    h += `<rect x="${xg - 26}" y="${yG - 16}" width="52" height="26" rx="6" fill="#E0F2F1" stroke="#00897B" stroke-width="2"/><text x="${xg}" y="${yG + 3}" text-anchor="middle" font-size="16" font-weight="800" fill="#004D40">${esc(etiqueta)}</text>`;
+  });
+  toks.forEach(([w, p], i) => {
+    if (grupoDe(i) < 0) h += `<line x1="${W / 2}" y1="${yS + 10}" x2="${xs[i]}" y2="${yW - 22}" stroke="#CFD8DC" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+    const g = grupoDe(i) >= 0;
+    h += `<text x="${xs[i]}" y="${yW}" text-anchor="middle" font-size="18" font-weight="${g ? 800 : 500}" fill="${g ? "#1F2933" : "#7B8794"}">${esc(w)}</text>`;
+    h += `<text x="${xs[i]}" y="${yW + 20}" text-anchor="middle" font-size="13" fill="#52606D">${esc(p)}</text>`;
+  });
+  h += `<text x="${W / 2}" y="${yS + 6}" text-anchor="middle" font-size="18" font-weight="800" fill="#1F2933">S</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} 215`);
+  svg.style.maxWidth = Math.max(W * 1.1, 600) + "px";
+  svg.innerHTML = h;
+}
+
+// ================================================================ 1 · Flujo
+(function () {
+  const sel = document.getElementById("fluSel");
+  fillSelect(sel, ["e0", "e1", "e2", "e5", "e6"]);
+  const pasos = [["oraciones", "1 · Oraciones"], ["tokens", "2 · Tokens"], ["pos", "3 · Categorías"],
+    ["chunks", "4 · Grupos nominales"], ["ents", "5 · Entidades"], ["rel", "6 · Relaciones y tabla"]];
+  let paso = "ents";
+  segmented(document.getElementById("fluSteps"), pasos, paso, v => { Clase.marcarPasoActivo(pasosFlujo); pasosFlujo.ir(pasos.findIndex(x => x[0] === v)); });
+  function render() {
+    const e = ej(sel.value), out = document.getElementById("fluOut");
+    document.getElementById("fluText").textContent = e.texto;
+    out.innerHTML = "";
+    if (paso === "oraciones") {
+      const ors = []; let cur = "";
+      e.tokens.forEach((t, i) => { if (t.sent && i > 0) { ors.push(cur.trim()); cur = ""; } cur += t.t + t.ws; });
+      ors.push(cur.trim());
+      out.append(el("ol", {class: "sents"}, ors.map(o => el("li", {}, o))));
+    } else if (paso === "tokens") {
+      out.append(el("div", {class: "tokens"}, e.tokens.filter(t => t.t.trim()).map(t => el("span", {class: "tok"}, t.t))));
+    } else if (paso === "pos") {
+      out.append(el("div", {class: "tokens"}, e.tokens.filter(t => t.t.trim()).map(t => el("span", {class: "tok"}, t.t, el("span", {class: "lab"}, t.pos + " · " + t.lem)))));
+      out.append(el("p", {class: "small"}, "Etiquetas UD y lema de spaCy. Fíjate en los errores: ¿son todas las categorías correctas?"));
+    } else if (paso === "chunks") {
+      out.append(el("div", {class: "flow box"}, marcar(e, e.noun_chunks.map(s => [s[0], s[1], "SN"]), () => "chunk")));
+    } else if (paso === "ents") {
+      out.append(el("div", {class: "flow box"}, marcar(e, e.ents, s => "ent " + s[2])));
+    } else {
+      const rels = L.relaciones(e.tokens, e.ents, D.patrones);
+      const t = el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "Entidad"), el("th", {}, "Tipo"))));
+      const tb = el("tbody"); e.ents.forEach(s => tb.append(el("tr", {}, el("td", {}, spanTxt(e, s)), el("td", {}, s[2]))));
+      t.append(tb);
+      const t2 = el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "X"), el("th", {}, "Relación"), el("th", {}, "Y"))));
+      const tb2 = el("tbody"); rels.forEach(r => tb2.append(el("tr", {}, ...r.map(x => el("td", {}, x)))));
+      if (!rels.length) tb2.append(el("tr", {}, el("td", {colspan: 3}, "Ninguna relación encaja con los patrones de la pestaña 5.")));
+      t2.append(tb2);
+      out.append(el("div", {class: "grid2"}, el("div", {}, el("h3", {}, "Tabla de entidades"), t), el("div", {}, el("h3", {}, "Tabla de relaciones"), t2)));
+    }
+  }
+  const pasosFlujo = Clase.pasos(document.getElementById("fluPasos"), {total: pasos.length, inicio: 0, etiqueta: k => pasos[k][1].replace(/^\d · /, ""),
+    pintar: k => { paso = pasos[k][0]; document.querySelectorAll("#fluSteps .seg").forEach((b, i) => b.setAttribute("aria-pressed", String(i === k))); render(); }});
+  sel.addEventListener("change", render);
+  const TAREAS = [
+    ["Gandalf/PROPN viajó/VERB a/ADP Hobbiton/PROPN", "Etiquetado gramatical", "#1E88E5", "Cada token recibe su categoría."],
+    ["[SN El viajero intrépido] comió [SN un postre delicioso]", "Chunking", "#00897B", "Segmentos no solapados de varias palabras."],
+    ["[Gandalf]PER viajó a [Hobbiton]LOC", "Entidades", "#8E24AA", "Tramos y su tipo de entidad."],
+    ["(Gandalf, viajó_a, Hobbiton)", "Relaciones", "#F57C00", "Tripleta (X, relación, Y)."],
+    ["viajó → viajar · comió → comer", "Lematización", "#52606D", "Forma de diccionario (Tema 2)."],
+  ];
+  const tOut = document.getElementById("tareaOut");
+  TAREAS.forEach(([o, t, c, e]) => tOut.append(el("div", {class: "salida", style: "border-top-color:" + c, onclick: ev => ev.currentTarget.classList.remove("oculto")},
+    el("div", {class: "o"}, o), el("span", {class: "t", style: "background:" + c}, t), el("div", {class: "small t2"}, e))));
+  Clase.botonPregunta(document.getElementById("tareaCtrl"), oc => tOut.querySelectorAll(".salida").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las tareas para preguntar", ocultas: "Mostrar todas las tareas"});
+})();
+
+// ================================================================ 2 · POS
+(function () {
+  // Pares resueltos: misma forma, dos categorías
+  const COL_UD = {VERB: "#1E88E5", NOUN: "#00897B", ADP: "#8E24AA", ADJ: "#F57C00", SCONJ: "#C62828", ADV: "#52606D"};
+  const ambOut = document.getElementById("ambOut");
+  for (let k = 0; k < D.ambiguas.length; k += 2) {
+    const par = D.ambiguas.slice(k, k + 2), frases = [...new Set(par.map(a => a.frase))];
+    const card = el("div", {class: "par", onclick: ev => ev.currentTarget.classList.remove("oculto")});
+    frases.forEach(f => {
+      const items = par.filter(a => a.frase === f), toks = items[0].tokens;
+      card.append(el("div", {class: "fr", html: toks.map((t, i) => {
+        const a = items.find(x => x.i === i);
+        return a ? `<span class="w">${esc(t)}<span class="cat" style="background:${COL_UD[a.correcta] || "#52606D"}">${a.correcta}</span></span>` : esc(t);
+      }).join(" ")}));
+    });
+    card.append(el("div", {class: "spc", html: "spaCy: " + par.map(a => `«${esc(a.palabra)}» ${a.spacy} <b style="color:${a.spacy === a.correcta ? "var(--ok)" : "var(--bad)"}">${a.spacy === a.correcta ? "✓" : "✗"}</b>`).join(" · ")}));
+    card.append(el("div", {class: "small"}, par.map(a => a.explicacion).join(" ")));
+    ambOut.append(card);
+  }
+  Clase.botonPregunta(document.getElementById("ambCtrl"), oc => ambOut.querySelectorAll(".par").forEach(x => x.classList.toggle("oculto", oc)), {ver: "Ocultar las categorías para preguntar", ocultas: "Mostrar todas las categorías"});
+
+  // La misma frase con cada etiquetador de la cadena (Figuras 8-11)
+  const C = window.CADENA03, cadSel = document.getElementById("cadSel");
+  const ORDEN = [["defecto", "1 · Siempre la más frecuente (" + C.etiqueta_mas_frecuente + ")"], ["unigramas", "2 · Unigramas"], ["bigramas", "3 · Solo bigramas"],
+    ["bigramas_unigramas_defecto", "4 · Bigramas → unigramas → más frecuente"], ["reglas", "5 · Solo reglas de terminaciones"], ["bigramas_unigramas_reglas", "6 · Bigramas → unigramas → reglas"]];
+  const MSG = ["Una sola etiqueta para todo: acierta solo las preposiciones.",
+    "Cada palabra con su etiqueta más frecuente en el entrenamiento. Falla las ambiguas y no sabe qué hacer con las palabras nuevas.",
+    "Mira también la etiqueta anterior. En cuanto llega una palabra nueva no tiene contexto conocido y se queda sin respuesta hasta el final de la frase.",
+    "Con respaldo: si el bigrama no sabe, pregunta al unigrama; si este tampoco, pone la más frecuente. El contexto arregla palabras ambiguas.",
+    "Las terminaciones (-ar, -mente, -ción…) aciertan algunas palabras nuevas, pero solas fallan mucho.",
+    "La cadena completa: las reglas sustituyen a «la más frecuente» como último respaldo y rescatan las palabras nuevas."];
+  C.frases.forEach((f, i) => cadSel.append(el("option", {value: i}, f.tokens.join(" ").replace(/ ([.,:;?])/g, "$1"))));
+  cadSel.value = C.frases.length > 1 ? 1 : 0;
+  function pintarCadena(k) {
+    const f = C.frases[+cadSel.value], out = document.getElementById("cadOut");
+    let h = '<table><thead><tr><th></th>' + f.tokens.map((t, i) => `<th class="${f.desconocidas[i] ? "nueva" : ""}">${esc(t)}</th>`).join("") + '<th></th></tr></thead><tbody>';
+    h += '<tr><th>Etiqueta correcta</th>' + f.gold.map(g => `<td class="gold">${esc(g)}</td>`).join("") + '<td class="n"></td></tr>';
+    ORDEN.forEach(([clave, nombre], j) => {
+      const sal = f.salidas[clave], err = f.errores[clave];
+      h += `<tr${j > k ? " hidden" : ""}><th>${esc(nombre)}</th>` + sal.map((t, i) => t === null ? '<td class="nada">—</td>' : `<td class="${t === f.gold[i] ? "ok" : "mal"}">${esc(t)}</td>`).join("") +
+        `<td class="n" style="color:${err ? "var(--bad)" : "var(--ok)"}">${err} ${err === 1 ? "error" : "errores"}</td></tr>`;
+    });
+    out.innerHTML = h + '</tbody></table>';
+    document.getElementById("cadMsg").textContent = MSG[k];
+  }
+  const pasosCad = Clase.pasos(document.getElementById("cadPasos"), {total: ORDEN.length, pintar: pintarCadena, etiqueta: k => ORDEN[k][1].replace(/^\d · /, "")});
+  cadSel.addEventListener("change", () => pasosCad.ir(0));
+  const sel = document.getElementById("tagSel");
+  fillSelect(sel, ["e0", "e3", "e4", "e5", "e6"]);
+  function render() {
+    const e = ej(sel.value), t = document.getElementById("tagOut"); t.innerHTML = "";
+    const tab = el("table", {class: "tags"}, el("thead", {}, el("tr", {}, el("th", {}, "Token"), el("th", {}, "UD (spaCy)"), el("th", {}, "Lema (spaCy)"), el("th", {}, "EAGLES (n-gramas)"))));
+    const tb = el("tbody");
+    e.tokens.forEach((k, i) => tb.append(el("tr", {}, el("td", {}, k.t), el("td", {}, k.pos), el("td", {}, k.lem), el("td", {}, e.eagles[i] || ""))));
+    tab.append(tb); t.append(tab);
+    t.append(el("p", {class: "small"}, "EAGLES: n = nombre (c común, p propio), v = verbo (m principal, a auxiliar, s ser), a = adjetivo, d = determinante, s = preposición, F = puntuación… El etiquetador de n-gramas falla con palabras que no vio al entrenar (p. ej., «tropical» o «delicioso» como nombres)."));
+  }
+  sel.addEventListener("change", render); render();
+  const x = D.etiquetadores, ks = [["defecto", "Más frecuente"], ["reglas", "Solo reglas"], ["bigramas", "Solo bigramas"], ["unigramas", "Unigramas"], ["bigramas_unigramas_defecto", "Bi → uni → defecto"], ["bigramas_unigramas_reglas", "Bi → uni → reglas"]];
+  barChart(document.getElementById("accChart"), ks.map(k => k[1]), [ks.map(k => x[k[0]])], ["#00897B"], [`Exactitud en ${x.tokens_prueba} tokens de prueba`]);
+  const inp = document.getElementById("rxIn"), o = document.getElementById("rxOut");
+  function rx() { o.innerHTML = ""; inp.value.split(/\s+/).filter(Boolean).forEach(w => o.append(el("span", {class: "tok"}, w, el("span", {class: "lab"}, L.etiquetaReglas(w, D.reglas_es))))); }
+  inp.addEventListener("input", rx); rx();
+})();
+
+// ================================================================ 3 · Chunking
+(function () {
+  const sel = document.getElementById("chSel");
+  fillSelect(sel, ["e3", "e4", "e5", "e0", "e1"]);
+  let regla = "espanol";
+  segmented(document.getElementById("chRule"), [["ingles", "Orden del inglés: " + D.regla_ingles], ["espanol", "Orden del español: " + D.regla_espanol], ["propia", "Regla propia"]], regla, v => { regla = v; render(); });
+  const custom = document.getElementById("chCustom");
+  custom.addEventListener("input", () => { if (regla === "propia") render(); });
+  function render() {
+    const e = ej(sel.value), r = regla === "ingles" ? D.regla_ingles : regla === "espanol" ? D.regla_espanol : custom.value;
+    const err = document.getElementById("chErr"), out = document.getElementById("chOut"), iob = document.getElementById("chIob");
+    custom.hidden = regla !== "propia"; err.textContent = ""; out.innerHTML = ""; iob.innerHTML = "";
+    let res;
+    try { res = L.chunkear(e.tokens.map(t => t.pos), r); } catch (ex) { err.textContent = ex.message; return; }
+    out.append(marcar(e, res.spans.map(s => [s[0], s[1], res.etiqueta]), () => "chunk"));
+    dibujarArbol(document.getElementById("chArbol"), e.tokens, res.spans, res.etiqueta);
+    const n = Math.min(e.tokens.length, 16);
+    iob.append(el("tr", {}, el("th", {}, "Token"), ...e.tokens.slice(0, n).map(t => el("td", {}, t.t))),
+               el("tr", {}, el("th", {}, "UD"), ...e.tokens.slice(0, n).map(t => el("td", {}, t.pos))),
+               el("tr", {}, el("th", {}, "IOB"), ...res.iob.slice(0, n).map(t => el("td", {}, t))));
+    const sp = document.getElementById("chSpacy"); sp.innerHTML = "";
+    sp.append(marcar(e, e.noun_chunks.map(s => [s[0], s[1], "SN"]), () => "chunk"));
+  }
+  sel.addEventListener("change", render); render();
+  // Chinking: todo es un trozo y se sacan las categorías de la lista
+  const CHINK = new Set(["VERB", "AUX", "ADP", "CCONJ", "SCONJ", "PUNCT"]);
+  const chiSel = document.getElementById("chiSel");
+  fillSelect(chiSel, ["e3", "e0", "e5", "e1"]);
+  function chink() {
+    const e = ej(chiSel.value), spans = [];
+    let ini = -1;
+    e.tokens.forEach((t, i) => {
+      if (!CHINK.has(t.pos) && t.t.trim()) { if (ini < 0) ini = i; }
+      else if (ini >= 0) { spans.push([ini, i]); ini = -1; }
+    });
+    if (ini >= 0) spans.push([ini, e.tokens.length]);
+    dibujarArbol(document.getElementById("chiArbol"), e.tokens, spans, "SN");
+  }
+  chiSel.addEventListener("change", chink); chink();
+})();
+
+// ================================================================ 4 · Entidades
+(function () {
+  const sel = document.getElementById("nerSel");
+  fillSelect(sel, ["e1", "e2", "e0", "e7"]);
+  let cod = "bio";
+  segmented(document.getElementById("nerCod"), [["bio", "BIO"], ["bioes", "BIOES"]], cod, v => { cod = v; render(); });
+  function render() {
+    const e = ej(sel.value), out = document.getElementById("nerOut"), tags = document.getElementById("nerTags");
+    out.innerHTML = ""; tags.innerHTML = "";
+    out.append(marcar(e, e.ents, s => "ent " + s[2]));
+    const t = (cod === "bio" ? L.bio : L.bioes)(e.tokens.length, e.ents);
+    const n = Math.min(e.tokens.length, 18);
+    tags.append(el("tr", {}, el("th", {}, "Token"), ...e.tokens.slice(0, n).map(k => el("td", {}, k.t.trim() || "↵"))),
+                el("tr", {}, el("th", {}, cod.toUpperCase()), ...t.slice(0, n).map(k => el("td", {}, k))));
+  }
+  sel.addEventListener("change", render); render();
+  const pt = D.ner_conll.por_tipo, tipos = ["PER", "LOC", "ORG", "MISC", "TODAS"];
+  barChart(document.getElementById("nerChart"), ["PER", "LOC", "ORG", "MISC", "Todas"],
+    [tipos.map(k => pt[k].precision), tipos.map(k => pt[k].exhaustividad), tipos.map(k => pt[k].f1)],
+    ["#1E88E5", "#F57C00", "#0F1B2D"], ["Precisión", "Exhaustividad", "F1"],
+    {v: D.ner_declarado, label: "F1 declarado por el modelo (su propio corpus): " + dec(D.ner_declarado)});
+  const cli = ej("e7"), ta = document.getElementById("cliIn");
+  ta.value = cli.texto;
+  document.getElementById("cliSpacy").append(marcar(cli, cli.ents, s => "ent " + s[2]));
+  function clin() {
+    const res = L.entidadesClinicas(ta.value, D.glosario, D.negadores);
+    const o = document.getElementById("cliOut"); o.innerHTML = "";
+    const t = el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "Término"), el("th", {}, "Tipo"), el("th", {}, "Significado"), el("th", {}, "¿Negado?"))));
+    const tb = el("tbody");
+    res.forEach(r => tb.append(el("tr", {}, el("td", {}, r.texto), el("td", {}, r.tipo), el("td", {}, r.forma), el("td", {class: r.negado ? "err" : "okc"}, r.negado ? "sí" : "no"))));
+    if (!res.length) tb.append(el("tr", {}, el("td", {colspan: 4}, "Ningún término del glosario.")));
+    t.append(tb); o.append(t);
+  }
+  ta.addEventListener("input", clin); clin();
+})();
+
+// ================================================================ 5 · Relaciones
+(function () {
+  const e = ej("e2"), activos = new Set(D.patrones.map((_, i) => i));
+  const cont = document.getElementById("relPat");
+  D.patrones.forEach((p, i) => {
+    const cb = el("input", {type: "checkbox", checked: ""});
+    cb.addEventListener("change", () => { cb.checked ? activos.add(i) : activos.delete(i); render(); });
+    cont.append(el("label", {}, cb, ` ${p[2]} ─ «${p[0].replace(/^\^|\$$/g, "")}» ─ ${p[3]}  →  ${p[1]}`));
+  });
+  document.getElementById("relEnts").append(marcar(e, e.ents, s => "ent " + s[2]));
+  function render() {
+    const rels = L.relaciones(e.tokens, e.ents, D.patrones.filter((_, i) => activos.has(i)));
+    const tb = document.querySelector("#relTab tbody"); tb.innerHTML = "";
+    rels.forEach(r => tb.append(el("tr", {}, ...r.map(x => el("td", {}, x)))));
+    grafo(rels);
+    document.getElementById("relWarn").textContent = `${rels.length} relaciones. Lo que se pierde no es culpa del patrón: «Vicuña» sale como MISC, «Universidad de Salamanca» como LOC y «Recibió» como PER; y en «En 1900 fue nombrado rector…» el sujeto está omitido. La extracción de relaciones hereda los errores del NER.`;
+  }
+  function grafo(rels) {
+    const svg = document.getElementById("relGrafo");
+    const izq = [...new Set(rels.map(r => r[0]))], der = [...new Set(rels.map(r => r[2]))];
+    const n = Math.max(izq.length, der.length), H = n * 48 + 16;
+    const yI = i => 26 + (n - izq.length) * 24 + i * 48, yD = i => 26 + (n - der.length) * 24 + i * 48;
+    const COLR = {nacido_en: "#00897B", viajó_a: "#F57C00", murió_en: "#52606D", rector_de: "#8E24AA"};
+    let h = "";
+    rels.forEach(r => {
+      const y1 = yI(izq.indexOf(r[0])), y2 = yD(der.indexOf(r[2])), c = COLR[r[1]] || "#52606D";
+      h += `<path d="M300 ${y1} C 450 ${y1}, 450 ${y2}, 600 ${y2}" fill="none" stroke="${c}" stroke-width="3"/><text x="450" y="${(y1 + y2) / 2 - 6}" text-anchor="middle" font-size="13" font-weight="700" fill="${c}">${esc(r[1])}</text>`;
+    });
+    izq.forEach((n, i) => { const y = yI(i); h += `<rect x="40" y="${y - 15}" width="260" height="30" rx="7" fill="#E3F2FD" stroke="#1E88E5" stroke-width="2"/><text x="170" y="${y + 6}" text-anchor="middle" font-size="16" font-weight="700">${esc(n)}</text>`; });
+    der.forEach((n, i) => { const y = yD(i); h += `<rect x="600" y="${y - 15}" width="260" height="30" rx="7" fill="#E0F2F1" stroke="#00897B" stroke-width="2"/><text x="730" y="${y + 6}" text-anchor="middle" font-size="16" font-weight="700">${esc(n)}</text>`; });
+    if (!rels.length) h = '<text x="450" y="40" text-anchor="middle" font-size="16" fill="#52606D">Ningún patrón activo encuentra relaciones.</text>';
+    svg.setAttribute("viewBox", `0 0 900 ${Math.max(H, 60)}`);
+    svg.style.maxWidth = "1100px";
+    svg.innerHTML = h;
+  }
+  render();
+  // Snowball ilustrado: pares de entidades ya marcados en seis oraciones (ilustración)
+  const CORPUS = [
+    ["Federico García Lorca", "nació en", "Fuente Vaqueros"], ["Federico García Lorca", "viajó a", "Nueva York"],
+    ["Miguel de Unamuno", "nació en", "Bilbao"], ["Octavio Paz", "nació en", "Ciudad de México"],
+    ["Ana Martínez", "viajó a", "Nueva York"], ["Vicente Aleixandre", "nació en", "Sevilla"]];
+  const semillas = {buena: ["Federico García Lorca", "Fuente Vaqueros"], mala: ["Federico García Lorca", "Nueva York"]};
+  let semilla = "buena";
+  segmented(document.getElementById("snowSeed"), [["buena", "Semilla correcta: (Lorca, nacido_en, Fuente Vaqueros)"], ["mala", "Semilla errónea: (Lorca, nacido_en, Nueva York)"]], "buena", v => { semilla = v; pasosSnow.ir(0); });
+  document.getElementById("snowCorpus").textContent = "Oraciones del ejemplo: " + CORPUS.map(c => `«${c.join(" ")}.»`).join(" ");
+  const ETAPAS = ["Semilla", "Buscar oraciones", "Patrón aprendido", "Tuplas nuevas"];
+  function snow(k) {
+    const v = semilla, s = semillas[v], o = document.getElementById("snowOut"); o.innerHTML = "";
+    const hallado = CORPUS.find(c => c[0] === s[0] && c[2] === s[1]);
+    const patron = hallado[1];
+    const nuevas = CORPUS.filter(c => c[1] === patron && !(c[0] === s[0] && c[2] === s[1]));
+    const textos = [`(${s[0]}, nacido_en, ${s[1]})`, `«${hallado.join(" ")}.»`, `X «${patron}» Y → nacido_en`, nuevas.map(c => `(${c[0]}, ${c[2]})`).join(" · ")];
+    document.getElementById("snowCiclo").innerHTML = ETAPAS.map((t, i) => `<div class="${i === k ? "on" : ""}"><b>${i + 1} · ${t}</b><span class="small">${i <= k ? esc(textos[i]) : "…"}</span></div>`).join("");
+    o.append(el("div", {}, ["La tupla de partida, escrita a mano.", "Las oraciones del corpus donde aparecen las dos entidades de la semilla.", "Lo que hay entre las dos entidades se convierte en patrón.", "El patrón se aplica al resto del corpus: estas son las tuplas que añade."][k]));
+    if (k < 3) return;
+    o.append(el("div", {class: v === "mala" ? "warnbox" : "info"}, v === "mala" ? "Con una semilla errónea el sistema aprende que «viajó a» expresa el lugar de nacimiento y añade la tupla falsa (Ana Martínez, Nueva York); en la siguiente iteración los errores se multiplican (Tema 3, p. 53)." : "Con una semilla correcta el patrón «nació en» encuentra las otras tres tuplas. El Tema 3 usa «Lorca nació en Granada»: Lorca nació en Fuente Vaqueros (Granada), así que también las semillas hay que comprobarlas."));
+  }
+  const pasosSnow = Clase.pasos(document.getElementById("snowPasos"), {total: 4, pintar: snow, etiqueta: k => ETAPAS[k]});
+})();
+
+// ================================================================ 6 · Raíz o lema
+(function () {
+  const P = D.pares_ejemplo;
+  let met = "raiz_nltk";
+  segmented(document.getElementById("parMet"), [["raiz_nltk", "Raíz (Snowball)"], ["spacy", "Lema (spaCy)"]], met, v => { met = v; render(); });
+  function pares(clave) {
+    const g = {}; P.forEach(p => { (g[clave(p)] = g[clave(p)] || []).push(p.forma); });
+    const s = new Set(); Object.values(g).forEach(fs => { for (let i = 0; i < fs.length; i++) for (let j = i + 1; j < fs.length; j++) s.add([fs[i], fs[j]].sort().join("+")); });
+    return {s, g};
+  }
+  function render() {
+    const tb = document.querySelector("#parTab tbody"); tb.innerHTML = "";
+    P.forEach(p => tb.append(el("tr", {}, el("td", {}, p.forma), el("td", {}, p.gold), el("td", {class: "mono"}, p[met]))));
+    const ref = pares(p => p.gold), m = pares(p => p[met]);
+    const tp = [...m.s].filter(x => ref.s.has(x)).length;
+    const prec = m.s.size ? tp / m.s.size : 0, rec = ref.s.size ? tp / ref.s.size : 0;
+    const st = document.getElementById("parStats"); st.innerHTML = "";
+    st.append(el("div", {}, el("div", {class: "big"}, `${tp}/${m.s.size}`), el("div", {class: "small"}, "pares correctos / pares del método")),
+              el("div", {}, el("div", {class: "big"}, dec(prec)), el("div", {class: "small"}, "precisión")),
+              el("div", {}, el("div", {class: "big"}, dec(rec)), el("div", {class: "small"}, `exhaustividad (${ref.s.size} pares de referencia)`)));
+    const gr = document.getElementById("parGroups"); gr.innerHTML = "";
+    const lemas = [...new Set(P.map(p => p.gold))], PAL = ["#1E88E5", "#F57C00", "#8E24AA", "#00897B", "#C62828", "#6D4C41"];
+    const goldDe = Object.fromEntries(P.map(p => [p.forma, p.gold]));
+    Object.entries(m.g).forEach(([k, fs]) => {
+      const mezcla = new Set(fs.map(f => goldDe[f])).size > 1;
+      gr.append(el("div", {class: "grupoc", style: mezcla ? "border-color:var(--bad)" : ""}, el("div", {class: "cab"}, k),
+        fs.map(f => { const c = PAL[lemas.indexOf(goldDe[f]) % PAL.length]; return el("span", {class: "chipg", style: `border-color:${c};color:${c}`}, f); })));
+    });
+  }
+  render();
+  const c = D.cess, f = D.fuera_de_dominio;
+  const t = el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "Medida"), el("th", {}, "Raíz (Snowball)"), el("th", {}, "Lema (spaCy)"))));
+  const tb = el("tbody");
+  [["Agrupación por pares en CESS-ESP: precisión", dec(c.pares_snowball.precision), dec(c.pares_spacy.precision)],
+   ["Agrupación por pares en CESS-ESP: exhaustividad", dec(c.pares_snowball.exhaustividad), dec(c.pares_spacy.exhaustividad)],
+   ["Búsqueda de 20 verbos: exhaustividad", dec(c.busqueda.raiz.exhaustividad), dec(c.busqueda.lema.exhaustividad)],
+   ["Fuera de la prensa (74 palabras): bien agrupadas con su lema", pct(f.total.raiz / f.total.n), pct(f.total.lema / f.total.n)],
+   ["…solo mensajes de chat (15 palabras)", pct(f.mensajes.raiz / f.mensajes.n), pct(f.mensajes.lema / f.mensajes.n)]]
+    .forEach(r => tb.append(el("tr", {}, ...r.map(x => el("td", {}, x)))));
+  t.append(tb);
+  barChart(document.getElementById("raizChart"), ["Pares: precisión", "Pares: exhaustividad", "Búsqueda de verbos", "Fuera de la prensa", "Mensajes de chat"],
+    [[c.pares_snowball.precision, c.pares_snowball.exhaustividad, c.busqueda.raiz.exhaustividad, f.total.raiz / f.total.n, f.mensajes.raiz / f.mensajes.n],
+     [c.pares_spacy.precision, c.pares_spacy.exhaustividad, c.busqueda.lema.exhaustividad, f.total.lema / f.total.n, f.mensajes.lema / f.mensajes.n]],
+    ["#9AA5B1", "#00897B"], ["Raíz (Snowball)", "Lema (spaCy)"]);
+  document.getElementById("raizRes").append(t, el("p", {class: "small", style: "margin-top:.6rem"}, `Lemas de spaCy correctos en CESS-ESP: ${pct(c.exactitud_lema_spacy)} de ${c.tokens_evaluados} palabras de contenido. Cifra optimista: CESS-ESP y AnCora (con el que se entrenó el modelo) proceden del mismo treebank.`));
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 8 · Modelado de lenguaje neuronal (II) — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1rem; font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: #CE93D8; }
+  td.num, th.num { white-space: nowrap; }
+  .pt:focus { outline: none; } .pt:focus circle, .pt:focus rect, .pt:focus polygon { stroke: #F0B400; stroke-width: 3; }
+  .content { max-width: 1120px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--neuronal-l); border-left: 4px solid var(--neuronal); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #4A148C; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: var(--neuronal); color: #fff; }
+  .btn-main:hover { background: #6A1B9A; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible, td.clic:focus-visible { outline: 3px solid #CE93D8; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; font-family: Menlo, Consolas, monospace; font-size: .92rem; }
+  input[type=text] { min-width: 18rem; }
+  input[type=range] { width: 12rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .4rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.clic { cursor: pointer; }
+  td.clic:hover { background: var(--neuronal-l); }
+  td.sel { background: #FFE082 !important; font-weight: 700; }
+  tr.hl td { background: var(--warn-l); }
+  td.cero { color: var(--muted); }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  .scroll { overflow-x: auto; max-height: 28rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .calc { font-family: Menlo, Consolas, monospace; font-size: .9rem; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: .7rem .9rem; white-space: pre-wrap; margin: .5rem 0; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .quiz-item { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .quiz-item .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .path { display: flex; flex-direction: column; gap: .3rem; margin: .6rem 0; }
+  .lvl { border: 2px solid var(--line); border-radius: 10px; padding: .6rem .9rem; background: #fff; }
+  .lvl.usado { border-color: var(--ok); background: var(--ok-l); }
+  .lvl.saltado { border-color: #EF9A9A; background: var(--bad-l); }
+  .lvl.no { opacity: .55; }
+  .arrow { text-align: center; color: var(--ink2); font-size: 1.2rem; line-height: 1; }
+  .pill { display: inline-block; padding: .05rem .45rem; border-radius: 6px; background: var(--neuronal-l); border: 1px solid #CE93D8; font-family: Menlo, Consolas, monospace; font-size: .88rem; margin: .1rem; }
+  .pill.unk { background: var(--warn-l); border-color: #F0D78C; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  .pill.cont { background: var(--aplic-l); border-color: #FFB74D; }
+  .pill.esp { background: #ECEFF1; border-color: #B0BEC5; }
+  .pill.mask { background: #FFE082; border-color: #F0B400; font-weight: 700; }
+  .pill.azar { background: var(--bad-l); border-color: #EF9A9A; }
+  .pill.igual { background: var(--ok-l); border-color: #A5D6A7; }
+  .tokbtn { font: inherit; font-family: Menlo, Consolas, monospace; font-size: .9rem; padding: .2rem .6rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; margin: .15rem; }
+  .tokbtn.centro { background: var(--texto-l); border-color: var(--texto); font-weight: 700; }
+  .tokbtn.ctx { background: var(--estad-l); border-color: var(--estad); }
+  .mat { width: auto; min-width: 12rem; }
+  .mat td, .mat th { text-align: center; font-variant-numeric: tabular-nums; padding: .3rem .55rem; }
+  .heat td { text-align: center; font-variant-numeric: tabular-nums; font-size: .82rem; padding: .25rem .35rem; }
+  .bar { height: 1rem; background: var(--neuronal); border-radius: 3px; }
+  .barcell { width: 50%; }
+  .correcto td { background: var(--ok-l); font-weight: 700; }
+  textarea.mtx { min-height: 4.6rem; width: 100%; }
+  footer { max-width: 1120px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .6rem; font-size: .85rem; } input[type=text] { min-width: 0; width: 100%; } }
+  /* modo clase */
+  .esquema { width: 100%; height: auto; display: block; }
+  .modos8 { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0; }
+  .ajuste { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1.4rem; align-items: start; }
+  .ajuste-det { background: var(--soft); border-radius: 12px; padding: 1rem 1.1rem; border-left: 6px solid var(--neuronal); }
+  .ajuste-det .cifra { font-size: 2.4rem; font-weight: 800; line-height: 1.1; color: var(--neuronal); }
+  .etapas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem; margin: .6rem 0; }
+  .etapas div { border: 2px solid var(--line); border-radius: 12px; padding: .8rem; background: #fff; position: relative; }
+  .etapas div.on { border-color: var(--neuronal); background: var(--neuronal-l); box-shadow: 0 0 0 3px #E1BEE7; }
+  .etapas div:not(:last-child)::after { content: "▶"; position: absolute; right: -1.05rem; top: 40%; color: var(--muted); }
+  .etapas b { display: block; margin-bottom: .3rem; }
+  .estrategias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: .5rem; }
+  .estrategia { background: var(--soft); border-radius: 10px; padding: .7rem .9rem; border-top: 5px solid var(--neuronal); }
+  .estrategia pre { white-space: pre-wrap; font-family: Menlo, Consolas, monospace; font-size: .85rem; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .6rem; margin-top: .4rem; }
+  @media (max-width: 900px) { .ajuste, .etapas, .estrategias { grid-template-columns: 1fr; } }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-neuronal">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)" aria-current="page">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="07_sentimientos.html">‹ Tema 7 · Sentimientos</a><a class="sig" href="09_aplicaciones.html">Tema 9 · Aplicaciones ›</a></nav>
+  <h1><span class="num-tema">TEMA 8</span>Modelado de lenguaje neuronal (II)</h1>
+  <p>Los Transformers por dentro y en uso: máscaras, generación, huecos, subpalabras, ajuste fino frente a prompts, destilación y alineación. <span class="cuando">Clases 14 y 15 · semanas 10 y 11</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M12 14Q18 3 24 14M24 14Q30 3 36 14M12 14Q24-4 36 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><g fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"><rect x="6" y="17" width="36" height="9" rx="2.5"/><rect x="6" y="29" width="36" height="9" rx="2.5"/></g><g fill="currentColor"><circle cx="12" cy="43" r="2.6"/><circle cx="24" cy="43" r="2.6"/><circle cx="36" cy="43" r="2.6"/></g></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-mas" aria-controls="p-mas" aria-selected="true"><span class="tab-n">1</span> Tres máscaras</button>
+  <button class="tab" role="tab" id="t-sig" aria-controls="p-sig" aria-selected="false"><span class="tab-n">2</span> Siguiente palabra</button>
+  <button class="tab" role="tab" id="t-rel" aria-controls="p-rel" aria-selected="false"><span class="tab-n">3</span> Rellenar huecos</button>
+  <button class="tab" role="tab" id="t-fun" aria-controls="p-fun" aria-selected="false"><span class="tab-n">4</span> Modelo fundacional</button>
+  <button class="tab" role="tab" id="t-sub" aria-controls="p-sub" aria-selected="false"><span class="tab-n">5</span> Subpalabras y etiquetas</button>
+  <button class="tab" role="tab" id="t-fra" aria-controls="p-fra" aria-selected="false"><span class="tab-n">6</span> Fragmentos</button>
+  <button class="tab" role="tab" id="t-aju" aria-controls="p-aju" aria-selected="false"><span class="tab-n">7</span> ¿Ajustar o preguntar?</button>
+  <button class="tab" role="tab" id="t-pro" aria-controls="p-pro" aria-selected="false"><span class="tab-n">8</span> Prompts</button>
+  <button class="tab" role="tab" id="t-des" aria-controls="p-des" aria-selected="false"><span class="tab-n">9</span> Destilación</button>
+  <button class="tab" role="tab" id="t-ali" aria-controls="p-ali" aria-selected="false"><span class="tab-n">10</span> Ajuste y alineación</button>
+</div>
+<div class="content">
+
+<!-- ============================================================ 1 -->
+<section class="panel active" id="p-mas" role="tabpanel" aria-labelledby="t-mas">
+  <div class="card">
+    <h2>Mismo bloque, distinta máscara</h2>
+    <div class="meta"><span class="tag illus">Esquema exacto (no ejecuta ningún modelo)</span><span class="tag real">Comprobación con modelos reales al final</span><span class="tag">Clase 14 · d. 6-7</span></div>
+    <p>Cada fila es la palabra que calcula su salida (consulta); cada columna, la palabra a la que puede atender (clave). Pulsa una fila para ver qué ve esa palabra.</p>
+    <div class="row"><label for="mas-frase"><b>Frase:</b></label><input type="text" id="mas-frase" value="El Real Sporting ganó el partido"></div>
+    <div class="seggroup" id="mas-tipo" role="group" aria-label="Arquitectura">
+      <button class="seg" aria-pressed="true" data-t="bidireccional">Codificador (BERT)</button>
+      <button class="seg" aria-pressed="false" data-t="causal">Decodificador (GPT)</button>
+      <button class="seg" aria-pressed="false" data-t="cruzada">Atención cruzada (codificador-decodificador)</button>
+    </div>
+    <div class="row" id="mas-salida-fila" style="display:none"><label for="mas-salida"><b>Salida ya escrita por el decodificador:</b></label><input type="text" id="mas-salida" value="&lt;s&gt; El Real"></div>
+    <div class="scroll" style="max-height:none"><table class="mat heat" id="mas-mat"></table></div>
+    <p class="small" id="mas-cuenta"></p>
+    <div class="info" id="mas-ve"></div>
+  </div>
+  <div class="card">
+    <h3>Comprobado en dos modelos reales</h3>
+    <div class="meta"><span class="tag real">Salidas reales (Python, CPU)</span></div>
+    <p id="mas-real"></p>
+  </div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="panel" id="p-sig" role="tabpanel" aria-labelledby="t-sig">
+  <div class="card">
+    <h2>La siguiente subpalabra y la temperatura</h2>
+    <div class="meta"><span class="tag pre">Logits reales de Qwen2.5-0.5B base (precalculados)</span><span class="tag">Cálculo en el navegador: softmax con temperatura sobre las 20 primeras</span><span class="tag">Clase 14 · d. 15-16</span></div>
+    <div class="row"><label for="sig-prompt"><b>Texto:</b></label><select id="sig-prompt"></select></div>
+    <div class="row"><label for="sig-T"><b>Temperatura T = <span id="sig-Tv">1,0</span></b></label><input type="range" id="sig-T" min="0.2" max="2.5" step="0.1" value="1"></div>
+    <p class="small" id="sig-nota"></p>
+    <div class="scroll" style="max-height:none"><table id="sig-tabla"></table></div>
+    <div class="row">
+      <button class="btn btn-gray" id="sig-voraz">Decodificación voraz</button>
+      <button class="btn btn-main" id="sig-muestra">Muestrear una</button>
+      <button class="btn btn-gray" id="sig-cien">Muestrear 200 veces</button>
+    </div>
+    <div class="calc" id="sig-res">Elige una opción.</div>
+  </div>
+  <div class="card">
+    <h3>La continuación verdadera (regla de la cadena)</h3>
+    <div id="sig-real"></div>
+    <h3>Generaciones grabadas (20 subpalabras)</h3>
+    <div class="meta"><span class="tag real">Salidas reales grabadas</span></div>
+    <div id="sig-gen"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="panel" id="p-rel" role="tabpanel" aria-labelledby="t-rel">
+  <div class="card">
+    <h2>Rellenar el hueco: codificador frente a codificador-decodificador</h2>
+    <div class="meta"><span class="tag real">Salidas reales de BETO y BARTO (precalculadas)</span><span class="tag">Clase 14 · d. 13-14</span></div>
+    <div class="grid2">
+      <div class="box"><h3>BETO: una subpalabra por [MASK]</h3><select id="rel-beto"></select><div id="rel-beto-res"></div></div>
+      <div class="box"><h3>BARTO: reescribe la frase</h3><select id="rel-barto"></select><div id="rel-barto-res"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Atención cruzada de BARTO</h3>
+    <div class="meta"><span class="tag real">Pesos reales (media de 6 capas y 12 cabezas)</span><span class="tag">Clase 14 · d. 9</span></div>
+    <p>Entrada del codificador: <b id="rel-ent"></b>. El decodificador escribe la frase con «partido». Pulsa un paso del decodificador para ver a qué posiciones de la entrada atiende.</p>
+    <div class="scroll"><table class="heat" id="rel-heat"></table></div>
+    <div id="rel-fila"></div>
+    <div class="warnbox">Son pesos de atención, no una explicación de la decisión del modelo.</div>
+  </div>
+  <div class="card">
+    <h3>Tres tokenizadores para la misma frase</h3>
+    <div id="rel-tok"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="panel" id="p-fun" role="tabpanel" aria-labelledby="t-fun">
+  <div class="card">
+    <h2>BETO congelado como extractor de rasgos</h2>
+    <div class="meta"><span class="tag real">Vectores [CLS] reales y regresión logística (Python)</span><span class="tag">Intervalos calculados en el navegador</span><span class="tag">Clase 14 · d. 20-22</span></div>
+    <p>Las mismas 60 noticias de entrenamiento y 20 de prueba que la Clase 10. BETO no se entrena: se toma el vector de [CLS] de la última capa y se entrena una regresión logística.</p>
+    <div class="grid2">
+      <div><table id="fun-cmp"></table><p class="small" id="fun-vc"></p></div>
+      <div><h3>Matriz de confusión de BETO congelado (prueba)</h3><table class="mat" id="fun-cm"></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Mapa de las noticias (PCA de los vectores [CLS])</h3>
+    <div class="row">
+      <label class="inline"><input type="checkbox" id="fun-tr" checked> entrenamiento</label>
+      <label class="inline"><input type="checkbox" id="fun-te" checked> prueba</label>
+      <label class="inline"><input type="checkbox" id="fun-nu" checked> cultura (nunca vista)</label>
+    </div>
+    <svg id="fun-svg" class="chart" viewBox="0 0 900 470" role="img" aria-label="Proyección de las noticias"></svg>
+    <p class="small" id="fun-pca"></p>
+    <div class="info" id="fun-info">Pasa el ratón (o el foco) por un punto para ver su titular.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section class="panel" id="p-sub" role="tabpanel" aria-labelledby="t-sub">
+  <div class="card">
+    <h2>Etiquetas por palabra, modelo con subpalabras</h2>
+    <div class="meta"><span class="tag real">Tokenización real de BETO</span><span class="tag">Alineación calculada en el navegador</span><span class="tag">Clase 15 · d. 9</span></div>
+    <div class="row"><label for="sub-frase"><b>Frase:</b></label><select id="sub-frase"></select></div>
+    <p>Cambia las etiquetas BIO de las palabras y la regla para las subpalabras de continuación.</p>
+    <div id="sub-pal" class="row"></div>
+    <div class="seggroup" id="sub-modo" role="group" aria-label="Regla de alineación">
+      <button class="seg" aria-pressed="true" data-m="primera">Primera subpalabra (-100 en las demás)</button>
+      <button class="seg" aria-pressed="false" data-m="todas">Copiar a todas (B- pasa a I-)</button>
+    </div>
+    <svg id="sub-svg" class="esquema" viewBox="0 0 1000 260" role="img" aria-label="Palabras arriba, subpalabras abajo y la etiqueta que recibe cada una"></svg>
+    <details><summary class="small">Ver como tabla</summary><div class="scroll" style="max-height:none"><table id="sub-tabla"></table></div></details>
+    <p class="small" id="sub-cuenta"></p>
+  </div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section class="panel" id="p-fra" role="tabpanel" aria-labelledby="t-fra">
+  <div class="card">
+    <h2>Fragmentos (spans): cuántos hay y cómo se resumen</h2>
+    <div class="meta"><span class="tag">Cálculo exacto en el navegador</span><span class="tag">Clase 15 · d. 10</span></div>
+    <div class="row"><label for="fra-frase"><b>Frase:</b></label><input type="text" id="fra-frase"></div>
+    <div class="row"><label for="fra-L"><b>Longitud máxima L = <span id="fra-Lv"></span></b></label><input type="range" id="fra-L" min="1" max="12" step="1" value="3"></div>
+    <div class="stats"><div><div class="big" id="fra-n"></div><div class="small">fragmentos con L</div></div><div><div class="big" id="fra-tot"></div><div class="small">todos: T(T+1)/2</div></div></div>
+    <svg id="fra-tri" class="esquema" viewBox="0 0 1000 420" role="img" aria-label="Todos los fragmentos de la frase: inicio por filas y fin por columnas"></svg>
+    <div id="fra-lista"></div>
+  </div>
+  <div class="card">
+    <h3>La media del fragmento: fórmula correcta frente a la impresa en el tema (p. 33)</h3>
+    <div class="row"><label for="fra-i">Desde</label><select id="fra-i"></select><label for="fra-j">hasta</label><select id="fra-j"></select></div>
+    <div class="scroll" style="max-height:none"><table id="fra-pesos"></table></div>
+    <div class="badbox">El tema escribe 1/((j−1)+1) y suma desde k = 1: eso promedia todas las palabras desde el principio de la frase hasta j, no solo las del fragmento. Correcto: 1/(j−i+1), sumando desde k = i.</div>
+    <div class="info" id="fra-anid"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section class="panel" id="p-aju" role="tabpanel" aria-labelledby="t-aju">
+  <div class="card">
+    <h2>¿Ajustar o preguntar? Las mismas 20 noticias de prueba</h2>
+    <div class="meta"><span class="tag real">Predicciones reales (Python, CPU)</span><span class="tag">Aciertos, intervalos y matrices calculados en el navegador</span><span class="tag">Clase 15 · d. 12-16</span></div>
+    <div class="scroll" style="max-height:none"><table id="aju-res"></table></div>
+    <p class="small">Intervalo de Wilson al 95 %. Con 20 noticias, cada acierto vale 5 puntos.</p>
+  </div>
+  <div class="card">
+    <h3>Comparar dos métodos noticia a noticia</h3>
+    <div class="row"><label for="aju-a">Método A</label><select id="aju-a"></select><label for="aju-b">Método B</label><select id="aju-b"></select>
+      <label class="inline"><input type="checkbox" id="aju-solo"> solo donde alguno falla</label></div>
+    <div class="scroll"><table id="aju-tabla"></table></div>
+    <div class="grid2"><div><h3 id="aju-cmA-t"></h3><table class="mat" id="aju-cmA"></table></div><div><h3 id="aju-cmB-t"></h3><table class="mat" id="aju-cmB"></table></div></div>
+  </div>
+  <div class="card">
+    <h3>Llega una sección nueva: cultura</h3>
+    <div class="meta"><span class="tag real">Respuestas literales grabadas</span></div>
+    <p id="aju-cult-res"></p>
+    <div class="scroll"><table id="aju-cult"></table></div>
+  </div>
+</section>
+
+<!-- ============================================================ 8 -->
+<section class="panel" id="p-pro" role="tabpanel" aria-labelledby="t-pro">
+  <div class="card">
+    <h2>Anatomía del prompt de la clase</h2>
+    <div class="meta"><span class="tag real">Prompt real y respuestas grabadas de Qwen2.5-Instruct</span><span class="tag">Clase 15 · d. 19-22</span></div>
+    <div class="seggroup" id="pro-modo" role="group" aria-label="Con o sin ejemplos">
+      <button class="seg" aria-pressed="true" data-m="cero">Sin ejemplos (zero-shot)</button>
+      <button class="seg" aria-pressed="false" data-m="pocos">Un ejemplo por sección (few-shot)</button>
+    </div>
+    <div class="row"><label for="pro-not"><b>Noticia de prueba:</b></label><select id="pro-not"></select></div>
+    <div id="pro-partes"></div>
+    <h3>Respuestas grabadas para esta noticia</h3>
+    <div id="pro-resp"></div>
+  </div>
+  <div class="card">
+    <h2>Estrategias de prompting</h2>
+    <div class="meta"><span class="tag">Apartado 8.5 · Figuras 23-25 (Kaddour et al., 2023)</span><span class="tag illus">Prompts escritos para la clase; no son salidas de un modelo</span></div>
+    <div class="estrategias">
+      <div class="estrategia"><b>Sin ejemplos (zero-shot)</b><span class="small">Solo la instrucción.</span><pre>Clasifica la noticia en economía, deportes, salud o tecnología.
+Noticia: «El paro baja en Aragón por tercer mes consecutivo».
+Sección:</pre></div>
+      <div class="estrategia"><b>Con ejemplos (few-shot)</b><span class="small">Unos casos resueltos antes del que interesa (pestaña 7).</span><pre>«La nadadora bate el récord de España» → deportes
+«Comienza la campaña de vacunación» → salud
+«El paro baja en Aragón…» →</pre></div>
+      <div class="estrategia"><b>Cadena de pensamiento</b><span class="small">Se pide razonar antes de contestar.</span><pre>Antes de responder, di qué palabras de la noticia indican la sección y por qué. Después escribe solo la sección.</pre></div>
+      <div class="estrategia"><b>Varios turnos</b><span class="small">La respuesta se refina en una conversación.</span><pre>Usuario: Resume la noticia en una frase.
+Modelo: …
+Usuario: Ahora en menos de diez palabras y sin cifras.</pre></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Mismo modelo, distinto posentrenamiento</h3>
+    <div class="meta"><span class="tag real">Salidas reales grabadas (voraz, 40 subpalabras)</span></div>
+    <div class="row"><label for="pro-pet"><b>Petición:</b></label><select id="pro-pet"></select></div>
+    <div class="grid2"><div class="box"><h3>Qwen2.5-0.5B base</h3><p id="pro-base"></p></div><div class="box"><h3>Qwen2.5-0.5B-Instruct</h3><p id="pro-instr"></p></div></div>
+    <div class="info">Mismo preentrenamiento y misma arquitectura. El instruido pasó por un ajuste con instrucciones y preferencias (como InstructGPT: ajuste supervisado, modelo de recompensa y aprendizaje por refuerzo). Responder no es acertar.</div>
+  </div>
+</section>
+
+<!-- ============================================================ 9 -->
+<section class="panel" id="p-des" role="tabpanel" aria-labelledby="t-des">
+  <div class="card">
+    <h2>Destilación: lo que el maestro sabe más allá de la respuesta</h2>
+    <div class="meta"><span class="tag pre">Logits reales de la cabeza MLM de BETO (30 primeras subpalabras)</span><span class="tag">Softmax con temperatura en el navegador</span><span class="tag">Clase 15 · d. 24</span></div>
+    <p id="des-frase"></p>
+    <div class="row"><label for="des-T"><b>Temperatura T = <span id="des-Tv">1</span></b></label><input type="range" id="des-T" min="1" max="6" step="0.5" value="1"></div>
+    <div class="grid2">
+      <div><h3>Objetivo «duro»</h3><p>Solo la respuesta: <b id="des-duro"></b> con probabilidad 1.</p></div>
+      <div><h3>Objetivo «blando» del maestro</h3><p class="small" id="des-ent"></p></div>
+    </div>
+    <div class="scroll" style="max-height:none"><table id="des-tabla"></table></div>
+    <p class="small" id="des-nota"></p>
+    <div class="info">El estudiante (más pequeño) aprende a imitar estas probabilidades. Con T &gt; 1 se ven las alternativas plausibles («encuentro», «campeonato»…), información que una sola etiqueta no da. DistilBERT: 40 % más pequeño, 60 % más rápido, 97 % del rendimiento de BERT (Sanh et al., 2019).</div>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section class="panel" id="p-ali" role="tabpanel" aria-labelledby="t-ali">
+  <div class="card">
+    <h2>¿Qué se entrena en cada caso?</h2>
+    <div class="meta"><span class="tag">Apartados 8.4 y 8.5 · Figuras 21 y 22</span><span class="tag pre">Parámetros y aciertos reales de las Clases 14 y 15</span></div>
+    <p>El mismo modelo preentrenado sirve de cuatro maneras. Morado: se entrena; gris: congelado.</p>
+    <div class="modos8" id="ali-modo"></div>
+    <div class="ajuste">
+      <svg id="ali-svg" class="esquema" viewBox="0 0 420 560" role="img" aria-label="Capas que se entrenan en cada modo"></svg>
+      <div class="ajuste-det" id="ali-det"></div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>InstructGPT: de modelo que continúa a asistente que obedece</h2>
+    <div class="meta"><span class="tag">Apartado 8.6 · Figura 30 (Ouyang et al., 2022)</span><span class="tag illus">Esquema del artículo; no ejecuta ningún modelo</span></div>
+    <div id="ali-pasos"></div>
+    <div class="etapas" id="ali-etapas"></div>
+    <div class="info" id="ali-etapa-msg"></div>
+    <p class="small">El resultado se ve en la pestaña 8: el mismo Qwen2.5-0.5B, sin posentrenamiento, continúa el texto; la versión instruida responde a la petición.</p>
+  </div>
+  <div class="card">
+    <h2>Algunos modelos preentrenados que aparecen en el curso</h2>
+    <div class="meta"><span class="tag">Apartado 8.3 · Figura 7 (resumida)</span></div>
+    <svg id="ali-tl" class="esquema" viewBox="0 0 1000 190" role="img" aria-label="Línea de tiempo de modelos preentrenados"></svg>
+  </div>
+</section>
+
+</div>
+<footer>
+  <p><b>Procedencia.</b> Salidas de BETO (<code>dccuchile/bert-base-spanish-wwm-cased</code>, rev. c4d86612f51b), Qwen2.5-0.5B y 0.5B-Instruct, Qwen2.5-1.5B-Instruct y BARTO (<code>vgaraujov/bart-base-spanish</code>) calculadas en CPU con transformers 5.19.0 por <code>Clases/Clase14_Tema8_Transformers/analisis_c14.py</code> y <code>Clases/Clase15_Tema8_AjusteFino/analisis_c15.py</code>; Naive Bayes, de la Clase 10. Noticias ficticias del Tema 6. La página no ejecuta ningún modelo: calcula en el navegador las máscaras, la softmax con temperatura, el muestreo, los intervalos, la alineación de etiquetas, los fragmentos y las matrices de confusión (comprobado frente a Python con <code>Demos/fuentes/probar_lib_08.js</code>). Funciona sin conexión y no envía datos.</p>
+</footer>
+<script src="08_modelado_neuronal_ii_lib.js"></script>
+<script src="08_modelado_neuronal_ii_datos.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const L = window.NN08, D = window.DATOS08;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (x, d = 3) => x.toFixed(d).replace(".", ",").replace("-", "−");
+const pct = (x, d = 1) => fmt(100 * x, d) + " %";
+const fmtN = (n) => (n < 10000 ? String(n) : String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0"));  // como en las diapositivas
+const SEC = ["economía", "deportes", "salud", "tecnología"];
+const COL = { "economía": "#1E88E5", deportes: "#00897B", salud: "#8E24AA", "tecnología": "#F57C00", cultura: "#7B8794" };
+function heat(v, max = 1) { const a = Math.max(0, Math.min(1, v / max)); return `background: rgba(142,36,170,${(a * 0.85).toFixed(3)}); color:${a > 0.55 ? "#fff" : "#1F2933"}`; }
+const tokVis = (t) => (t.trim() === "" ? "(espacio)" : t.replace(/^ /, "·").replace(/^▁/, "·"));
+
+// ---------------------------------------------------------------- pestañas
+$$(".tab").forEach((t) => t.addEventListener("click", () => {
+  $$(".tab").forEach((x) => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+  $$(".panel").forEach((p) => p.classList.toggle("active", p.id === t.getAttribute("aria-controls")));
+}));
+$$(".tab").forEach((t, i, arr) => t.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    const j = (i + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length;
+    arr[j].focus(); arr[j].click();
+  }
+}));
+function segmentado(grupo, cb) {
+  $$(grupo + " .seg").forEach((b) => b.addEventListener("click", () => {
+    $$(grupo + " .seg").forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    cb(b);
+  }));
+}
+
+// ================================================================ 1 · Tres máscaras
+let masTipo = "bidireccional", masFila = null;
+function pintarMascaras() {
+  const ent = L.palabras($("#mas-frase").value);
+  const sal = L.palabras($("#mas-salida").value);
+  $("#mas-salida-fila").style.display = masTipo === "cruzada" ? "" : "none";
+  if (!ent.length || (masTipo === "cruzada" && !sal.length)) {
+    $("#mas-mat").innerHTML = ""; $("#mas-cuenta").textContent = ""; $("#mas-ve").innerHTML = "Escribe al menos una palabra."; return;
+  }
+  const filas = masTipo === "cruzada" ? sal : ent;
+  const M = L.mascara(ent.length, masTipo, filas.length);
+  if (masFila === null || masFila >= filas.length) masFila = filas.length - 1;
+  let h = "<tr><th></th>" + ent.map((w) => `<th>${esc(w)}</th>`).join("") + "</tr>";
+  M.forEach((f, i) => {
+    h += `<tr><th class="clic" tabindex="0" data-i="${i}" style="cursor:pointer;${i === masFila ? "background:#FFE082;color:#1F2933" : ""}">${esc(filas[i])}</th>` +
+      f.map((v) => `<td style="${v ? "background:#8E24AA;color:#fff" : "background:#fff;color:#9AA5B1"}">${v ? "✓" : "0"}</td>`).join("") + "</tr>";
+  });
+  $("#mas-mat").innerHTML = h;
+  $$("#mas-mat th.clic").forEach((th) => {
+    const elegir = () => { masFila = +th.dataset.i; pintarMascaras(); };
+    th.addEventListener("click", elegir);
+    th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); elegir(); } });
+  });
+  const n = L.contarPermitidas(M), tot = M.length * ent.length;
+  $("#mas-cuenta").textContent = `${n} de ${tot} casillas permitidas` +
+    (masTipo === "causal" ? ` (n(n+1)/2 = ${ent.length * (ent.length + 1) / 2}).` : ".");
+  const ve = ent.filter((_, j) => M[masFila][j]);
+  const desc = { bidireccional: "Cada palabra ve toda la frase: sirve para comprender (clasificar, entidades).",
+                 causal: "Solo ve lo que hay a su izquierda (y a sí misma): sirve para generar palabra a palabra sin hacer trampa.",
+                 cruzada: "En cada paso, el decodificador consulta TODAS las salidas del codificador (un vector por palabra, no un vector de longitud fija). Dentro del decodificador sigue habiendo una máscara causal sobre lo ya escrito." };
+  $("#mas-ve").innerHTML = `<b>«${esc(filas[masFila])}»</b> puede atender a: ${ve.map((w) => `<span class="pill">${esc(w)}</span>`).join(" ")}<br>${desc[masTipo]}`;
+}
+segmentado("#mas-tipo", (b) => { masTipo = b.dataset.t; masFila = null; pintarMascaras(); });
+$("#mas-frase").addEventListener("input", () => { masFila = null; pintarMascaras(); });
+$("#mas-salida").addEventListener("input", () => { masFila = null; pintarMascaras(); });
+$("#mas-real").innerHTML = `Frases: «${esc(D.causal.qwen.frases[0])}» y la misma con «dos» al final (una sola subpalabra en los dos tokenizadores).<br>
+  <b>Qwen2.5-0.5B (decodificador):</b> diferencia máxima en las posiciones anteriores = <b>${fmt(D.causal.qwen.dif_max_posiciones_anteriores, 1)}</b> (exactamente 0); en la última, ${fmt(D.causal.qwen.dif_max_ultima_posicion, 1)}.<br>
+  <b>BETO (codificador):</b> el vector de «El», a la izquierda del cambio, varía ${fmt(D.causal.beto.dif_max_posicion_1, 3)}; el máximo en las posiciones anteriores es ${fmt(D.causal.beto.dif_max_posiciones_anteriores, 3)}.`;
+
+// ================================================================ 2 · Siguiente palabra
+D.siguiente.forEach((s, i) => $("#sig-prompt").insertAdjacentHTML("beforeend", `<option value="${i}">${esc(s.prompt)} …</option>`));
+let sigRng = L.generador(2026), sigUlt = null;
+function distSig() {
+  const s = D.siguiente[+$("#sig-prompt").value];
+  return { s, p: L.softmaxT(s.top.map((t) => t.logit), +$("#sig-T").value) };
+}
+function pintarSiguiente() {
+  const { s, p } = distSig();
+  const T = +$("#sig-T").value;
+  $("#sig-Tv").textContent = fmt(T, 1);
+  const max = Math.max(...p);
+  $("#sig-tabla").innerHTML = "<tr><th>Subpalabra</th><th class='num'>P con T = 1 (todo el vocabulario)</th><th class='num'>P con T, entre estas 20</th><th class='barcell'></th></tr>" +
+    s.top.map((t, i) => `<tr${i === sigUlt ? ' class="hl"' : ""}><td class="mono">«${esc(tokVis(t.subpalabra))}»</td><td class="num">${fmt(t.p, 3)}</td><td class="num">${fmt(p[i], 3)}</td><td class="barcell"><div class="bar" style="width:${(100 * p[i] / max).toFixed(1)}%"></div></td></tr>`).join("");
+  $("#sig-nota").textContent = `Entropía de estas 20: ${fmt(L.entropia(p), 2)} bits. Con T = 1, estas 20 subpalabras reúnen el ${pct(s.masa_top)} de la probabilidad total (151 665 subpalabras); aquí se reparte solo entre ellas.`;
+  const cr = D.continuacion_real.find((c) => c.prompt === s.prompt);
+  $("#sig-real").innerHTML = cr ? `<p>P(«${esc(cr.continuacion.trim())}» | «${esc(s.prompt)}») = ${cr.subpalabras.map((x) => `${fmt(x.p, x.p < 0.01 ? 4 : 3)} («${esc(tokVis(x.subpalabra))}»)`).join(" × ")} = <b>${fmt(cr.p, 6)}</b></p>` :
+    '<p class="small">Para este texto no se calculó la continuación verdadera.</p>';
+  const g = D.generacion.find((x) => x.prompt === s.prompt);
+  $("#sig-gen").innerHTML = g ? `<table><tr><th>Decodificación</th><th>Texto generado</th></tr>
+    <tr><td>Voraz</td><td>${esc(s.prompt)}<b>${esc(g.voraz)}</b></td></tr>` +
+    g["muestreo_T0.7"].map((t, k) => `<tr><td>T = 0,7 · semilla ${k}</td><td>…<b>${esc(t)}</b></td></tr>`).join("") +
+    g["muestreo_T1.5"].map((t, k) => `<tr><td>T = 1,5 · semilla ${k}</td><td>…<b>${esc(t)}</b></td></tr>`).join("") + "</table>" +
+    '<div class="badbox">Fluido no es verdadero: los rivales, estadios y pueblos de la versión voraz son inventados. Con T = 1,5 el texto se deshace.</div>' :
+    '<p class="small">Generaciones grabadas solo para «El Real Sporting ganó el» y la frase del Quijote.</p>';
+}
+$("#sig-prompt").addEventListener("change", () => { sigUlt = null; pintarSiguiente(); $("#sig-res").textContent = "Elige una opción."; });
+$("#sig-T").addEventListener("input", () => { sigUlt = null; pintarSiguiente(); });
+$("#sig-voraz").addEventListener("click", () => {
+  const { s, p } = distSig(); sigUlt = p.indexOf(Math.max(...p)); pintarSiguiente();
+  $("#sig-res").textContent = `Voraz: «${tokVis(s.top[sigUlt].subpalabra)}» (siempre la misma, sea cual sea la temperatura).`;
+});
+$("#sig-muestra").addEventListener("click", () => {
+  const { s, p } = distSig(); sigUlt = L.muestrear(p, sigRng()); pintarSiguiente();
+  $("#sig-res").textContent = `Muestreo: «${tokVis(s.top[sigUlt].subpalabra)}» (probabilidad ${fmt(p[sigUlt], 3)}). Pulsa otra vez: puede salir otra.`;
+});
+$("#sig-cien").addEventListener("click", () => {
+  const { s, p } = distSig(); const c = Array(p.length).fill(0);
+  for (let k = 0; k < 200; k++) c[L.muestrear(p, sigRng())] += 1;
+  const orden = c.map((x, i) => [x, i]).filter((x) => x[0]).sort((a, b) => b[0] - a[0]).slice(0, 8);
+  sigUlt = null; pintarSiguiente();
+  $("#sig-res").textContent = "200 muestras: " + orden.map(([x, i]) => `«${tokVis(s.top[i].subpalabra)}» ${x}`).join(" · ") + `\nDistintas: ${c.filter((x) => x).length}. Sube la temperatura y repite.`;
+});
+
+// ================================================================ 3 · Rellenar huecos
+D.beto_relleno.forEach((b, i) => $("#rel-beto").insertAdjacentHTML("beforeend", `<option value="${i}">${esc(b.frase)}</option>`));
+D.barto_relleno.forEach((b, i) => $("#rel-barto").insertAdjacentHTML("beforeend", `<option value="${i}">${esc(b.entrada)}</option>`));
+function pintarRelleno() {
+  const b = D.beto_relleno[+$("#rel-beto").value];
+  const max = Math.max(...b.top.map((t) => t.p));
+  $("#rel-beto-res").innerHTML = "<table><tr><th>Subpalabra</th><th class='num'>P</th><th class='barcell'></th></tr>" +
+    b.top.map((t) => `<tr><td class="mono">«${esc(t.subpalabra)}»</td><td class="num">${fmt(t.p, 3)}</td><td class="barcell"><div class="bar" style="width:${(100 * t.p / max).toFixed(1)}%"></div></td></tr>`).join("") + "</table>";
+  const r = D.barto_relleno[+$("#rel-barto").value];
+  const [pre, suf] = r.entrada.split("<mask>").map((x) => x.trim());
+  const medio = r.salida.startsWith(pre) && r.salida.endsWith(suf) ? r.salida.slice(pre.length, r.salida.length - suf.length).trim() : null;
+  const relleno = medio && /[a-záéíóúñ]/i.test(medio);
+  $("#rel-barto-res").innerHTML = `<p class="calc">${esc(r.entrada)}\n→ ${esc(r.salida)}</p>` +
+    (relleno ? `<p>Ha escrito en el hueco: <span class="pill igual">${esc(medio)}</span> (${medio.split(/\s+/).length} palabra${medio.split(/\s+/).length === 1 ? "" : "s"}).</p>` :
+      '<div class="badbox">Aquí BARTO borra el hueco en lugar de rellenarlo: tampoco el codificador-decodificador acierta siempre.</div>');
+}
+$("#rel-beto").addEventListener("change", pintarRelleno);
+$("#rel-barto").addEventListener("change", pintarRelleno);
+const CZ = D.cruzada, encT = CZ.tokens_codificador.map((t) => t.replace(/^▁/, "")), decT = CZ.tokens_decodificador_salida.map((t) => t.replace(/^▁/, ""));
+let relFila = decT.indexOf("partido");
+$("#rel-ent").textContent = "«" + CZ.entrada + "»";
+function pintarCruzada() {
+  const W = CZ.pesos_media_capas_cabezas;
+  $("#rel-heat").innerHTML = "<tr><th>Paso</th>" + encT.map((t) => `<th>${esc(t)}</th>`).join("") + "</tr>" +
+    W.map((f, i) => `<tr${i === relFila ? ' class="hl"' : ""}><th class="clic" tabindex="0" data-i="${i}" style="cursor:pointer">escribe «${esc(decT[i])}»</th>` +
+      f.map((v) => `<td style="${heat(v, 0.45)}">${fmt(v, 2)}</td>`).join("") + "</tr>").join("");
+  $$("#rel-heat th.clic").forEach((th) => {
+    const elegir = () => { relFila = +th.dataset.i; pintarCruzada(); };
+    th.addEventListener("click", elegir);
+    th.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); elegir(); } });
+  });
+  const f = W[relFila], orden = f.map((v, j) => [v, j]).sort((a, b) => b[0] - a[0]).slice(0, 3);
+  $("#rel-fila").innerHTML = `<p>Al escribir <b>«${esc(decT[relFila])}»</b>, las tres posiciones de la entrada con más peso: ${orden.map(([v, j]) => `«${esc(encT[j])}» ${fmt(v, 2)}`).join(" · ")}.</p>`;
+}
+const TK = D.tokenizadores;
+$("#rel-tok").innerHTML = `<p><i>«${esc(TK.frase)}»</i></p>` + [["BETO · WordPiece", TK.beto_wordpiece, TK.vocabularios.beto], ["Qwen2.5 · BPE de bytes", TK.qwen_bpe_bytes, TK.vocabularios.qwen], ["BARTO · BPE", TK.barto_bpe, TK.vocabularios.barto]]
+  .map(([n, t, v]) => `<p><b>${n}</b> (${t.length} piezas; vocabulario de ${fmtN(v)}): ${t.map((x) => `<span class="pill">${esc(tokVis(x))}</span>`).join("")}</p>`).join("") +
+  '<div class="warnbox">Con transformers 5.19.0, AutoTokenizer carga mal el tokenizador de BARTO (pierde espacios y tildes); hay que cargarlo desde su tokenizer.json. «·» marca el espacio con que empieza la pieza.</div>';
+
+// ================================================================ 4 · Modelo fundacional
+const BC = D.congelado;
+function filaCmp(nombre, k, n, vc, rasgos) {
+  const [a, b] = L.wilson(k, n);
+  return `<tr><td>${nombre}</td><td>${rasgos}</td><td class="num">${vc}</td><td class="num">${k} / ${n}</td><td class="num">${fmt(a, 2)} – ${fmt(b, 2)}</td></tr>`;
+}
+$("#fun-cmp").innerHTML = "<tr><th>Método</th><th>Rasgos</th><th class='num'>VC</th><th class='num'>Prueba</th><th class='num'>IC 95 %</th></tr>" +
+  filaCmp("Naive Bayes (Clase 10)", BC.nb.aciertos, BC.nb.total, "0,787", "lemas de contenido") +
+  filaCmp("BETO congelado + regresión", BC.prueba.aciertos, BC.prueba.total, fmt(BC.vc.eleccion.cv_media, 3), `[${BC.vc.eleccion.representacion}], C = ${fmt(BC.vc.eleccion.C, 1)}`);
+$("#fun-vc").innerHTML = "Validación cruzada en entrenamiento (5 × 10): " + BC.vc.tabla.map((t) => `${t.representacion} C=${fmt(t.C, 1)}: ${fmt(t.cv_media, 3)}`).join(" · ") +
+  `. Con la otra representación (solo informativo): ${BC.otra.aciertos} / 20.`;
+(function () {
+  const M = BC.prueba.matriz_confusion.filas_reales_columnas_predichas;
+  $("#fun-cm").innerHTML = "<tr><th>real \\ predicha</th>" + SEC.map((s) => `<th>${s}</th>`).join("") + "</tr>" +
+    M.map((f, i) => `<tr><th>${SEC[i]}</th>` + f.map((v, j) => `<td class="${v === 0 ? "cero" : (i === j ? "bueno" : "malo")}">${v}</td>`).join("") + "</tr>").join("");
+})();
+function pintarPCA() {
+  const P = BC.pca.puntos, xs = P.map((p) => p.x), ys = P.map((p) => p.y);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const W = 900, H = 470, m = 40;
+  const sx = (x) => m + (x - x0) / (x1 - x0) * (W - 2 * m), sy = (y) => H - m - (y - y0) / (y1 - y0) * (H - 2 * m);
+  const ver = { entrenamiento: $("#fun-tr").checked, prueba: $("#fun-te").checked, nuevo: $("#fun-nu").checked };
+  const err = new Set(D.noticias.filter((n) => n.pred.beto_congelado !== n.seccion).map((n) => n.id));
+  let h = `<line x1="${m}" y1="${H - m}" x2="${W - m}" y2="${H - m}" stroke="#CFD8DC"/><line x1="${m}" y1="${m}" x2="${m}" y2="${H - m}" stroke="#CFD8DC"/>`;
+  P.forEach((p) => {
+    if (!ver[p.conjunto]) return;
+    const cx = sx(p.x), cy = sy(p.y), c = COL[p.seccion];
+    const t = `${p.id} · ${p.seccion} · ${p.conjunto} · ${p.titular}`;
+    let forma;
+    if (p.conjunto === "entrenamiento") forma = `<circle cx="${cx}" cy="${cy}" r="6" fill="${c}" fill-opacity=".55"/>`;
+    else if (p.conjunto === "prueba") forma = `<rect x="${cx - 7}" y="${cy - 7}" width="14" height="14" transform="rotate(45 ${cx} ${cy})" fill="${c}" stroke="#1F2933" stroke-width="${err.has(p.id) ? 3 : 1}"/>`;
+    else forma = `<polygon points="${cx},${cy - 8} ${cx - 7},${cy + 6} ${cx + 7},${cy + 6}" fill="${c}" stroke="#1F2933"/>`;
+    h += `<g tabindex="0" class="pt" data-t="${esc(t)}${err.has(p.id) ? " · ERROR de BETO congelado" : ""}"><title>${esc(t)}</title>${forma}</g>`;
+  });
+  Object.entries(COL).forEach(([s, c], k) => { h += `<rect x="${W - 170}" y="${12 + 20 * k}" width="12" height="12" fill="${c}"/><text x="${W - 152}" y="${22 + 20 * k}" font-size="14" fill="#1F2933">${s}</text>`; });
+  $("#fun-svg").innerHTML = h;
+  $$("#fun-svg .pt").forEach((g) => { const f = () => { $("#fun-info").textContent = g.dataset.t; }; g.addEventListener("mouseenter", f); g.addEventListener("focus", f); });
+  const v = BC.pca.varianza_explicada;
+  $("#fun-pca").textContent = `Dos dimensiones conservan el ${pct(v[0] + v[1], 0)} de la varianza (${pct(v[0])} + ${pct(v[1])}). Círculo: entrenamiento · rombo: prueba (borde grueso: error) · triángulo: cultura.`;
+}
+["#fun-tr", "#fun-te", "#fun-nu"].forEach((s) => $(s).addEventListener("change", pintarPCA));
+
+// ================================================================ 5 · Subpalabras y etiquetas
+const ETQ = ["O", "B-PER", "I-PER", "B-LOC", "I-LOC", "B-ORG", "I-ORG", "B-MISC", "I-MISC"];
+let subModo = "primera", subEtq = null;
+D.subpalabras.forEach((s, i) => $("#sub-frase").insertAdjacentHTML("beforeend", `<option value="${i}">${esc(s.palabras.join(" "))}</option>`));
+function pintarSub(reiniciar) {
+  const s = D.subpalabras[+$("#sub-frase").value];
+  if (reiniciar || !subEtq) subEtq = s.etiquetas.slice();
+  $("#sub-pal").innerHTML = s.palabras.map((w, k) => `<label class="inline small" style="flex-direction:column;align-items:flex-start"><span class="mono">${esc(w)}</span><select data-k="${k}" aria-label="Etiqueta de ${esc(w)}">${ETQ.map((e) => `<option${e === subEtq[k] ? " selected" : ""}>${e}</option>`).join("")}</select></label>`).join("");
+  $$("#sub-pal select").forEach((sel) => sel.addEventListener("change", () => { subEtq[+sel.dataset.k] = sel.value; pintarSub(false); }));
+  const al = L.alinear(s.word_ids, subEtq, subModo);
+  $("#sub-tabla").innerHTML = "<tr><th>Subpalabra</th><th>Viene de la palabra</th><th>Etiqueta para entrenar</th></tr>" +
+    s.subpalabras.map((t, k) => `<tr${al[k] === -100 ? ' class="hl"' : ""}><td class="mono">${esc(t)}</td><td>${s.word_ids[k] === null ? "—" : esc(s.palabras[s.word_ids[k]])}</td><td class="mono">${al[k]}</td></tr>`).join("");
+  // Diagrama: palabras con su etiqueta arriba, subpalabras abajo con lo que se entrena; líneas que las unen
+  const nS = s.subpalabras.length, xs = (k) => 30 + (k + 0.5) * (940 / nS), xp = {};
+  s.word_ids.forEach((w, k) => { if (w !== null) (xp[w] = xp[w] || []).push(xs(k)); });
+  let g = "";
+  s.palabras.forEach((w, k) => { const x = xp[k] ? xp[k].reduce((a, b) => a + b, 0) / xp[k].length : 0, e = subEtq[k];
+    g += `<text x="${x}" y="30" text-anchor="middle" font-size="17" font-weight="800">${esc(w)}</text><text x="${x}" y="52" text-anchor="middle" font-size="14" font-weight="700" fill="${e === "O" ? "#9AA5B1" : "#8E24AA"}">${e}</text>`;
+    (xp[k] || []).forEach((xx) => { g += `<line x1="${x}" y1="60" x2="${xx}" y2="150" stroke="#B0BEC5" stroke-width="2"/>`; }); });
+  s.subpalabras.forEach((t, k) => { const x = xs(k), v = al[k], ign = v === -100;
+    g += `<rect x="${x - 940 / nS / 2 + 3}" y="152" width="${940 / nS - 6}" height="40" rx="6" fill="${ign ? "#ECEFF1" : t.startsWith("[") ? "#FFF8E1" : "#F3E5F5"}" stroke="${ign ? "#CFD8DC" : "#8E24AA"}" stroke-width="2"/>`;
+    g += `<text x="${x}" y="177" text-anchor="middle" font-size="${nS > 16 ? 12 : 15}" font-family="Menlo, Consolas, monospace">${esc(t)}</text>`;
+    g += `<text x="${x}" y="218" text-anchor="middle" font-size="${nS > 16 ? 11 : 14}" font-weight="800" fill="${ign ? "#9AA5B1" : "#4A148C"}">${v}</text>`; });
+  g += `<text x="30" y="250" font-size="13" fill="#52606D">gris y −100: subpalabra que no cuenta en la pérdida</text>`;
+  $("#sub-svg").innerHTML = g;
+  const n100 = al.filter((x) => x === -100).length, dec = L.decodificar(s.word_ids, al);
+  const ok = JSON.stringify(dec) === JSON.stringify(subEtq);
+  $("#sub-cuenta").innerHTML = `${s.subpalabras.length} subpalabras para ${s.palabras.length} palabras · ${n100} con -100 (ignoradas en la pérdida). ` +
+    `Al predecir se toma la etiqueta de la primera subpalabra: se recuperan ${ok ? "exactamente" : "NO"} las etiquetas de las palabras.`;
+}
+$("#sub-frase").addEventListener("change", () => pintarSub(true));
+segmentado("#sub-modo", (b) => { subModo = b.dataset.m; pintarSub(false); });
+
+// ================================================================ 6 · Fragmentos
+$("#fra-frase").value = D.spans.palabras.join(" ");
+let fraPal = [];
+function pintarFragmentos() {
+  fraPal = L.palabras($("#fra-frase").value);
+  const T = fraPal.length;
+  $("#fra-L").max = Math.max(1, T);
+  const Lm = Math.min(+$("#fra-L").value, Math.max(1, T));
+  $("#fra-Lv").textContent = Lm;
+  const lista = L.listaSpans(T, Lm);
+  $("#fra-n").textContent = lista.length;
+  $("#fra-tot").textContent = `${L.nSpans(T, T)} = ${T}·${T + 1}/2`;
+  // Triángulo de fragmentos: fila = palabra de inicio, columna = palabra de fin; en color, los de longitud ≤ L
+  const cel = Math.min(48, 380 / Math.max(1, T)), ox = 200;
+  let tri = "";
+  fraPal.forEach((w, i) => { tri += `<text x="${ox - 8}" y="${30 + i * cel + cel * 0.65}" text-anchor="end" font-size="14">${esc(w)}</text>`;
+    tri += `<text x="${ox + i * cel + cel / 2}" y="22" text-anchor="middle" font-size="12" fill="#52606D">${i + 1}</text>`; });
+  for (let i = 0; i < T; i++) for (let j = i; j < T; j++) { const ok = j - i + 1 <= Lm;
+    tri += `<rect x="${ox + j * cel + 1}" y="${30 + i * cel + 1}" width="${cel - 2}" height="${cel - 2}" rx="3" fill="${ok ? "#8E24AA" : "#ECEFF1"}" fill-opacity="${ok ? 0.75 : 1}"><title>${esc(fraPal.slice(i, j + 1).join(" "))}</title></rect>`; }
+  tri += `<text x="${ox + T * cel + 20}" y="60" font-size="14" fill="#52606D">fila: palabra de inicio</text><text x="${ox + T * cel + 20}" y="80" font-size="14" fill="#52606D">columna: palabra de fin</text><text x="${ox + T * cel + 20}" y="110" font-size="14" font-weight="700" fill="#8E24AA">en color: ${lista.length} fragmentos con L ≤ ${Lm}</text>`;
+  $("#fra-tri").setAttribute("viewBox", `0 0 1000 ${Math.max(140, 40 + T * cel)}`);
+  $("#fra-tri").innerHTML = tri;
+  $("#fra-lista").innerHTML = lista.slice(0, 80).map(([i, j]) => `<span class="pill">${esc(fraPal.slice(i, j + 1).join(" "))}</span>`).join("") +
+    (lista.length > 80 ? `<p class="small">… y ${lista.length - 80} más.</p>` : "");
+  const opt = fraPal.map((w, k) => `<option value="${k}">${k + 1} · ${esc(w)}</option>`).join("");
+  const iPrev = +$("#fra-i").value || 1, jPrev = $("#fra-j").value === "" ? 4 : +$("#fra-j").value;
+  $("#fra-i").innerHTML = opt; $("#fra-j").innerHTML = opt;
+  $("#fra-i").value = Math.min(iPrev, T - 1); $("#fra-j").value = Math.min(Math.max(jPrev, +$("#fra-i").value), T - 1);
+  pintarPesos();
+}
+function pintarPesos() {
+  const T = fraPal.length; if (!T) return;
+  let i = +$("#fra-i").value, j = +$("#fra-j").value;
+  if (j < i) { j = i; $("#fra-j").value = j; }
+  const ok = L.pesosMedia(T, i, j), tema = L.pesosMediaTema(T, i, j);
+  $("#fra-pesos").innerHTML = "<tr><th>Fórmula</th>" + fraPal.map((w) => `<th>${esc(w)}</th>`).join("") + "</tr>" +
+    `<tr><td>Correcta: 1/(j−i+1)</td>${ok.map((v) => `<td class="${v ? "bueno" : "cero"}">${v ? fmt(v, 2) : "0"}</td>`).join("")}</tr>` +
+    `<tr><td>Impresa en el tema</td>${tema.map((v, k) => `<td class="${v ? (k < i ? "malo" : "bueno") : "cero"}">${v ? fmt(v, 2) : "0"}</td>`).join("")}</tr>`;
+  $("#fra-anid").innerHTML = `Fragmento «${esc(fraPal.slice(i, j + 1).join(" "))}»: spanRep = [h<sub>i</sub>; h<sub>j</sub>; g<sub>ij</sub>] = 3 × 768 = 2304 números con BETO.` +
+    (D.spans.palabras.join(" ") === fraPal.join(" ") ? " En la frase de la clase, «Observatorio Económico del Ebro» (ORG) contiene «Ebro» (LOC): dos fragmentos distintos, imposible de anotar a la vez con BIO." : "");
+}
+$("#fra-frase").addEventListener("input", pintarFragmentos);
+$("#fra-L").addEventListener("input", pintarFragmentos);
+$("#fra-i").addEventListener("change", pintarPesos);
+$("#fra-j").addEventListener("change", pintarPesos);
+
+// ================================================================ 7 · ¿Ajustar o preguntar?
+const MET = [["nb", "Naive Bayes (Clase 10)"], ["beto_congelado", "BETO congelado + regresión"]]
+  .concat([0, 1, 2, 3, 4].map((s) => [`ajuste_todo_${s}`, `BETO ajustado, todo · semilla ${s}`]))
+  .concat([0, 1, 2, 3, 4].map((s) => [`ajuste_parcial_${s}`, `BETO ajustado, 2 últimas capas · semilla ${s}`]))
+  .concat([["q05_cero", "Qwen 0,5B · sin ejemplos"], ["q05_pocos", "Qwen 0,5B · un ejemplo por sección"], ["q05_puntuacion", "Qwen 0,5B · puntuando etiquetas"],
+           ["q05_autoconsistencia", "Qwen 0,5B · autoconsistencia"], ["q15_cero", "Qwen 1,5B · sin ejemplos"], ["q15_pocos", "Qwen 1,5B · un ejemplo por sección"]]);
+const NOMBRE = Object.fromEntries(MET);
+const N = D.noticias;
+const aciertos = (k) => N.filter((n) => n.pred[k] === n.seccion).length;
+(function () {
+  const grupos = [["Naive Bayes (Clase 10)", ["nb"], "entrenado"], ["BETO congelado + regresión", ["beto_congelado"], "entrenado"],
+    ["BETO ajustado, todo (5 semillas)", [0, 1, 2, 3, 4].map((s) => `ajuste_todo_${s}`), "entrenado"],
+    ["BETO ajustado, 2 últimas capas (5 semillas)", [0, 1, 2, 3, 4].map((s) => `ajuste_parcial_${s}`), "entrenado"],
+    ["Qwen 0,5B · sin ejemplos", ["q05_cero"], "prompt"], ["Qwen 0,5B · un ejemplo por sección", ["q05_pocos"], "prompt"],
+    ["Qwen 0,5B · puntuando etiquetas", ["q05_puntuacion"], "prompt"], ["Qwen 0,5B · autoconsistencia", ["q05_autoconsistencia"], "prompt"],
+    ["Qwen 1,5B · sin ejemplos (solo docente)", ["q15_cero"], "prompt"], ["Qwen 1,5B · un ejemplo por sección (solo docente)", ["q15_pocos"], "prompt"]];
+  $("#aju-res").innerHTML = "<tr><th>Método</th><th>Tipo</th><th class='num'>Aciertos</th><th class='num'>IC 95 % (media)</th><th class='barcell'>Exactitud</th></tr>" +
+    grupos.map(([n, ks, tipo]) => {
+      const a = ks.map(aciertos), m = a.reduce((x, y) => x + y, 0) / a.length, [lo, hi] = L.wilson(Math.round(m), 20);
+      return `<tr><td>${n}</td><td>${tipo === "prompt" ? "prompt (sin entrenar)" : "entrenado con 60"}</td><td class="num">${a.join(" · ")}</td><td class="num">${fmt(lo, 2)} – ${fmt(hi, 2)}</td><td class="barcell"><div class="bar" style="width:${(100 * m / 20).toFixed(1)}%;background:${tipo === "prompt" ? "#F57C00" : "#8E24AA"}"></div></td></tr>`;
+    }).join("");
+})();
+MET.forEach(([k, n]) => { $("#aju-a").insertAdjacentHTML("beforeend", `<option value="${k}">${n}</option>`); $("#aju-b").insertAdjacentHTML("beforeend", `<option value="${k}">${n}</option>`); });
+$("#aju-a").value = "beto_congelado"; $("#aju-b").value = "q05_cero";
+function cmHTML(clave) {
+  const M = L.matrizConfusion(N.map((n) => n.seccion), N.map((n) => n.pred[clave]), SEC);
+  const fuera = N.filter((n) => !SEC.includes(n.pred[clave])).length;
+  return "<tr><th>real \\ predicha</th>" + SEC.map((s) => `<th>${s}</th>`).join("") + "</tr>" +
+    M.map((f, i) => `<tr><th>${SEC[i]}</th>` + f.map((v, j) => `<td class="${v === 0 ? "cero" : (i === j ? "bueno" : "malo")}">${v}</td>`).join("") + "</tr>").join("") +
+    (fuera ? `<tr><td colspan="5" class="small">${fuera} respuesta${fuera === 1 ? "" : "s"} fuera de las cuatro secciones (no aparecen en la matriz).</td></tr>` : "");
+}
+function pintarAjuste() {
+  const a = $("#aju-a").value, b = $("#aju-b").value, solo = $("#aju-solo").checked;
+  const filas = N.filter((n) => !solo || n.pred[a] !== n.seccion || n.pred[b] !== n.seccion);
+  $("#aju-tabla").innerHTML = "<tr><th>Id</th><th>Titular</th><th>Real</th><th>A</th><th>B</th></tr>" +
+    filas.map((n) => `<tr><td>${n.id}</td><td>${esc(n.titular)}${n.mezcla_con ? ` <span class="small">(mezcla con ${n.mezcla_con})</span>` : ""}</td><td>${n.seccion}</td>` +
+      [a, b].map((k) => `<td class="${n.pred[k] === n.seccion ? "bueno" : "malo"}">${esc(n.pred[k])}</td>`).join("") + "</tr>").join("");
+  $("#aju-cmA-t").textContent = `A · ${NOMBRE[a]}: ${aciertos(a)} / 20`;
+  $("#aju-cmB-t").textContent = `B · ${NOMBRE[b]}: ${aciertos(b)} / 20`;
+  $("#aju-cmA").innerHTML = cmHTML(a); $("#aju-cmB").innerHTML = cmHTML(b);
+  if (typeof intensidad === "function") { intensidad("#aju-cmA"); intensidad("#aju-cmB"); }
+}
+["#aju-a", "#aju-b", "#aju-solo"].forEach((s) => $(s).addEventListener("change", pintarAjuste));
+(function () {
+  const c05 = D.cultura.filter((c) => L.normaliza(c.q05) === "cultura").length, c15 = D.cultura.filter((c) => L.normaliza(c.q15) === "cultura").length;
+  $("#aju-cult-res").innerHTML = `Basta con añadir «cultura» a la lista de secciones del prompt. Reconocidas: <b>Qwen 0,5B ${c05} de 12</b>, <b>Qwen 1,5B ${c15} de 12</b>. ` +
+    `Efecto secundario: con cinco secciones, los aciertos en las 20 de prueba pasan a ${D.cultura_prueba5.q05} (0,5B) y ${D.cultura_prueba5.q15} (1,5B; antes ${aciertos("q15_cero")}). ` +
+    "Naive Bayes y BETO con regresión no pueden: solo conocen cuatro secciones.";
+  $("#aju-cult").innerHTML = "<tr><th>Id</th><th>Titular</th><th>Qwen 0,5B</th><th>Qwen 1,5B</th></tr>" +
+    D.cultura.map((c) => `<tr><td>${c.id}</td><td>${esc(c.titular)}</td>` + [c.q05, c.q15].map((r) => `<td class="${L.normaliza(r) === "cultura" ? "bueno" : "malo"}">${esc(r)}</td>`).join("") + "</tr>").join("");
+})();
+
+// ================================================================ 8 · Prompts
+let proModo = "cero";
+N.forEach((n, i) => $("#pro-not").insertAdjacentHTML("beforeend", `<option value="${i}">${n.id} · ${esc(n.titular)}</option>`));
+function pintarPrompts() {
+  const n = N[+$("#pro-not").value], P = D.prompts;
+  const partes = [["Instrucción", P.instruccion.split(". ")[0] + ".", "neuronal"], ["Contexto", "Sistema: «" + P.sistema + "»" + (proModo === "pocos" ? " + cuatro ejemplos resueltos: " + P.ejemplos.map((e) => `«${e.titular}» → ${e.seccion}`).join(" · ") : ""), "estad"],
+    ["Datos de entrada", "Noticia: «" + n.titular + ". " + n.texto + "»", "texto"], ["Indicador de salida", P.instruccion.split(". ")[1], "aplic"]];
+  $("#pro-partes").innerHTML = partes.map(([t, d, c]) => `<div class="box" style="margin:.4rem 0;border-left:5px solid var(--${c})"><b>${t}:</b> ${esc(d)}</div>`).join("") +
+    `<p class="small">Longitud del prompt (plantilla de chat de Qwen): ${proModo === "cero" ? P.subpalabras.cero : P.subpalabras.pocos} subpalabras para la primera noticia de prueba.</p>`;
+  const R = n.respuestas, k5 = proModo === "cero" ? "q05_cero" : "q05_pocos", k15 = proModo === "cero" ? "q15_cero" : "q15_pocos";
+  const celda = (resp, pred) => `<td class="${pred === n.seccion ? "bueno" : "malo"}">«${esc(resp.trim())}»${pred === "(otra)" ? " (fuera de formato)" : ""}</td>`;
+  $("#pro-resp").innerHTML = `<table><tr><th>Sección real</th><th>Qwen 0,5B</th><th>Qwen 1,5B (solo docente)</th></tr><tr><td>${n.seccion}</td>${celda(R[k5], n.pred[k5])}${celda(R[k15], n.pred[k15])}</tr></table>` +
+    (proModo === "cero" ? `<p class="small">Autoconsistencia (0,5B, 5 muestras a T = 0,7): ${R.q05_votos.join(" · ")} → <b>${esc(n.pred.q05_autoconsistencia)}</b>.</p>` : "");
+}
+segmentado("#pro-modo", (b) => { proModo = b.dataset.m; pintarPrompts(); });
+$("#pro-not").addEventListener("change", pintarPrompts);
+D.base_instruido.forEach((b, i) => $("#pro-pet").insertAdjacentHTML("beforeend", `<option value="${i}">${esc(b.peticion.split("\n")[0].slice(0, 90))}${b.peticion.length > 90 ? "…" : ""}</option>`));
+function pintarBase() { const b = D.base_instruido[+$("#pro-pet").value]; $("#pro-base").textContent = "«" + b.base + "»"; $("#pro-instr").textContent = "«" + b.instruido + "»"; }
+$("#pro-pet").addEventListener("change", pintarBase);
+
+// ================================================================ 9 · Destilación
+const DS = D.destilacion;
+$("#des-frase").innerHTML = `Maestro: ${esc(DS.maestro)} · «${esc(DS.frase)}»`;
+function pintarDestilacion() {
+  const T = +$("#des-T").value; $("#des-Tv").textContent = fmt(T, 1);
+  const z = DS.top30.map((t) => t.logit), p = L.softmaxT(z, T), max = Math.max(...p);
+  $("#des-duro").textContent = "«" + DS.top30[0].subpalabra + "»";
+  $("#des-tabla").innerHTML = "<tr><th>Subpalabra</th><th class='num'>p (T)</th><th class='barcell'></th></tr>" +
+    DS.top30.slice(0, 12).map((t, i) => `<tr><td class="mono">«${esc(t.subpalabra)}»</td><td class="num">${fmt(p[i], 3)}</td><td class="barcell"><div class="bar" style="width:${(100 * p[i] / max).toFixed(1)}%"></div></td></tr>`).join("");
+  $("#des-ent").textContent = `Entropía de las 30 primeras: ${fmt(L.entropia(p), 2)} bits (la etiqueta dura tiene 0).`;
+  $("#des-nota").textContent = `Probabilidades renormalizadas entre las 30 subpalabras más probables, que con T = 1 reúnen el ${pct(DS.masa_top30_T1)} del total (31 002 subpalabras).`;
+}
+$("#des-T").addEventListener("input", pintarDestilacion);
+
+// (El repaso del test está en repaso.html, fuera de la demo de clase.)
+
+// ================================================================ 10 · Ajuste y alineación
+function intensidad(sel) {
+  const cs = [...document.querySelectorAll(sel + " td")].filter((c) => /^\d+$/.test(c.textContent.trim()));
+  const mx = Math.max(...cs.map((c) => +c.textContent), 1);
+  cs.forEach((c) => { const v = +c.textContent, ok = c.classList.contains("bueno"); if (!v) return;
+    c.style.background = ok ? `rgba(46,125,50,${(0.15 + 0.75 * v / mx).toFixed(3)})` : `rgba(198,40,40,${(0.15 + 0.75 * v / mx).toFixed(3)})`;
+    c.style.color = v / mx > 0.5 ? "#fff" : ""; c.style.fontWeight = "800"; c.style.fontSize = "1.15rem"; c.style.textAlign = "center"; });
+}
+const MODOS = [
+  { n: "Prompt (sin entrenar)", capas: [], cabeza: false, prompt: false, num: "0", txt: `Nada se entrena: se escribe una instrucción y, si acaso, unos ejemplos. Qwen2.5-0.5B acertó ${aciertos("q05_cero")} de 20 sin ejemplos y ${aciertos("q05_pocos")} con un ejemplo por sección (pestaña 7).` },
+  { n: "Modelo congelado + regresión", capas: [], cabeza: true, prompt: false, num: "3 076", txt: `Solo una regresión logística sobre el vector [CLS] de BETO: 768 × 4 + 4 parámetros. Acertó ${aciertos("beto_congelado")} de 20 (pestaña 4).` },
+  { n: "Ajuste de las 2 últimas capas", capas: [10, 11], cabeza: true, prompt: false, num: "14 769 412", txt: `Se descongelan las dos últimas capas, el pooler y el clasificador. Aciertos en las 5 semillas: ${[0, 1, 2, 3, 4].map((k) => aciertos("ajuste_parcial_" + k)).join(" · ")} de 20.` },
+  { n: "Ajuste fino completo", capas: [...Array(12).keys()], cabeza: true, prompt: false, num: "109 853 956", txt: `Todo el modelo se reentrena: hace falta guardar una copia completa por tarea (Figura 22). Aciertos en las 5 semillas: ${[0, 1, 2, 3, 4].map((k) => aciertos("ajuste_todo_" + k)).join(" · ")} de 20.` },
+  { n: "Ajuste del prompt (prompt tuning)", capas: [], cabeza: false, prompt: true, num: "unos miles", txt: "Solo se aprenden unos vectores que se anteponen a la entrada (por ejemplo, 20 vectores de 768 números = 15 360); el modelo queda congelado y se comparte entre tareas. No se hizo en clase." },
+];
+let modoAli = 1;
+function pintarAli() {
+  const m = MODOS[modoAli];
+  $$("#ali-modo .seg").forEach((b, i) => b.setAttribute("aria-pressed", String(i === modoAli)));
+  let g = "";
+  const caja = (y, h, txt, on, sub) => `<rect x="70" y="${y}" width="280" height="${h}" rx="7" fill="${on ? "#8E24AA" : "#ECEFF1"}" stroke="${on ? "#6A1B9A" : "#B0BEC5"}" stroke-width="2"/><text x="210" y="${y + h / 2 + 5}" text-anchor="middle" font-size="14" font-weight="700" fill="${on ? "#fff" : "#52606D"}">${txt}${sub ? " · " + sub : ""}</text>`;
+  g += caja(16, 40, "cabeza de clasificación", m.cabeza, m.cabeza ? "se entrena" : "");
+  for (let k = 11; k >= 0; k--) { const y = 66 + (11 - k) * 34; const on = m.capas.includes(k); g += caja(y, 28, "capa " + (k + 1), on, on ? "se entrena" : "congelada"); }
+  g += caja(476, 32, "embeddings de entrada", false, "congelados");
+  g += `<rect x="70" y="516" width="280" height="32" rx="7" fill="${m.prompt ? "#F57C00" : "#fff"}" stroke="${m.prompt ? "#E65100" : "#CFD8DC"}" stroke-width="2" stroke-dasharray="${m.prompt ? "" : "5 4"}"/><text x="210" y="537" text-anchor="middle" font-size="13" font-weight="700" fill="${m.prompt ? "#fff" : "#9AA5B1"}">${m.prompt ? "vectores del prompt · se entrenan" : "texto del prompt (palabras)"}</text>`;
+  $("#ali-svg").innerHTML = g;
+  $("#ali-det").innerHTML = `<h3>${esc(m.n)}</h3><div class="cifra">${m.num}</div><div class="small">parámetros que se entrenan (BETO tiene unos 109,3 millones)</div><p style="margin-top:.6rem">${m.txt}</p>`;
+}
+$("#ali-modo").innerHTML = MODOS.map((m, i) => `<button class="seg" data-i="${i}" aria-pressed="false">${esc(m.n)}</button>`).join("");
+$$("#ali-modo .seg").forEach((b) => b.addEventListener("click", () => { modoAli = +b.dataset.i; pintarAli(); }));
+const ETAPAS = [
+  ["1 · Ajuste supervisado", "Personas escriben la respuesta deseada a muchas peticiones; el modelo se ajusta para imitarlas.", "Petición: «Explica la luna a un niño de 6 años» → respuesta escrita por una persona."],
+  ["2 · Modelo de recompensa", "El modelo genera varias respuestas a la misma petición y las personas las ordenan de mejor a peor; con esas comparaciones se entrena un modelo que puntúa respuestas.", "Cuatro respuestas ordenadas: D > C > A > B."],
+  ["3 · Aprendizaje por refuerzo", "El modelo genera, el modelo de recompensa puntúa y el generador se actualiza (PPO) para obtener más recompensa.", "Petición nueva → respuesta → puntuación → actualización, en bucle."],
+];
+function pintarEtapa(k) {
+  $("#ali-etapas").innerHTML = ETAPAS.map(([t, d], i) => `<div class="${i === k ? "on" : ""}"><b>${t}</b><span class="small">${esc(d)}</span></div>`).join("");
+  $("#ali-etapa-msg").textContent = ETAPAS[k][2];
+}
+Clase.pasos($("#ali-pasos"), { total: 3, pintar: pintarEtapa, etiqueta: (k) => ETAPAS[k][0].slice(4) });
+(function linea() {
+  const H = [[2017, "Transformer", "Vaswani et al."], [2018, "BERT", "Devlin et al."], [2019, "GPT-2", "Radford et al."], [2020, "BETO", "Cañete et al."],
+    [2020, "GPT-3", "Brown et al."], [2022, "InstructGPT", "Ouyang et al."], [2022, "ChatGPT", "30/11/2022"], [2024, "Qwen2.5", "Qwen Team"]];
+  const X = (y) => 70 + (y - 2017) / 7 * 860;
+  let g = `<line x1="60" x2="940" y1="100" y2="100" stroke="#CFD8DC" stroke-width="3"/>`;
+  for (let y = 2017; y <= 2024; y++) g += `<line x1="${X(y)}" x2="${X(y)}" y1="94" y2="106" stroke="#9AA5B1" stroke-width="2"/><text x="${X(y) - 14}" y="124" text-anchor="end" font-size="13" fill="#9AA5B1">${y}</text>`;
+  const usado = {};
+  H.forEach(([y, n, f]) => { const k = (usado[y] = (usado[y] || 0) + 1) - 1, x = X(y) + k * 70, arriba = (H.indexOf(H.find((h) => h[1] === n)) % 2) === 0;
+    g += `<circle cx="${x}" cy="100" r="9" fill="#8E24AA"/><line x1="${x}" x2="${x}" y1="${arriba ? 88 : 112}" y2="${arriba ? 66 : 140}" stroke="#8E24AA"/>`;
+    g += `<text x="${x}" y="${arriba ? 42 : 160}" text-anchor="middle" font-size="16" font-weight="800" fill="#1F2933">${n}</text><text x="${x}" y="${arriba ? 58 : 176}" text-anchor="middle" font-size="12" fill="#52606D">${f}</text>`; });
+  $("#ali-tl").innerHTML = g;
+})();
+
+// ---------------------------------------------------------------- inicio
+pintarMascaras(); pintarSiguiente(); pintarRelleno(); pintarCruzada(); pintarPCA();
+pintarSub(true); pintarFragmentos(); pintarAjuste(); pintarPrompts(); pintarBase(); pintarDestilacion(); pintarAli(); intensidad("#fun-cm");
+</script>
+</body>
+</html>

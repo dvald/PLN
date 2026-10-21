@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 10 · Visualización de textos — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #52606D;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .75rem .9rem; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: #FFB74D; }
+  .content { max-width: 1160px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--aplic-l); border-left: 4px solid var(--aplic); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #5D3A00; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: #E65100; color: #fff; }
+  .btn-main:hover { background: #BF360C; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible, td.clic:focus-visible { outline: 3px solid #FFB74D; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .4rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 6rem; resize: vertical; font-size: .92rem; }
+  input[type=number] { width: 4.6rem; }
+  input[type=range] { width: 11rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.7rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .32rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.clic { cursor: pointer; }
+  td.clic:hover { background: var(--aplic-l); }
+  tr.hl td { background: var(--warn-l); }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  .scroll { overflow: auto; max-height: 26rem; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .legend { display: flex; flex-wrap: wrap; gap: .9rem; font-size: .88rem; margin: .3rem 0; }
+  .legend span::before { content: "●"; margin-right: .3rem; color: var(--c); }
+  .legend span.hueco::before { content: "○"; }
+  canvas { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .kwic td.izq { text-align: right; color: var(--ink2); }
+  .kwic td.raiz { font-weight: 700; color: #E65100; text-align: center; white-space: nowrap; }
+  .kwic td.der { color: var(--ink2); }
+  .ent { padding: .05rem .3rem; border-radius: 4px; font-weight: 600; }
+  .ent sup { font-size: .68rem; font-weight: 800; margin-left: .2rem; }
+  .q { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .q p { margin-bottom: .5rem; font-weight: 600; color: var(--ink); }
+  .q .seggroup { margin-bottom: .2rem; }
+  .pix { display: grid; gap: 2px; }
+  .pix div { width: 22px; height: 22px; border-radius: 3px; cursor: default; }
+  .pix div.sel { outline: 3px solid var(--bad); outline-offset: -1px; }
+  footer { max-width: 1160px; margin: 0 auto 2.5rem; padding: 0 1.2rem; color: var(--ink2); font-size: .85rem; }
+  /* modo clase: mapa del tema */
+  .mt-sup { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-top: .4rem; }
+  .mt-sup div { font-weight: 800; font-size: .95rem; padding: .3rem .6rem; border-radius: 8px; background: var(--soft); border: 1px solid var(--line); text-align: center; }
+  .mt-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; margin-top: .5rem; }
+  .mt-col h3 { margin: 0 0 .5rem; color: #fff; padding: .45rem .7rem; border-radius: 8px; font-size: 1.05rem; }
+  .mt-card { display: block; width: 100%; text-align: left; font: inherit; color: var(--ink); background: #fff; border: 2px solid var(--line); border-left-width: 6px; border-radius: 10px; padding: .6rem .7rem; margin-bottom: .55rem; cursor: pointer; }
+  .mt-card:hover, .mt-card:focus-visible { background: var(--soft); outline: none; }
+  .mt-card svg { display: block; width: 100%; height: 70px; margin-bottom: .3rem; }
+  .mt-card b { display: block; font-size: 1rem; line-height: 1.25; }
+  .mt-card .hall { display: block; font-size: .88rem; color: #37474F; margin-top: .25rem; line-height: 1.35; }
+  .mt-card .ir { display: block; font-size: .82rem; font-weight: 800; margin-top: .3rem; }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-aplic">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización" aria-current="page">10</a></span><a class="ant" href="09_aplicaciones.html">‹ Tema 9 · Aplicaciones</a></nav>
+  <h1><span class="num-tema">TEMA 10</span>Visualización de textos</h1>
+  <p>Ver los textos: mapas de documentos, tópicos, nubes de palabras, coocurrencias, árboles de palabras, gramática y huellas de estilo. <span class="cuando">Clases 17, 19 y 20 · semanas 13 a 15</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><rect x="4" y="8" width="21" height="9" rx="2.5"/><rect x="28" y="10" width="15" height="6" rx="2" fill-opacity=".6"/><rect x="8" y="21" width="34" height="11" rx="2.5"/><rect x="4" y="36" width="11" height="5" rx="2" fill-opacity=".45"/><rect x="18" y="35" width="20" height="7" rx="2" fill-opacity=".75"/></g></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-mapa" aria-controls="p-mapa" aria-selected="true"><span class="tab-n">1</span> El tema</button>
+  <button class="tab" role="tab" id="t-cerca" aria-controls="p-cerca" aria-selected="false"><span class="tab-n">2</span> ¿Cerca = parecido?</button>
+  <button class="tab" role="tab" id="t-proy" aria-controls="p-proy" aria-selected="false"><span class="tab-n">3</span> Proyecciones</button>
+  <button class="tab" role="tab" id="t-pca" aria-controls="p-pca" aria-selected="false"><span class="tab-n">4</span> PCA a mano</button>
+  <button class="tab" role="tab" id="t-top" aria-controls="p-top" aria-selected="false"><span class="tab-n">5</span> Tópicos</button>
+  <button class="tab" role="tab" id="t-nube" aria-controls="p-nube" aria-selected="false"><span class="tab-n">6</span> Nube de palabras</button>
+  <button class="tab" role="tab" id="t-tend" aria-controls="p-tend" aria-selected="false"><span class="tab-n">7</span> Dos nubes y tendencias</button>
+  <button class="tab" role="tab" id="t-cooc" aria-controls="p-cooc" aria-selected="false"><span class="tab-n">8</span> Coocurrencias</button>
+  <button class="tab" role="tab" id="t-arbol" aria-controls="p-arbol" aria-selected="false"><span class="tab-n">9</span> Árbol de palabras</button>
+  <button class="tab" role="tab" id="t-gram" aria-controls="p-gram" aria-selected="false"><span class="tab-n">10</span> Gramática y entidades</button>
+  <button class="tab" role="tab" id="t-huella" aria-controls="p-huella" aria-selected="false"><span class="tab-n">11</span> Huellas y firmas</button>
+</div>
+<main class="content">
+
+<!-- ============================================================ 1 -->
+<section class="panel active" id="p-mapa" role="tabpanel" aria-labelledby="t-mapa">
+  <div class="card">
+    <h2>Qué se visualiza de un texto y en qué nivel</h2>
+    <div class="meta"><span class="tag">Apartados 10.2-10.9</span><span class="tag real">Hallazgos calculados con los datos de esta demo</span><span class="tag illus">Miniaturas: ilustración, no datos</span></div>
+    <p>El tema distingue la <b>similitud entre documentos</b> (10.3-10.5) y el <b>contenido de un documento</b> en tres niveles: palabras (10.7), estructura (10.8) y sustancia (10.9). Cada tarjeta lleva a su pestaña y resume lo que se ve en ella.</p>
+    <div class="mt-sup"><div>Similitud · 10.3-10.5</div><div style="grid-column: 2 / span 3">Contenido de un documento · 10.6-10.9</div></div>
+    <div class="mt-cols" id="mapa-tema"></div>
+  </div>
+  <div class="card">
+    <h3>Cinco preguntas antes de concluir (Clase 20)</h3>
+    <ol style="margin-left:1.2rem">
+      <li><b>Representación</b>: ¿qué cuenta como palabra? ¿qué vacías? ¿TF-IDF, vectores o tópicos?</li>
+      <li><b>Medida</b>: coseno, frecuencia, PMI, disimilitud CNG… ¿qué mide exactamente?</li>
+      <li><b>Parámetros</b>: perplejidad, semilla, escala, k, λ, n, L: decláralos.</li>
+      <li><b>Comprobación</b>: vuelve al espacio original, a los contextos y a los textos.</li>
+      <li><b>Límites</b>: qué no permite concluir el gráfico.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================================================ 2 -->
+<section class="panel" id="p-cerca" role="tabpanel" aria-labelledby="t-cerca">
+  <div class="card">
+    <h2>¿Dos noticias cercanas en el mapa se parecen?</h2>
+    <div class="meta"><span class="tag pre">Mapa t-SNE precalculado con scikit-learn 1.9.1</span><span class="tag real">Coseno y vecinos calculados en el navegador</span><span class="tag">Clase 17 · 10.3-10.4</span></div>
+    <p>92 noticias ficticias del Tema 6 con TF-IDF de lemas de contenido (311 lemas). Elige una noticia o pulsa un punto: se marcan sus <b>5 vecinos en el mapa</b> (círculo naranja) y sus <b>5 vecinos reales</b> por coseno (cuadrado azul).</p>
+    <div class="row">
+      <label class="inline">Mapa <select id="cerca-mapa"></select></label>
+      <label class="inline">Noticia <select id="cerca-doc"></select></label>
+      <button class="btn btn-main" id="cerca-peor">Ver el par más engañoso</button>
+    </div>
+    <div class="grid2">
+      <div><svg id="cerca-svg" viewBox="0 0 520 420" role="img" aria-label="Mapa de las noticias"></svg><div class="legend" id="cerca-leyenda"></div></div>
+      <div><div id="cerca-info"></div><div class="scroll" style="max-height:20rem"><table id="cerca-tabla"></table></div></div>
+    </div>
+    <div class="stats" id="cerca-stats"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 3 -->
+<section class="panel" id="p-proy" role="tabpanel" aria-labelledby="t-proy">
+  <div class="card">
+    <h2>Proyecciones de las mismas 92 noticias</h2>
+    <div class="meta"><span class="tag pre">Coordenadas y medidas precalculadas con scikit-learn 1.9.1</span><span class="tag">Clase 17 · 10.4</span></div>
+    <p>Cambia la técnica y sus parámetros. Las medidas comparan los 5 vecinos de cada noticia en el mapa con los del espacio original: <b>confianza</b> (trustworthiness), <b>comunes</b> y <b>misma sección</b> (en el espacio original es del <span id="proy-orig"></span>).</p>
+    <div class="seggroup" id="proy-metodo" role="group" aria-label="Técnica"></div>
+    <div class="row" id="proy-params"></div>
+    <div class="grid2">
+      <div><svg id="proy-svg" viewBox="0 0 520 420" role="img" aria-label="Proyección"></svg><div class="legend" id="proy-leyenda"></div></div>
+      <div><div class="stats" id="proy-stats"></div><div id="proy-nota"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Discriminante lineal: separa lo que le digas</h3>
+    <div class="meta"><span class="tag pre">Precalculado (LinearDiscriminantAnalysis, solver="eigen", shrinkage=0,01)</span></div>
+    <p>60 noticias de entrenamiento (puntos) y 20 de prueba (círculos). Con etiquetas repartidas al azar también separa en entrenamiento; solo la prueba lo delata.</p>
+    <div class="seggroup" id="lda-modo" role="group" aria-label="Etiquetas"></div>
+    <div class="grid2"><svg id="lda-svg" viewBox="0 0 520 380" role="img" aria-label="Discriminante lineal"></svg><div id="lda-info"></div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 4 -->
+<section class="panel" id="p-pca" role="tabpanel" aria-labelledby="t-pca">
+  <div class="card">
+    <h2>PCA a mano: seis documentos, seis términos</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (= scikit-learn)</span><span class="tag">Clase 17 · 10.4</span></div>
+    <p>Edita los recuentos. El PCA se calcula con los autovectores de la covarianza; el signo de cada componente sigue la convención de scikit-learn (la mayor carga, positiva).</p>
+    <div class="grid2">
+      <div><div class="scroll" style="max-height:none"><table id="pca-tabla"></table></div>
+        <div class="row"><button class="btn btn-gray" id="pca-reset">Restaurar</button></div>
+        <div id="pca-cargas"></div></div>
+      <div><svg id="pca-svg" viewBox="0 0 480 380" role="img" aria-label="Plano de las dos componentes"></svg><div class="stats" id="pca-stats"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ 5 -->
+<section class="panel" id="p-top" role="tabpanel" aria-labelledby="t-top">
+  <div class="card">
+    <h2>Las noticias situadas por sus tópicos (10.5)</h2>
+    <div class="meta"><span class="tag pre">Mezclas θ del NMF de 4 tópicos precalculadas (Clases 11 y 17)</span><span class="tag real">RadViz calculado en el navegador</span></div>
+    <p>Cada tópico es un ancla del círculo y cada noticia se coloca en la media de las anclas ponderada por su mezcla. Cambia el orden de las anclas: las posiciones cambian, las mezclas no. Pulsa un punto para ver su θ.</p>
+    <div class="seggroup" id="rv-orden" role="group" aria-label="Orden de las anclas"></div>
+    <div class="grid2"><svg id="rv-svg" viewBox="0 0 640 470" role="img" aria-label="RadViz"></svg><div id="rv-info"></div></div>
+  </div>
+  <div class="card">
+    <h3>Matriz término-tópico y relevancia (10.9, Termite y LDAvis)</h3>
+    <div class="meta"><span class="tag real">Relevancia calculada en el navegador</span><span class="tag">Clase 20</span></div>
+    <p>r(w, k | λ) = λ log φ<sub>kw</sub> + (1 − λ) log(φ<sub>kw</sub> / p<sub>w</sub>). Con λ = 1 se ordena por probabilidad; con λ = 0, por especificidad. Sievert y Shirley (2014) encontraron un valor útil hacia 0,6.</p>
+    <div class="row"><label class="inline">λ <input type="range" id="rel-lam" min="0" max="1" step="0.1" value="0.6"> <b id="rel-lam-v">0,6</b></label>
+      <label class="inline">Términos por tópico <input type="number" id="rel-k" min="3" max="10" value="6"></label></div>
+    <div class="grid2"><svg id="rel-svg" viewBox="0 0 520 520" role="img" aria-label="Matriz término-tópico"></svg><div id="rel-tabla"></div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 6 -->
+<section class="panel" id="p-nube" role="tabpanel" aria-labelledby="t-nube">
+  <div class="card">
+    <h2>Nube de palabras: cada decisión cambia lo que se ve</h2>
+    <div class="meta"><span class="tag real">Frecuencias calculadas en el navegador</span><span class="tag illus">Disposición con un algoritmo propio del mismo principio que WordCloud (no es la biblioteca)</span><span class="tag">Clase 19 · 10.7</span></div>
+    <div class="row">
+      <label class="inline">Texto <select id="nube-corpus"></select></label>
+      <label class="inline">Palabras vacías <select id="nube-vac">
+        <option value="ninguna">ninguna</option><option value="ingles">las de WordCloud (inglés, 192)</option>
+        <option value="spacy" selected>spaCy (español, 521)</option><option value="spacy_pol">spaCy salvo las de polaridad</option></select></label>
+      <label class="inline">relative_scaling <select id="nube-rs"><option>0</option><option selected>0,5</option><option>1</option></select></label>
+      <label class="inline">Palabras <input type="number" id="nube-n" min="10" max="150" value="60"></label>
+      <label class="inline">Semilla <input type="number" id="nube-semilla" min="0" max="99" value="0"></label>
+      <label class="inline">Ocupación <select id="nube-ocup"><option value="pix" selected>píxeles</option><option value="caja">cajas</option></select></label>
+    </div>
+    <div class="grid2">
+      <div><canvas id="nube-canvas" width="720" height="380" aria-label="Nube de palabras"></canvas><div class="small" id="nube-estado"></div></div>
+      <div><div class="scroll" style="max-height:24rem"><table id="nube-tabla"></table></div></div>
+    </div>
+    <div class="warnbox">La posición y el color no significan nada. El tamaño depende de la frecuencia, de la escala y del espacio libre: si una palabra no cabe, se encoge (la columna «encogida» lo indica).</div>
+  </div>
+</section>
+
+<!-- ============================================================ 7 -->
+<section class="panel" id="p-tend" role="tabpanel" aria-labelledby="t-tend">
+  <div class="card">
+    <h2>Dos nubes: Parte I (1605) frente a Parte II (1615) del Quijote</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 19 · 10.7 (RadCloud)</span></div>
+    <p>Cada palabra se coloca según el log<sub>2</sub> de su frecuencia relativa (con suavizado de Laplace) en la Parte II frente a la I; el tamaño indica sus apariciones totales. Palabras vacías de spaCy.</p>
+    <div class="row"><label class="inline">Más frecuentes de cada parte <input type="number" id="dos-n" min="20" max="300" value="100"></label> <span class="small" id="dos-comunes"></span></div>
+    <svg id="dos-svg" viewBox="0 0 1060 360" role="img" aria-label="Comparación de las dos partes"></svg>
+  </div>
+  <div class="card">
+    <h3>Tendencias por capítulo</h3>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span></div>
+    <p>Apariciones por 1000 palabras en cada capítulo (palabras con 20 apariciones o más en el libro). El eje x es el <b>orden de lectura</b>, no el tiempo.</p>
+    <div class="row"><label class="inline">Palabras (separadas por comas) <input type="text" id="tend-pal" value="dulcinea, rocinante, ínsula, duquesa" style="min-width:22rem"></label>
+      <label class="inline">Media móvil <select id="tend-v"><option>1</option><option>3</option><option selected>5</option><option>9</option></select></label></div>
+    <svg id="tend-svg" viewBox="0 0 1060 330" role="img" aria-label="Tendencias por capítulo"></svg>
+    <div class="small" id="tend-info"></div>
+  </div>
+</section>
+
+<!-- ============================================================ 8 -->
+<section class="panel" id="p-cooc" role="tabpanel" aria-labelledby="t-cooc">
+  <div class="card">
+    <h2>Coocurrencias: el ejercicio 8 del tema («cielo»)</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 19 · 10.8</span></div>
+    <p>Las 15 frases del ejercicio. Compara el procedimiento del tema (bigramas convertidos en conjunto, minúsculas después) con recuentos de verdad.</p>
+    <div class="seggroup" id="cooc-metodo" role="group" aria-label="Método"></div>
+    <div class="row"><label class="inline">Objetivo <input type="text" id="cooc-obj" value="cielo"></label>
+      <label class="inline">Ventana ± <input type="number" id="cooc-k" min="1" max="6" value="2"></label></div>
+    <div class="grid2"><svg id="cooc-svg" viewBox="0 0 520 420" role="img" aria-label="Grafo de coocurrencias"></svg><div id="cooc-tabla"></div></div>
+  </div>
+  <div class="card">
+    <h3>Frecuencia frente a asociación en el Quijote (PMI por oraciones)</h3>
+    <div class="meta"><span class="tag pre">Recuentos por oración precalculados (8.874 oraciones)</span><span class="tag real">PMI calculada en el navegador</span></div>
+    <div class="row"><label class="inline">Palabra <select id="pmi-obj"></select></label>
+      <label class="inline">Mínimo de oraciones compartidas <input type="number" id="pmi-min" min="2" max="30" value="5"></label></div>
+    <div class="grid2"><div id="pmi-rec"></div><div id="pmi-pmi"></div></div>
+  </div>
+</section>
+
+<!-- ============================================================ 9 -->
+<section class="panel" id="p-arbol" role="tabpanel" aria-labelledby="t-arbol">
+  <div class="card">
+    <h2>Concordancia y árbol de palabras (Word Tree)</h2>
+    <div class="meta"><span class="tag real">Árbol calculado en el navegador</span><span class="tag">Clase 19 · 10.8 · sin Graphviz</span></div>
+    <div class="row">
+      <label class="inline">Corpus <select id="arb-corpus"><option value="q">Quijote (raíces precalculadas)</option><option value="r">Reseñas del Tema 7 (cualquier raíz)</option></select></label>
+      <label class="inline">Raíz <select id="arb-raiz-q"></select><input type="text" id="arb-raiz-r" value="calidad" style="display:none"></label>
+      <label class="inline">Ramas <input type="number" id="arb-ramas" min="1" max="8" value="4"></label>
+      <label class="inline">Mínimo <input type="number" id="arb-min" min="1" max="50" value="8"></label>
+    </div>
+    <svg id="arb-svg" viewBox="0 0 1060 420" role="img" aria-label="Árbol de palabras"></svg>
+    <h3>Concordancia (palabra clave en contexto)</h3>
+    <div class="scroll" style="max-height:16rem"><table class="kwic" id="arb-kwic"></table></div>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section class="panel" id="p-gram" role="tabpanel" aria-labelledby="t-gram">
+  <div class="card">
+    <h2>Árboles de dependencias</h2>
+    <div class="meta"><span class="tag pre">Análisis precalculados con spaCy 3.8.16 (es_core_news_sm 3.8.0)</span><span class="tag">Clase 19 · 10.8 · ejercicio 7</span></div>
+    <div class="row"><label class="inline">Frase <select id="dep-frase"></select></label></div>
+    <svg id="dep-svg" viewBox="0 0 1060 300" role="img" aria-label="Arcos de dependencias"></svg>
+    <div id="dep-tabla"></div>
+    <div class="warnbox">Es la salida de un modelo pequeño: en «Sancho Panza seguía a su señor por los caminos de la Mancha», «caminos» sale como objeto directo (obj) cuando es un complemento con preposición (obl).</div>
+  </div>
+  <div class="card">
+    <h3>Entidades nombradas (ejercicio 10, en español)</h3>
+    <div class="meta"><span class="tag pre">Precalculado con spaCy</span></div>
+    <div id="ent-lista"></div>
+    <p class="small" id="ent-nota"></p>
+  </div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section class="panel" id="p-huella" role="tabpanel" aria-labelledby="t-huella">
+  <div class="card">
+    <h2>Huella literaria del Quijote: un cuadrado por capítulo</h2>
+    <div class="meta"><span class="tag pre">Rasgos por capítulo precalculados</span><span class="tag">Clase 20 · 10.9 (Keim y Oelke, 2007)</span></div>
+    <div class="seggroup" id="hu-rasgo" role="group" aria-label="Rasgo"></div>
+    <div class="grid2"><div id="hu-grid"></div><div id="hu-info"></div></div>
+  </div>
+  <div class="card">
+    <h3>Firma relativa de n-gramas de caracteres (Jankowska et al., 2012)</h3>
+    <div class="meta"><span class="tag real">Perfiles y disimilitud dirigida calculados en el navegador (= Python)</span></div>
+    <p>Base: capítulos 1-8 de la Parte I (20.000 caracteres). Elige un fragmento o pega tu texto (mejor 20.000 caracteres o más).</p>
+    <p class="small">Adaptación didáctica de CNG: sumamos [2(f<sub>base</sub> − f<sub>objetivo</sub>)/(f<sub>base</sub> + f<sub>objetivo</sub>)]² solo sobre los L n-gramas más frecuentes de la base. Es una medida dirigida: invertir base y objetivo puede cambiar el resultado. La CNG simétrica usa la unión de los dos perfiles truncados (<a href="https://aclanthology.org/C14-1038/">Jankowska et al., 2014, ec. 1</a>).</p>
+    <div class="row">
+      <label class="inline">Objetivo <select id="fi-obj"></select></label>
+      <label class="inline">n <select id="fi-n"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label>
+      <label class="inline">L <select id="fi-L"><option>100</option><option selected>300</option><option>500</option></select></label>
+    </div>
+    <textarea id="fi-texto" placeholder="Pega aquí un texto propio y elige «Texto pegado» en Objetivo" aria-label="Texto propio"></textarea>
+    <div class="grid2"><svg id="fi-svg" viewBox="0 0 520 360" role="img" aria-label="Firmas"></svg><div><div class="stats" id="fi-stats"></div><div id="fi-tabla"></div></div></div>
+    <div class="warnbox">Una firma distinta indica otro estilo, que puede deberse al género, al tema, a la época o a una traducción. No prueba por sí sola quién escribió el texto.</div>
+  </div>
+</section>
+
+</main>
+<footer>Funciona sin conexión y no envía datos. Fuentes de los datos: noticias y reseñas ficticias redactadas para la asignatura (Temas 6 y 7); <i>Don Quijote</i>, Project Gutenberg, ebook 2000 (dominio público). Cálculos comprobados frente a Python con <code>Demos/fuentes/probar_lib_10.js</code>.</footer>
+
+<script src="comun/clase.js"></script>
+<script src="10_visualizacion_lib.js"></script>
+<script src="10_visualizacion_datos.js"></script>
+<script>
+(function () {
+  "use strict";
+  const L = window.T10, D = window.DATOS10;
+  const $ = (id) => document.getElementById(id);
+  const SVGNS = "http://www.w3.org/2000/svg";
+  const SEC = ["economía", "deportes", "salud", "tecnología", "cultura"];
+  const COL = { "economía": "#1E88E5", "deportes": "#00897B", "salud": "#8E24AA", "tecnología": "#F57C00", "cultura": "#52606D" };
+  const TOPIC = ["#1E88E5", "#00897B", "#8E24AA", "#F57C00", "#52606D", "#C62828"];
+  const dec = L.dec;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const VAC = new Set(D.vacias), POL = new Set(D.polares);
+  const VAC_OP = new Set(D.vacias.filter((w) => !POL.has(w)));
+  const ENG = new Set(D.stopwords_wordcloud);
+
+  function el(tag, attrs, padre) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (padre) padre.appendChild(e);
+    return e;
+  }
+  function texto(padre, x, y, t, a) {
+    const e = el("text", Object.assign({ x, y, "font-size": 13, fill: "#1F2933" }, a || {}), padre);
+    e.textContent = t;
+    return e;
+  }
+  function limpiar(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+  function escala(Y, w, h, m) {
+    const xs = Y.map((p) => p[0]), ys = Y.map((p) => p[1]);
+    const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+    return (p) => [m + (p[0] - x0) / (x1 - x0 || 1) * (w - 2 * m), h - m - (p[1] - y0) / (y1 - y0 || 1) * (h - 2 * m)];
+  }
+  function leyendaSecciones(div) {
+    div.innerHTML = SEC.map((s) => `<span style="--c:${COL[s]}" class="${s === "cultura" ? "hueco" : ""}">${s}</span>`).join("");
+  }
+  function punto(svg, xy, s, r, extra) {
+    const c = el("circle", Object.assign({ cx: xy[0], cy: xy[1], r: r || 5, fill: s === "cultura" ? "#fff" : COL[s],
+      stroke: COL[s], "stroke-width": s === "cultura" ? 1.8 : 0.8, opacity: 0.9 }, extra || {}), svg);
+    return c;
+  }
+  function segs(div, opciones, valor, cb) {
+    div.innerHTML = "";
+    opciones.forEach(([v, t]) => {
+      const b = document.createElement("button");
+      b.className = "seg"; b.type = "button"; b.textContent = t;
+      b.setAttribute("aria-pressed", String(v === valor));
+      b.addEventListener("click", () => { div.querySelectorAll(".seg").forEach((x) => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); cb(v); });
+      div.appendChild(b);
+    });
+  }
+  function opciones(sel, lista, valor) {
+    sel.innerHTML = lista.map(([v, t]) => `<option value="${esc(v)}"${v === valor ? " selected" : ""}>${esc(t)}</option>`).join("");
+  }
+  const pct = (x, d) => dec(100 * x, d == null ? 0 : d) + " %";
+
+  // ---------------------------------------------------------------- pestañas
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const iniciadas = {};
+  function activar(t) {
+    tabs.forEach((x) => { x.setAttribute("aria-selected", String(x === t)); x.tabIndex = x === t ? 0 : -1; });
+    document.querySelectorAll(".panel").forEach((p) => p.classList.toggle("active", p.id === t.getAttribute("aria-controls")));
+    const id = t.getAttribute("aria-controls");
+    if (!iniciadas[id] && INIT[id]) { iniciadas[id] = true; INIT[id](); }
+  }
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => activar(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        const j = (i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length;
+        activar(tabs[j]); tabs[j].focus(); e.preventDefault();
+      }
+    });
+  });
+
+  const INIT = {};
+
+  // ================================================================ 1 · el tema
+  INIT["p-mapa"] = function () {
+    // Miniaturas dibujadas (ilustración) y hallazgos leídos de DATOS10
+    const g = {
+      paneles: (c) => [4, 37, 70].map((x0, p) => `<rect x="${x0}" y="6" width="27" height="44" rx="3" fill="none" stroke="#CFD8DC"/>` + [[6, 10], [12, 22], [18, 14], [8, 32], [20, 36]].map(([dx, dy], k) => `<circle cx="${x0 + ((dx + p * 7 * k) % 22) + 3}" cy="${6 + ((dy + p * 9 * k) % 36) + 4}" r="3" fill="${k < 3 ? c : "#9AA5B1"}"/>`).join("")).join(""),
+      puntos: (c) => [[14, 18], [22, 30], [30, 14], [18, 40], [66, 22], [74, 34], [82, 18], [70, 44], [46, 28]].map(([x, y], k) => `<circle cx="${x}" cy="${y}" r="4.5" fill="${k < 4 ? c : k < 8 ? "#9AA5B1" : "#E65100"}"/>`).join(""),
+      ejes: (c) => `<line x1="10" y1="48" x2="90" y2="48" stroke="#9AA5B1"/><line x1="12" y1="52" x2="12" y2="6" stroke="#9AA5B1"/>` + [[24, 40], [34, 34], [44, 30], [54, 24], [64, 18], [76, 14]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="${c}"/>`).join("") + `<line x1="18" y1="44" x2="84" y2="10" stroke="${c}" stroke-width="2.5" stroke-dasharray="5 3"/>`,
+      triangulo: (c) => `<polygon points="50,4 12,52 88,52" fill="none" stroke="#9AA5B1" stroke-width="1.5"/>` + [[50, 16], [30, 44], [70, 44], [46, 36], [58, 30], [40, 28]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="4" fill="${c}"/>`).join(""),
+      matriz: (c) => [0, 1, 2, 3].flatMap((i) => [0, 1, 2, 3, 4].map((j) => `<circle cx="${18 + j * 16}" cy="${9 + i * 13}" r="${[2, 5, 3, 6, 2][(i + j) % 5]}" fill="${c}" fill-opacity=".8"/>`)).join(""),
+      nube: (c) => `<text x="50" y="34" text-anchor="middle" font-size="22" font-weight="800" fill="${c}">don</text><text x="16" y="16" font-size="11" fill="#52606D">sancho</text><text x="66" y="14" font-size="9" fill="#52606D">merced</text><text x="8" y="50" font-size="13" fill="#52606D">quijote</text><text x="64" y="50" font-size="10" fill="#52606D">señor</text>`,
+      lineas: (c) => `<polyline points="8,40 20,32 32,36 44,22 56,26 68,14 80,18 92,10" fill="none" stroke="${c}" stroke-width="2.5"/><polyline points="8,20 20,26 32,22 44,34 56,30 68,40 80,36 92,44" fill="none" stroke="#9AA5B1" stroke-width="2"/>`,
+      grafo: (c) => [[18, 12], [82, 12], [14, 46], [86, 46], [50, 6], [50, 52]].map(([x, y]) => `<line x1="50" y1="29" x2="${x}" y2="${y}" stroke="#9AA5B1"/><circle cx="${x}" cy="${y}" r="4" fill="#52606D"/>`).join("") + `<circle cx="50" cy="29" r="9" fill="${c}"/>`,
+      arbol: (c) => `<rect x="4" y="22" width="30" height="14" rx="3" fill="${c}"/>` + [10, 22, 34, 46].map((y) => `<path d="M34 29 C48 29 48 ${y} 62 ${y}" fill="none" stroke="#9AA5B1" stroke-width="1.5"/><rect x="62" y="${y - 4}" width="${[30, 22, 26, 18][(y - 10) / 12]}" height="8" rx="2" fill="#CFD8DC"/>`).join(""),
+      arcos: (c) => [12, 30, 50, 70, 88].map((x) => `<circle cx="${x}" cy="48" r="4" fill="#52606D"/>`).join("") + `<path d="M30 46 Q40 22 50 46" fill="none" stroke="${c}" stroke-width="2"/><path d="M50 46 Q69 10 88 46" fill="none" stroke="${c}" stroke-width="2"/><path d="M12 46 Q31 18 50 46" fill="none" stroke="${c}" stroke-width="2"/>`,
+      cuadros: (c) => Array.from({ length: 26 }, (_, k) => `<rect x="${6 + (k % 13) * 7}" y="${12 + Math.floor(k / 13) * 18}" width="6" height="15" fill="${c}" fill-opacity="${(0.25 + 0.75 * Math.abs(Math.sin(k * 1.7))).toFixed(2)}"/>`).join(""),
+      firma: (c) => [-14, 8, -6, 18, -20, 4, 12, -8, 22, -4].map((v, k) => `<rect x="${8 + k * 8.5}" y="${v < 0 ? 28 : 28 - v}" width="6" height="${Math.abs(v)}" fill="${v < 0 ? "#9AA5B1" : c}"/>`).join("") + `<line x1="6" y1="28" x2="94" y2="28" stroke="#52606D"/>`,
+    };
+    const R17 = D.resumen17, HR = D.huella_resumen, FR = D.firmas_resultado.disimilitud_total;
+    const quijote = Object.entries(FR).filter(([k]) => !/ficticias/.test(k)).sort((a, b) => b[1] - a[1]);
+    const dul = D.cooc_quijote.objetivos.dulcinea.co.slice(0, 3).map((x) => "«" + x[0] + "»").join(", ");
+    const COLS = [
+      ["Proyecciones y tópicos", "#1E88E5", [
+        ["cerca", 2, "puntos", "¿Cerca en el mapa = parecido?", "10.3-10.4", `El ${dec(100 * R17.coseno.pares_coseno_cero / R17.coseno.pares_total, 0)} % de los pares de noticias tiene coseno 0: dos vecinas en el mapa pueden no compartir nada.`],
+        ["proy", 3, "paneles", "t-SNE, MDS, PCA y discriminante", "10.4", `Los dos primeros ejes de la PCA recogen solo el ${dec(100 * R17.pca_varianza[0], 1)} % y el ${dec(100 * R17.pca_varianza[1], 1)} % de la varianza. El discriminante separa hasta etiquetas al azar (silueta ${dec(R17.lda.silueta_azar_media, 2)}), pero en prueba acierta el ${dec(100 * R17.lda.acierto_prueba_azar_medio, 0)} %.`],
+        ["pca", 4, "ejes", "PCA a mano", "10.4", "Seis documentos y seis términos: cada eje se lee por las cargas de los términos."],
+        ["top", 5, "triangulo", "Noticias por sus tópicos", "10.5", "Cada noticia se coloca por su mezcla de tópicos, no por sus palabras."]]],
+      ["Palabras", "#00897B", [
+        ["nube", 6, "nube", "Nube de palabras", "10.7", "Vacías, escala y espacio deciden lo que se ve: el tamaño no es proporcional a la frecuencia."],
+        ["tend", 7, "lineas", "Dos nubes y tendencias", "10.7", "Parte I (1605) frente a Parte II (1615) del Quijote, y la evolución por capítulo."]]],
+      ["Estructura", "#8E24AA", [
+        ["cooc", 8, "grafo", "Coocurrencias", "10.8", `Con «dulcinea», por recuento ganan ${dul}; la PMI destaca las palabras que solo aparecen con ella.`],
+        ["arbol", 9, "arbol", "Concordancia y árbol de palabras", "10.8", "Cómo sigue «vuestra merced» en el texto: la palabra en su contexto."],
+        ["gram", 10, "arcos", "Dependencias y entidades", "10.8", `Arcos sintácticos y entidades (${D.modelo_spacy.etiquetas.join(", ")}) con el modelo es_${esc(D.modelo_spacy.nombre)} ${esc(D.modelo_spacy.version)} de spaCy.`]]],
+      ["Sustancia", "#F57C00", [
+        ["huella", 11, "cuadros", "Huella literaria", "10.9", `TTR por capítulo: ${dec(HR.medias_por_parte.ttr_bruto[0], 2)} (Parte I) y ${dec(HR.medias_por_parte.ttr_bruto[1], 2)} (Parte II); con MATTR, ${dec(HR.medias_por_parte.riqueza_lexica_mattr500[0], 3)} y ${dec(HR.medias_por_parte.riqueza_lexica_mattr500[1], 3)}: la diferencia era la longitud.`],
+        ["huella", 11, "firma", "Firmas de n-gramas de caracteres", "10.9", `${esc(quijote[0][0])} es el fragmento del Quijote más distinto (${dec(quijote[0][1], 0)}): otro estilo, no otro autor.`],
+        ["top", 5, "matriz", "Matriz término-tópico (Termite)", "10.9", "Qué palabras definen cada tópico y con qué peso."]]],
+    ];
+    $("mapa-tema").innerHTML = COLS.map(([t, c, cards]) => `<div class="mt-col"><h3 style="background:${c}">${t}</h3>` +
+      cards.map(([id, n, gl, tit, ap, hall]) => `<button type="button" class="mt-card" style="border-left-color:${c}" data-ir="${id}"><svg viewBox="0 0 100 56" aria-hidden="true">${g[gl](c)}</svg>` +
+        `<b>${tit}</b><span class="small">Apartado ${ap}</span><span class="hall">${hall}</span><span class="ir" style="color:${c === "#F57C00" ? "#B45309" : c}">Pestaña ${n} →</span></button>`).join("") + "</div>").join("");
+    $("mapa-tema").addEventListener("click", (e) => { const b = e.target.closest(".mt-card"); if (b) Clase.irAPestana(b.dataset.ir); });
+  };
+
+  // ================================================================ 2 · ¿cerca = parecido?
+  INIT["p-cerca"] = function () {
+    const N = D.noticias, n = N.ids.length;
+    const mapas = [["tsne_p15_s0", "t-SNE, perplejidad 15"], ["tsne_p5_s0", "t-SNE, perplejidad 5"], ["tsne_p30_s0", "t-SNE, perplejidad 30"],
+      ["mds", "MDS"], ["pca", "PCA"]];
+    opciones($("cerca-mapa"), mapas, "tsne_p15_s0");
+    opciones($("cerca-doc"), N.ids.map((id, i) => [String(i), `${id} · ${N.seccion[i]} · ${N.titular[i].slice(0, 60)}`]), String(N.ids.indexOf("d15")));
+    leyendaSecciones($("cerca-leyenda"));
+    const peor = (() => { // par vecino en el mapa t-SNE (p15) con menor coseno
+      const Y = D.mapas.tsne_p15_s0; let best = null;
+      for (let i = 0; i < n; i++) {
+        const j = L.vecinosMapa(Y, i, 1)[0][0], c = L.cosenoDisperso(N.tfidf[i], N.tfidf[j]);
+        if (!best || c < best[2] - 1e-12) best = [i, j, c];
+      }
+      return best;
+    })();
+    function pinta() {
+      const clave = $("cerca-mapa").value, Y = D.mapas[clave], i = +$("cerca-doc").value;
+      const svg = $("cerca-svg"); limpiar(svg);
+      const f = escala(Y, 520, 420, 22);
+      const vm = L.vecinosMapa(Y, i, 5).map((x) => x[0]);
+      const vo = L.vecinosOriginales(N.tfidf, i, 5).map((x) => x[0]);
+      for (let j = 0; j < n; j++) {
+        const c = punto(svg, f(Y[j]), N.seccion[j], 4.5);
+        c.style.cursor = "pointer";
+        c.addEventListener("click", () => { $("cerca-doc").value = String(j); pinta(); });
+        const t = el("title", {}, c); t.textContent = `${N.ids[j]} · ${N.titular[j]}`;
+      }
+      vo.forEach((j) => { const p = f(Y[j]); el("rect", { x: p[0] - 8, y: p[1] - 8, width: 16, height: 16, fill: "none", stroke: "#1E88E5", "stroke-width": 2 }, svg); });
+      vm.forEach((j) => { const p = f(Y[j]); el("circle", { cx: p[0], cy: p[1], r: 10, fill: "none", stroke: "#F57C00", "stroke-width": 2 }, svg); });
+      const p = f(Y[i]);
+      el("circle", { cx: p[0], cy: p[1], r: 9, fill: "none", stroke: "#C62828", "stroke-width": 3 }, svg);
+      texto(svg, Math.min(p[0] + 12, 440), p[1] - 10, N.ids[i], { "font-weight": 700, fill: "#C62828" });
+      // tabla: vecinos del mapa con su coseno y puesto real
+      const ordenReal = L.vecinosOriginales(N.tfidf, i, n - 1).map((x) => x[0]);
+      const lem = new Set(N.lemas[i].split(" "));
+      const filas = vm.map((j) => {
+        const cs = L.cosenoDisperso(N.tfidf[i], N.tfidf[j]);
+        const comp = N.lemas[j].split(" ").filter((w, k, a) => lem.has(w) && a.indexOf(w) === k);
+        const enTop5 = vo.includes(j);
+        return `<tr><td>${N.ids[j]}</td><td>${esc(N.seccion[j])}</td><td>${esc(N.titular[j])}</td><td class="num ${cs === 0 ? "malo" : ""}">${dec(cs)}</td>` +
+          `<td class="num ${enTop5 ? "bueno" : ""}">${ordenReal.indexOf(j) + 1}</td><td>${comp.length ? esc(comp.join(", ")) : "—"}</td></tr>`;
+      }).join("");
+      $("cerca-tabla").innerHTML = `<tr><th>Vecino en el mapa</th><th>Sección</th><th>Titular</th><th class="num">Coseno</th><th class="num">Puesto real</th><th>Lemas comunes</th></tr>${filas}`;
+      $("cerca-info").innerHTML = `<p><b>${N.ids[i]}</b> (${esc(N.seccion[i])}): «${esc(N.titular[i])}»</p>` +
+        `<p class="small">Vecinos reales (coseno): ${vo.map((j) => `${N.ids[j]} (${dec(L.cosenoDisperso(N.tfidf[i], N.tfidf[j]))})`).join(", ")}</p>`;
+      const comunes = vm.filter((j) => vo.includes(j)).length;
+      const mclave = clave === "pca" ? "pca" : clave === "mds" ? "mds" : clave;
+      const md = D.medidas[mclave];
+      $("cerca-stats").innerHTML = `<div><div class="big">${comunes} de 5</div><div class="small">vecinos de ${N.ids[i]} que también lo son en el original</div></div>` +
+        (md ? `<div><div class="big">${dec(md.confianza)}</div><div class="small">confianza del mapa (todas las noticias)</div></div>` +
+        `<div><div class="big">${pct(md.solapamiento_vecinos)}</div><div class="small">vecinos comunes (media)</div></div>` : "") +
+        `<div><div class="big">${dec(D.resumen17.coseno.media_intra, 3)} / ${dec(D.resumen17.coseno.media_inter, 3)}</div><div class="small">coseno medio dentro / entre secciones</div></div>`;
+    }
+    $("cerca-mapa").addEventListener("change", pinta);
+    $("cerca-doc").addEventListener("change", pinta);
+    $("cerca-peor").addEventListener("click", () => { $("cerca-mapa").value = "tsne_p15_s0"; $("cerca-doc").value = String(peor[0]); pinta(); });
+    pinta();
+  };
+
+  // ================================================================ 3 · proyecciones
+  INIT["p-proy"] = function () {
+    const N = D.noticias;
+    $("proy-orig").textContent = pct(D.resumen17.espacio_original_pureza);
+    let metodo = "tsne", per = 15, ini = "pca", sem = 0;
+    function params() {
+      const div = $("proy-params");
+      if (metodo !== "tsne" && metodo !== "ruido") { div.innerHTML = ""; return; }
+      if (metodo === "ruido") {
+        div.innerHTML = `<label class="inline">Perplejidad <select id="pp-per"><option>2</option><option selected>30</option></select></label>`;
+        $("pp-per").addEventListener("change", pinta);
+        return;
+      }
+      div.innerHTML = `<label class="inline">Perplejidad <select id="pp-per">${[5, 15, 30, 50].map((p) => `<option${p === per ? " selected" : ""}>${p}</option>`).join("")}</select></label>` +
+        `<label class="inline">Inicio <select id="pp-ini"><option value="pca"${ini === "pca" ? " selected" : ""}>pca (por defecto)</option><option value="random"${ini === "random" ? " selected" : ""}>random</option></select></label>` +
+        `<label class="inline">Semilla <select id="pp-sem">${[0, 1, 2].map((s) => `<option${s === sem ? " selected" : ""}>${s}</option>`).join("")}</select></label>`;
+      $("pp-per").addEventListener("change", (e) => { per = +e.target.value; pinta(); });
+      $("pp-ini").addEventListener("change", (e) => { ini = e.target.value; params(); pinta(); });
+      $("pp-sem").addEventListener("change", (e) => { sem = +e.target.value; pinta(); });
+    }
+    function pinta() {
+      let clave, nota = "";
+      if (metodo === "pca") { clave = "pca"; nota = `PC1 ${pct(D.resumen17.pca_varianza[0], 1)} y PC2 ${pct(D.resumen17.pca_varianza[1], 1)} de la varianza. PC1 alto: ${D.resumen17.pca_pc1.positivas.slice(0, 4).join(", ")}; PC1 bajo: ${D.resumen17.pca_pc1.negativas.slice(0, 4).join(", ")}.`; }
+      else if (metodo === "mds") { clave = "mds"; nota = `Stress-1 = ${dec(D.resumen17.stress)} (0,2 ya se considera pobre). Dos tercios de las distancias valen 1: el plano las reparte en un anillo.`; }
+      else if (metodo === "radviz") { clave = "radviz"; nota = "Mezclas de tópicos en RadViz (pestaña 5)."; }
+      else if (metodo === "ruido") { clave = `ruido_p${$("pp-per") ? $("pp-per").value : 30}`; nota = "92 puntos de ruido gaussiano en 50 dimensiones, sin ningún grupo real: con perplejidad 2 aparecen grupos."; }
+      else {
+        clave = ini === "pca" ? `tsne_p${per}_s${sem}` : (per === 50 ? null : `tsne_random_p${per}_s${sem}`);
+        if (!clave) { clave = `tsne_p${per}_s${sem}`; nota = "Con perplejidad 50 solo se calculó el inicio por PCA. "; }
+        const es = D.resumen17.entre_semillas[`p${per}_entre_semillas`];
+        nota += ini === "pca" ? "Con init=\"pca\" las tres semillas dan el mismo mapa." :
+          (es ? `Con init="random", entre las semillas 0 y 1 solo se repite el ${pct(es.solapamiento_vecinos_0_1)} de los 5 vecinos (Procrustes ${dec(es.disparidad_procrustes_0_1)}).` : "");
+      }
+      const Y = D.mapas[clave], svg = $("proy-svg"); limpiar(svg);
+      const f = escala(Y, 520, 420, 22);
+      Y.forEach((p, j) => {
+        const c = punto(svg, f(p), metodo === "ruido" ? "cultura" : N.seccion[j], 4.5, metodo === "ruido" ? { fill: "#52606D", stroke: "#52606D" } : null);
+        if (metodo !== "ruido") { const t = el("title", {}, c); t.textContent = `${N.ids[j]} · ${N.titular[j]}`; }
+      });
+      const mk = metodo === "tsne" ? (ini === "pca" ? `tsne_p${per}_s${sem}` : `tsne_random_p${per}_s${sem}`) : clave;
+      const md = D.medidas[mk];
+      $("proy-stats").innerHTML = md ? `<div><div class="big">${dec(md.confianza)}</div><div class="small">confianza</div></div>` +
+        `<div><div class="big">${pct(md.solapamiento_vecinos)}</div><div class="small">vecinos comunes</div></div>` +
+        `<div><div class="big">${pct(md.pureza_seccion)}</div><div class="small">vecinos de la misma sección</div></div>` +
+        (md.kl != null ? `<div><div class="big">${dec(md.kl)}</div><div class="small">KL final</div></div>` : "") : "";
+      $("proy-nota").innerHTML = `<div class="info">${nota}</div>`;
+    }
+    segs($("proy-metodo"), [["pca", "PCA"], ["mds", "MDS"], ["tsne", "t-SNE"], ["radviz", "RadViz de tópicos"], ["ruido", "t-SNE de ruido"]], metodo,
+      (v) => { metodo = v; params(); pinta(); });
+    leyendaSecciones($("proy-leyenda"));
+    params(); pinta();
+    // discriminante lineal
+    let modo = "real";
+    function pintaLDA() {
+      const d = D.mapas_lda[modo], svg = $("lda-svg"); limpiar(svg);
+      const todos = d.ent.concat(d.pru), f = escala(todos, 520, 380, 30);
+      const GR = ["#1F2933", "#52606D", "#7B8794", "#9AA5B1"];
+      const etqs = SEC.slice(0, 4);
+      d.ent.forEach((p, i) => { const s = d.y_ent[i]; el("circle", { cx: f(p)[0], cy: f(p)[1], r: 9, fill: modo === "real" ? COL[s] : GR[etqs.indexOf(s)], opacity: 0.85 }, svg); });
+      d.pru.forEach((p, i) => { const s = d.y_pru[i]; el("circle", { cx: f(p)[0], cy: f(p)[1], r: 5, fill: "#fff", stroke: COL[s], "stroke-width": 2 }, svg); });
+      const r = D.resumen17.lda;
+      $("lda-info").innerHTML = modo === "real" ?
+        `<p>Secciones reales: silueta de entrenamiento ${dec(r.real.silueta_entrenamiento)}; el clasificador acierta el <b>${pct(r.real.acierto_prueba_contra_secciones)}</b> de las 20 de prueba.</p>` :
+        `<p>Etiquetas al azar: silueta de entrenamiento media ${dec(r.silueta_azar_media)} (¡también separa!), pero en prueba acierta de media el <b>${pct(r.acierto_prueba_azar_medio)}</b> de las secciones reales (al azar, 25 %).</p>`;
+      $("lda-info").innerHTML += `<p class="small">LDA aquí es análisis discriminante lineal (usa etiquetas), no el LDA de tópicos.</p>`;
+    }
+    segs($("lda-modo"), [["real", "Secciones reales"], ["azar", "Etiquetas al azar"]], modo, (v) => { modo = v; pintaLDA(); });
+    pintaLDA();
+  };
+
+  // ================================================================ 4 · PCA a mano
+  INIT["p-pca"] = function () {
+    const P = D.pca_mano;
+    let M = P.matriz.map((f) => f.slice());
+    function tabla() {
+      $("pca-tabla").innerHTML = `<tr><th>Documento</th>${P.terminos.map((t) => `<th class="num">${t}</th>`).join("")}</tr>` +
+        M.map((f, i) => `<tr><td class="small">${esc(P.docs[i])}</td>${f.map((x, j) => `<td class="num"><input type="number" min="0" max="9" value="${x}" data-i="${i}" data-j="${j}" aria-label="${esc(P.terminos[j])} en el documento ${i + 1}" style="width:3.2rem"></td>`).join("")}</tr>`).join("");
+      $("pca-tabla").querySelectorAll("input").forEach((inp) => inp.addEventListener("input", (e) => {
+        const v = Math.max(0, Math.min(9, parseInt(e.target.value || "0", 10) || 0));
+        M[+e.target.dataset.i][+e.target.dataset.j] = v; calcula();
+      }));
+    }
+    function calcula() {
+      const r = L.pca(M, 2), svg = $("pca-svg"); limpiar(svg);
+      const f = escala(r.Y.concat([[0, 0]]), 480, 380, 40);
+      const o = f([0, 0]);
+      el("line", { x1: 20, y1: o[1], x2: 460, y2: o[1], stroke: "#CBD2D9" }, svg);
+      el("line", { x1: o[0], y1: 20, x2: o[0], y2: 360, stroke: "#CBD2D9" }, svg);
+      r.Y.forEach((p, i) => { const q = f(p); el("circle", { cx: q[0], cy: q[1], r: 7, fill: TOPIC[i % 6] }, svg); texto(svg, q[0] + 9, q[1] + 4, `D${i + 1}`, { "font-weight": 700 }); });
+      texto(svg, 455, o[1] - 6, "PC1", { "text-anchor": "end", fill: "#52606D" });
+      texto(svg, o[0] + 6, 30, "PC2", { fill: "#52606D" });
+      $("pca-stats").innerHTML = `<div><div class="big">${pct(r.varianza[0], 1)}</div><div class="small">varianza de PC1</div></div><div><div class="big">${pct(r.varianza[1], 1)}</div><div class="small">varianza de PC2</div></div>`;
+      $("pca-cargas").innerHTML = `<h3>Cargas (componentes)</h3><table><tr><th></th>${P.terminos.map((t) => `<th class="num">${t}</th>`).join("")}</tr>` +
+        r.componentes.map((c, k) => `<tr><td>PC${k + 1}</td>${c.map((x) => `<td class="num">${dec(x)}</td>`).join("")}</tr>`).join("") + "</table>";
+    }
+    $("pca-reset").addEventListener("click", () => { M = P.matriz.map((f) => f.slice()); tabla(); calcula(); });
+    tabla(); calcula();
+  };
+
+  // ================================================================ 5 · tópicos
+  INIT["p-top"] = function () {
+    const N = D.noticias, th = D.theta, pal = D.topicos_palabras;
+    const ordenes = [[[90, 0, -90, 180], "orden del tema: 1 arriba, 2 derecha, 3 abajo, 4 izquierda"], [[90, -90, 0, 180], "1 y 2 opuestos"], [[90, 0, 180, -90], "1 y 3 opuestos"]];
+    let ord = 0, sel = N.ids.indexOf("e11");
+    function pinta() {
+      const g = ordenes[ord][0], Y = L.radviz(th, g), svg = $("rv-svg"); limpiar(svg);
+      const cx = 320, cy = 235, R = 160, f = (p) => [cx + p[0] * R, cy - p[1] * R];
+      el("circle", { cx, cy, r: R, fill: "none", stroke: "#CBD2D9" }, svg);
+      g.forEach((a, k) => {
+        const p = f([Math.cos(a * Math.PI / 180), Math.sin(a * Math.PI / 180)]);
+        el("rect", { x: p[0] - 7, y: p[1] - 7, width: 14, height: 14, fill: "#1F2933" }, svg);
+        const dx = Math.cos(a * Math.PI / 180), dy = -Math.sin(a * Math.PI / 180);
+        const anc = Math.abs(dx) < 0.1 ? "middle" : (dx > 0 ? "start" : "end"), yb = p[1] + dy * 24 + (dy > 0.1 ? 8 : dy < -0.1 ? -14 : -4);
+        texto(svg, p[0] + dx * 16, yb, `tópico ${k + 1}`, { "text-anchor": anc, "font-size": 12, "font-weight": 700 });
+        texto(svg, p[0] + dx * 16, yb + 15, pal[k].slice(0, 2).join(", "), { "text-anchor": anc, "font-size": 12 });
+      });
+      Y.forEach((p, j) => {
+        const c = punto(svg, f(p), N.seccion[j], 4.5); c.style.cursor = "pointer";
+        c.addEventListener("click", () => { sel = j; pinta(); });
+        const t = el("title", {}, c); t.textContent = `${N.ids[j]} · ${N.titular[j]}`;
+      });
+      const q = f(Y[sel]);
+      el("circle", { cx: q[0], cy: q[1], r: 10, fill: "none", stroke: "#C62828", "stroke-width": 2.5 }, svg);
+      const cerca = Y.map((p, j) => [j, Math.hypot(p[0] - Y[sel][0], p[1] - Y[sel][1])]).filter(([j]) => j !== sel).sort((a, b) => a[1] - b[1])[0];
+      const fila = (j) => `<tr><td>${N.ids[j]} · ${esc(N.seccion[j])}</td>${th[j].map((x, k) => `<td class="num" style="background:${x > 0.25 ? "#FFF3E0" : "transparent"}">${dec(x)}</td>`).join("")}</tr>`;
+      $("rv-info").innerHTML = `<p><b>${N.ids[sel]}</b>: «${esc(N.titular[sel])}»</p><table><tr><th>Mezcla θ</th>${pal.map((p, k) => `<th class="num">t${k + 1}</th>`).join("")}</tr>${fila(sel)}${fila(cerca[0])}</table>` +
+        `<p class="small">La noticia más cercana en el RadViz es ${N.ids[cerca[0]]}, a ${dec(cerca[1])}: compara sus mezclas, no sus posiciones.</p>` +
+        `<div class="warnbox">e11 (salud y economía) y d10 (deportes y tecnología) caen casi en el centro con el orden del tema: mezclas opuestas, misma posición.</div>`;
+    }
+    segs($("rv-orden"), ordenes.map((o, i) => [i, o[1]]), 0, (v) => { ord = v; pinta(); });
+    pinta();
+    // relevancia
+    const voc = N.vocab, T = D.termite;
+    function pintaRel() {
+      const lam = +$("rel-lam").value, k = Math.max(3, Math.min(10, +$("rel-k").value || 6));
+      $("rel-lam-v").textContent = dec(lam, 1);
+      const tops = T.phi.map((ph) => L.ordenDesc(L.relevancia(ph, T.pw, lam)).slice(0, k));
+      const terms = [];
+      tops.forEach((t) => t.forEach((i) => { if (!terms.includes(i)) terms.push(i); }));
+      const svg = $("rel-svg"); limpiar(svg);
+      const alto = Math.min(18, 480 / terms.length);
+      svg.setAttribute("viewBox", `0 0 520 ${Math.max(200, 40 + alto * terms.length + 30)}`);
+      const maxphi = Math.max(...terms.map((i) => Math.max(...T.phi.map((ph) => ph[i]))));
+      terms.forEach((i, r) => {
+        const y = 40 + r * alto;
+        texto(svg, 150, y + 4, voc[i], { "text-anchor": "end", "font-size": 12 });
+        for (let t = 0; t < 4; t++) {
+          const v = T.phi[t][i];
+          if (v > 1e-4) el("circle", { cx: 200 + t * 80, cy: y, r: Math.max(1.5, 11 * Math.sqrt(v / maxphi)), fill: TOPIC[t], opacity: 0.85 }, svg);
+        }
+      });
+      for (let t = 0; t < 4; t++) texto(svg, 200 + t * 80, 22, `tópico ${t + 1}`, { "text-anchor": "middle", "font-size": 12, "font-weight": 700, fill: TOPIC[t] });
+      $("rel-tabla").innerHTML = `<table><tr><th>Tópico</th><th>Términos más relevantes (λ = ${dec(lam, 1)})</th></tr>` +
+        tops.map((t, j) => `<tr><td style="color:${TOPIC[j]};font-weight:700">${j + 1}</td><td>${t.map((i) => esc(voc[i])).join(", ")}</td></tr>`).join("") + "</table>" +
+        `<p class="small">Con λ = 0 aparecen términos raros y muy específicos; con λ = 1, los frecuentes que comparten varios tópicos. «artificial» e «inteligencia» empatan: van siempre juntas.</p>`;
+    }
+    $("rel-lam").addEventListener("input", pintaRel);
+    $("rel-k").addEventListener("input", pintaRel);
+    pintaRel();
+  };
+
+  // ================================================================ 6 · nube de palabras
+  INIT["p-nube"] = function () {
+    const Q = D.quijote;
+    const pol = {};
+    for (const p of ["positiva", "negativa"]) pol[p] = L.masComunes(L.contar([].concat(...D.resenas.filter((x) => x.polaridad === p).map((x) => L.tokens(x.texto)))));
+    const EJ4 = "Este es un ejemplo de documento de texto. Este documento contiene palabras repetidas.";
+    const corpus = { todo: ["Quijote completo", Q.frecuencias.todo], I: ["Quijote, Parte I", Q.frecuencias.I], II: ["Quijote, Parte II", Q.frecuencias.II],
+      pos: ["Reseñas positivas (Tema 7)", pol.positiva], neg: ["Reseñas negativas (Tema 7)", pol.negativa],
+      ej4: ["Frase del ejercicio 4 del tema", L.masComunes(L.contar(L.tokens(EJ4)))] };
+    opciones($("nube-corpus"), Object.entries(corpus).map(([k, v]) => [k, v[0]]), "todo");
+    const PAL = ["#1E88E5", "#00897B", "#8E24AA", "#F57C00", "#1F2933"];
+    function frecs() {
+      const v = $("nube-vac").value;
+      const vac = v === "ninguna" ? null : v === "ingles" ? ENG : v === "spacy" ? VAC : VAC_OP;
+      return L.filtrarVacias(corpus[$("nube-corpus").value][1], vac);
+    }
+    function pinta() {
+      const cv = $("nube-canvas"), ctx = cv.getContext("2d", { willReadFrequently: true }), W = cv.width, H = cv.height;
+      ctx.clearRect(0, 0, W, H); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, W, H);
+      const nmax = Math.max(10, Math.min(150, +$("nube-n").value || 60));
+      const fr = frecs().slice(0, nmax), norm = L.normalizar(fr);
+      const rs = parseFloat($("nube-rs").value.replace(",", "."));
+      const rnd = L.mulberry32(+$("nube-semilla").value || 0);
+      const CEL = 2, GW = Math.floor(W / CEL), GH = Math.floor(H / CEL);
+      const ocup = new Uint8Array(GW * GH);
+      const integral = () => { // imagen integral de la ocupación
+        const I = new Int32Array((GW + 1) * (GH + 1));
+        for (let y = 1; y <= GH; y++) { let fila = 0; for (let x = 1; x <= GW; x++) { fila += ocup[(y - 1) * GW + x - 1]; I[y * (GW + 1) + x] = I[(y - 1) * (GW + 1) + x] + fila; } }
+        return I;
+      };
+      const libre = (I, x, y, w, h) => I[(y + h) * (GW + 1) + x + w] - I[y * (GW + 1) + x + w] - I[(y + h) * (GW + 1) + x] + I[y * (GW + 1) + x] === 0;
+      // tamaño inicial: el de WordCloud sale de colocar las dos primeras palabras; aquí, una fracción fija del alto
+      let fs = Math.round(H * 0.36), ultima = 1;
+      const filas = [];
+      const porPix = $("nube-ocup").value === "pix";
+      for (const [w, f] of norm) {
+        if (rs !== 0) fs = Math.round((rs * (f / ultima) + (1 - rs)) * fs);
+        ultima = f;
+        const deseado = fs;
+        let colocada = null, tam = fs;
+        while (tam >= 6 && !colocada) {
+          ctx.font = `600 ${tam}px system-ui, sans-serif`;
+          const ancho = Math.ceil(ctx.measureText(w).width / CEL) + 1, alto = Math.ceil(tam * 1.05 / CEL) + 1;
+          if (ancho < GW && alto < GH) {
+            const I = integral(), libres = [];
+            for (let y = 0; y + alto < GH; y += 1) for (let x = 0; x + ancho < GW; x += 1) if (libre(I, x, y, ancho, alto)) libres.push(y * GW + x);
+            if (libres.length) { const k = libres[Math.floor(rnd() * libres.length)]; colocada = [k % GW, Math.floor(k / GW), ancho, alto]; break; }
+          }
+          tam -= Math.max(1, Math.round(tam * 0.06));
+        }
+        if (!colocada) { filas.push([w, f, deseado, null]); continue; }
+        fs = tam;
+        const [gx, gy, an, al] = colocada;
+        ctx.fillStyle = PAL[Array.from(w).reduce((s, c) => s + c.codePointAt(0), 0) % PAL.length];
+        ctx.font = `600 ${tam}px system-ui, sans-serif`;
+        ctx.textBaseline = "top";
+        ctx.fillText(w, gx * CEL, gy * CEL);
+        if (porPix) {
+          const img = ctx.getImageData(gx * CEL, gy * CEL, an * CEL, al * CEL).data;
+          for (let y = 0; y < al; y++) for (let x = 0; x < an; x++) {
+            let lleno = 0;
+            for (let dy = 0; dy < CEL && !lleno; dy++) for (let dx = 0; dx < CEL && !lleno; dx++) {
+              const o = (((y * CEL + dy) * an * CEL) + x * CEL + dx) * 4;
+              if (img[o] < 235 || img[o + 1] < 235 || img[o + 2] < 235) lleno = 1;
+            }
+            if (lleno) ocup[(gy + y) * GW + gx + x] = 1;
+          }
+        } else {
+          for (let y = 0; y < al; y++) for (let x = 0; x < an; x++) ocup[(gy + y) * GW + gx + x] = 1;
+        }
+        filas.push([w, f, deseado, tam]);
+      }
+      const colocadas = filas.filter((x) => x[3]).length;
+      $("nube-estado").textContent = `${colocadas} de ${filas.length} palabras colocadas · relative_scaling = ${dec(rs, 1)} · semilla ${$("nube-semilla").value}`;
+      const brutas = frecs();
+      $("nube-tabla").innerHTML = `<tr><th>Palabra</th><th class="num">Apariciones</th><th class="num">Frecuencia relativa</th><th class="num">Tamaño relativo</th><th>Encogida</th></tr>` +
+        filas.slice(0, 40).map(([w, f, des, t], i) => `<tr><td>${esc(w)}</td><td class="num">${L.miles(brutas[i][1])}</td><td class="num">${dec(f)}</td>` +
+          `<td class="num">${t ? dec(t / (filas[0][3] || 1)) : "—"}</td><td>${t == null ? "no cupo" : t < des ? "sí" : ""}</td></tr>`).join("");
+    }
+    ["nube-corpus", "nube-vac", "nube-rs", "nube-ocup"].forEach((id) => $(id).addEventListener("change", pinta));
+    ["nube-n", "nube-semilla"].forEach((id) => $(id).addEventListener("change", pinta));
+    pinta();
+  };
+
+  // ================================================================ 7 · dos nubes y tendencias
+  INIT["p-tend"] = function () {
+    const Q = D.quijote, CMP = Q.comparacion;
+    const cI = new Map(CMP.palabras.map((w, i) => [w, CMP.I[i]])), cII = new Map(CMP.palabras.map((w, i) => [w, CMP.II[i]]));
+    function pintaDos() {
+      const k = Math.max(20, Math.min(300, +$("dos-n").value || 100));
+      const t1 = CMP.top_I.slice(0, k), t2 = CMP.top_II.slice(0, k), s2 = new Set(t2);
+      const union = Array.from(new Set([...t1, ...t2]));
+      $("dos-comunes").textContent = `${t1.filter((w) => s2.has(w)).length} palabras comunes entre las ${k} de cada parte`;
+      const comp = L.comparar(union.map((w) => [w, cI.get(w)]), union.map((w) => [w, cII.get(w)]), Q.contenido_n[0], Q.contenido_n[1], Q.contenido_V[0], Q.contenido_V[1]);
+      const sel = comp.slice(0, 12).concat(comp.slice().sort((a, b) => Math.abs(a[3]) - Math.abs(b[3])).slice(0, 10), comp.slice(-12));
+      const svg = $("dos-svg"); limpiar(svg);
+      const x = (v) => 530 + Math.max(-8, Math.min(8, v)) / 8 * 480;
+      el("line", { x1: 530, y1: 15, x2: 530, y2: 320, stroke: "#CBD2D9" }, svg);
+      texto(svg, 50, 345, "solo en la Parte I", { fill: "#1E88E5", "font-weight": 700 });
+      texto(svg, 530, 345, "igual en las dos", { "text-anchor": "middle", fill: "#52606D", "font-weight": 700 });
+      texto(svg, 1010, 345, "solo en la Parte II", { "text-anchor": "end", fill: "#F57C00", "font-weight": 700 });
+      const filas = { I: 0, E: 0, II: 0 };
+      const vistos = new Set();
+      sel.forEach(([w, a, b, l]) => {
+        if (vistos.has(w)) return; vistos.add(w);
+        const g = l < -1 ? "I" : l > 1 ? "II" : "E";
+        const y = 30 + (filas[g]++) * 24;
+        if (y > 320) return;
+        const t = texto(svg, x(l), y, w, { "text-anchor": "middle", "font-size": 11 + 7 * Math.log10(a + b + 1) / Math.log10(450), "font-weight": 700,
+          fill: g === "I" ? "#1E88E5" : g === "II" ? "#F57C00" : "#1F2933" });
+        const ti = el("title", {}, t); ti.textContent = `${w}: ${a} en la Parte I, ${b} en la Parte II (log2 = ${dec(l)})`;
+      });
+    }
+    $("dos-n").addEventListener("change", pintaDos);
+    pintaDos();
+    const etq = Q.etiquetas, corte = Q.partes.filter((p) => p === 1).length;
+    function pintaTend() {
+      const v = +$("tend-v").value;
+      const pals = $("tend-pal").value.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean).slice(0, 6);
+      const svg = $("tend-svg"); limpiar(svg);
+      const W = 1060, Hh = 330, m = { l: 55, r: 20, t: 20, b: 40 };
+      const series = [], falt = [];
+      pals.forEach((w) => { if (Q.por_capitulo[w]) series.push([w, L.suavizar(L.serie(Q.por_capitulo[w], Q.longitudes), v)]); else falt.push(w); });
+      const ymax = Math.max(1, ...series.map(([, s]) => Math.max(...s)));
+      const X = (i) => m.l + i / (etq.length - 1) * (W - m.l - m.r), Y = (y) => Hh - m.b - y / ymax * (Hh - m.t - m.b);
+      el("line", { x1: X(corte - 0.5), y1: m.t, x2: X(corte - 0.5), y2: Hh - m.b, stroke: "#9AA5B1", "stroke-dasharray": "4 4" }, svg);
+      texto(svg, X(corte / 2), m.t + 10, "Parte I (1605)", { "text-anchor": "middle", fill: "#52606D" });
+      texto(svg, X(corte + (etq.length - corte) / 2), m.t + 10, "Parte II (1615)", { "text-anchor": "middle", fill: "#52606D" });
+      [0, 25, corte - 1, corte + 25, etq.length - 1].forEach((i) => texto(svg, X(i), Hh - m.b + 18, etq[i], { "text-anchor": "middle", "font-size": 12 }));
+      for (let k = 0; k <= 4; k++) { const yv = ymax * k / 4; texto(svg, m.l - 8, Y(yv) + 4, dec(yv, 1), { "text-anchor": "end", "font-size": 11, fill: "#52606D" }); }
+      series.forEach(([w, s], k) => {
+        el("polyline", { points: s.map((y, i) => `${X(i)},${Y(y)}`).join(" "), fill: "none", stroke: TOPIC[k % 6], "stroke-width": 2 }, svg);
+        const i = s.indexOf(Math.max(...s));
+        texto(svg, Math.min(X(i) + 6, W - 90), Y(s[i]) - 4, w, { fill: TOPIC[k % 6], "font-weight": 700 });
+      });
+      $("tend-info").innerHTML = (falt.length ? `No están entre las palabras con 20 apariciones o más: ${esc(falt.join(", "))}. ` : "") +
+        series.map(([w, s]) => { const raw = L.serie(Q.por_capitulo[w], Q.longitudes); const i = raw.indexOf(Math.max(...raw)); return `${esc(w)}: pico en ${etq[i]} (${esc(Q.titulos[i].slice(0, 60))}…)`; }).join(" · ");
+    }
+    $("tend-pal").addEventListener("change", pintaTend);
+    $("tend-v").addEventListener("change", pintaTend);
+    pintaTend();
+  };
+
+  // ================================================================ 8 · coocurrencias
+  INIT["p-cooc"] = function () {
+    let metodo = "tema";
+    function pinta() {
+      const obj = ($("cooc-obj").value || "cielo").trim().toLowerCase(), k = +$("cooc-k").value || 2;
+      const res = L.coocurrencias(D.cielo, obj, metodo, VAC, k).slice(0, 14);
+      const svg = $("cooc-svg"); limpiar(svg);
+      const cx = 260, cy = 210;
+      res.forEach(([w, c], i) => {
+        const a = 2 * Math.PI * i / Math.max(1, res.length) - Math.PI / 2, R = 150;
+        const x = cx + R * Math.cos(a), y = cy + R * Math.sin(a);
+        el("line", { x1: cx, y1: cy, x2: x, y2: y, stroke: "#9AA5B1", "stroke-width": metodo === "tema" ? 1.5 : 1 + 2.2 * c }, svg);
+        el("circle", { cx: x, cy: y, r: 6, fill: "#1E88E5" }, svg);
+        texto(svg, x + (Math.cos(a) >= 0 ? 9 : -9), y + 4, metodo === "tema" ? w : `${w} (${c})`, { "text-anchor": Math.cos(a) >= 0 ? "start" : "end" });
+      });
+      el("circle", { cx, cy, r: 26, fill: "#F57C00" }, svg);
+      texto(svg, cx, cy + 5, obj, { "text-anchor": "middle", fill: "#fff", "font-weight": 700 });
+      const nota = { tema: "Bigramas convertidos en conjunto: no hay recuentos, y como se pasa a minúsculas después, «El cielo» al inicio de frase no cuenta.",
+        adyacentes: "Palabra anterior y siguiente (sin vacías), con su recuento.", frase: "Palabras de contenido de las frases que contienen el objetivo.",
+        ventana: `Palabras a ${k} posiciones o menos, tras quitar las vacías.` }[metodo];
+      $("cooc-tabla").innerHTML = `<div class="info">${nota}</div><table><tr><th>Palabra</th><th class="num">Recuento</th></tr>${res.map(([w, c]) => `<tr><td>${esc(w)}</td><td class="num">${metodo === "tema" ? "—" : c}</td></tr>`).join("")}</table>` +
+        (res.length ? "" : `<p class="small">«${esc(obj)}» no aparece en las frases del ejercicio.</p>`);
+    }
+    segs($("cooc-metodo"), [["tema", "Como el tema"], ["adyacentes", "Adyacentes con recuento"], ["frase", "Misma frase"], ["ventana", "Ventana"]], metodo, (v) => { metodo = v; pinta(); });
+    $("cooc-obj").addEventListener("change", pinta);
+    $("cooc-k").addEventListener("change", pinta);
+    pinta();
+    const CQ = D.cooc_quijote;
+    opciones($("pmi-obj"), Object.keys(CQ.objetivos).map((w) => [w, `${w} (${CQ.objetivos[w].n_objetivo} oraciones)`]), "dulcinea");
+    function pintaPMI() {
+      const w = $("pmi-obj").value, o = CQ.objetivos[w], mn = Math.max(2, +$("pmi-min").value || 5);
+      const rec = o.co.slice(0, 12), pm = L.pmi(o.co, o.df, CQ.N, o.n_objetivo, mn).slice(0, 12);
+      const tab = (titulo, filas, col) => `<h3>${titulo}</h3><table><tr><th>Palabra</th><th class="num">Oraciones compartidas</th>${col ? "<th class=\"num\">PMI (bits)</th>" : ""}</tr>` +
+        filas.map((f) => `<tr><td>${esc(f[0])}</td><td class="num">${f[1]}</td>${col ? `<td class="num">${dec(f[2])}</td>` : ""}</tr>`).join("") + "</table>";
+      $("pmi-rec").innerHTML = tab("Por recuento", rec, false);
+      $("pmi-pmi").innerHTML = tab(`Por PMI (mínimo ${mn})`, pm, true) + `<p class="small">Con un mínimo bajo suben palabras raras que comparten dos o tres oraciones («ausencias», «poneros»): la PMI se dispara con pocos casos.</p>`;
+    }
+    $("pmi-obj").addEventListener("change", pintaPMI);
+    $("pmi-min").addEventListener("change", pintaPMI);
+    pintaPMI();
+  };
+
+  // ================================================================ 9 · árbol de palabras
+  INIT["p-arbol"] = function () {
+    const AQ = D.arboles_quijote;
+    opciones($("arb-raiz-q"), Object.keys(AQ).map((r) => [r, `${r} (${AQ[r].continuaciones.length})`]), "vuestra merced");
+    const listasR = D.resenas.map((x) => L.tokens(x.texto));
+    function pinta() {
+      const q = $("arb-corpus").value === "q";
+      $("arb-raiz-q").style.display = q ? "" : "none"; $("arb-raiz-r").style.display = q ? "none" : "";
+      const raiz = q ? $("arb-raiz-q").value : L.tokens($("arb-raiz-r").value).join(" ");
+      const conts = q ? AQ[raiz].continuaciones : L.continuaciones(listasR, raiz, 3);
+      const ramas = +$("arb-ramas").value || 4, mn = +$("arb-min").value || 1;
+      const nodos = L.arbol(conts, 3, ramas, mn);
+      const svg = $("arb-svg"); limpiar(svg);
+      const hojas = (n) => n.hijos.length ? n.hijos.reduce((s, h) => s + hojas(h), 0) : 1;
+      const total = Math.max(1, nodos.reduce((s, n) => s + hojas(n), 0));
+      const alto = Math.max(140, total * 34 + 30);
+      svg.setAttribute("viewBox", `0 0 1060 ${alto}`);
+      const filaH = (alto - 30) / total;
+      let y0 = 0;
+      const X = [240, 470, 690, 900];
+      const fsz = (n) => 13 + 9 * Math.sqrt(n / Math.max(1, conts.length));
+      function coloca(n, nivel) {
+        if (n.hijos.length) { const ys = n.hijos.map((h) => coloca(h, nivel + 1)); n._y = ys.reduce((a, b) => a + b, 0) / ys.length; }
+        else { n._y = 20 + (y0 + 0.5) * filaH; y0++; }
+        return n._y;
+      }
+      nodos.forEach((n) => coloca(n, 1));
+      const yr = nodos.length ? nodos.reduce((s, n) => s + n._y, 0) / nodos.length : alto / 2;
+      texto(svg, 215, yr + 7, raiz, { "text-anchor": "end", "font-size": 22, "font-weight": 800, fill: "#E65100" });
+      texto(svg, 215, yr + 26, `${conts.length} apariciones`, { "text-anchor": "end", "font-size": 12, fill: "#52606D" });
+      function dibuja(n, nivel, xp, yp) {
+        el("path", { d: `M${xp},${yp} C${xp + 40},${yp} ${X[nivel - 1] - 40},${n._y} ${X[nivel - 1] - 6},${n._y}`, fill: "none", stroke: "#F57C00", "stroke-width": 1 + 4 * n.n / Math.max(1, conts.length), opacity: 0.75 }, svg);
+        texto(svg, X[nivel - 1], n._y + 5, n.palabra, { "font-size": fsz(n.n) });
+        texto(svg, X[nivel - 1], n._y + 20, String(n.n), { "font-size": 10, fill: "#52606D" });
+        const fin = X[nivel - 1] + n.palabra.length * fsz(n.n) * 0.55 + 6;
+        n.hijos.forEach((h) => dibuja(h, nivel + 1, Math.min(fin, X[nivel] - 50), n._y));
+      }
+      nodos.forEach((n) => dibuja(n, 1, 222, yr));
+      if (!nodos.length) texto(svg, 520, 70, conts.length ? "Ninguna rama alcanza el mínimo: bájalo." : "La raíz no aparece en el corpus.", { "text-anchor": "middle", fill: "#C62828" });
+      const kw = q ? AQ[raiz].kwic : L.kwic(listasR, raiz, 6).slice(0, 40);
+      $("arb-kwic").innerHTML = kw.map(([a, r, b]) => `<tr><td class="izq">${esc(a)}</td><td class="raiz">${esc(r)}</td><td class="der">${esc(b)}</td></tr>`).join("") || "<tr><td>Sin apariciones.</td></tr>";
+    }
+    $("arb-corpus").addEventListener("change", () => { const q = $("arb-corpus").value === "q"; $("arb-min").value = q ? 8 : 1; $("arb-ramas").value = q ? 4 : 8; pinta(); });
+    ["arb-raiz-q", "arb-ramas", "arb-min"].forEach((id) => $(id).addEventListener("change", pinta));
+    $("arb-raiz-r").addEventListener("change", pinta);
+    pinta();
+  };
+
+  // ================================================================ 10 · gramática y entidades
+  INIT["p-gram"] = function () {
+    opciones($("dep-frase"), D.dependencias.map((d, i) => [String(i), d.frase]), "0");
+    function pinta() {
+      const d = D.dependencias[+$("dep-frase").value];
+      const toks = d.tokens.filter((t) => t.pos !== "PUNCT");
+      const xs = {}; toks.forEach((t, k) => { xs[t.i] = 60 + k * (940 / Math.max(1, toks.length - 1 || 1)); });
+      const arcos = toks.filter((t) => t.dep !== "ROOT" && xs[t.cabeza] != null).map((t) => [Math.min(xs[t.cabeza], xs[t.i]), Math.max(xs[t.cabeza], xs[t.i]), t]);
+      const nivel = new Map();
+      arcos.slice().sort((a, b) => (a[1] - a[0]) - (b[1] - b[0])).forEach(([a, b, t]) => {
+        let mx = 0; arcos.forEach(([a2, b2, u]) => { if (nivel.has(u) && a <= a2 && b2 <= b && !(a2 === a && b2 === b)) mx = Math.max(mx, nivel.get(u)); });
+        nivel.set(t, mx + 1);
+      });
+      const hmax = Math.max(1, ...Array.from(nivel.values()));
+      const base = 40 + hmax * 34 + 20, svg = $("dep-svg"); limpiar(svg);
+      svg.setAttribute("viewBox", `0 0 1060 ${base + 70}`);
+      toks.forEach((t) => {
+        texto(svg, xs[t.i], base + 22, t.texto, { "text-anchor": "middle", "font-size": 16 });
+        texto(svg, xs[t.i], base + 42, t.pos, { "text-anchor": "middle", "font-size": 11, fill: "#52606D" });
+        if (t.dep === "ROOT") texto(svg, xs[t.i], base + 60, "raíz", { "text-anchor": "middle", "font-size": 12, fill: "#E65100", "font-weight": 700 });
+      });
+      arcos.forEach(([a, b, t]) => {
+        const h = 34 * nivel.get(t), col = (d.frase.startsWith("Sancho") && t.texto === "caminos") ? "#C62828" : "#1E88E5";
+        el("path", { d: `M${a + 4},${base} C${a + 4},${base - h} ${b - 4},${base - h} ${b - 4},${base}`, fill: "none", stroke: col, "stroke-width": 1.8 }, svg);
+        const xd = xs[t.i] + (xs[t.i] === a ? 4 : -4);
+        el("path", { d: `M${xd - 5},${base - 9} L${xd},${base} L${xd + 5},${base - 9} Z`, fill: col }, svg);
+        const lab = texto(svg, (a + b) / 2, base - 0.75 * h - 4, t.dep, { "text-anchor": "middle", "font-size": 12, fill: col });
+        lab.setAttribute("paint-order", "stroke"); lab.setAttribute("stroke", "#fff"); lab.setAttribute("stroke-width", "4");
+      });
+      $("dep-tabla").innerHTML = `<table><tr><th>Palabra</th><th>Categoría</th><th>Relación</th><th>Núcleo</th></tr>${d.tokens.map((t) => `<tr><td>${esc(t.texto)}</td><td>${t.pos}</td><td>${t.dep}</td><td>${esc(d.tokens[t.cabeza].texto)}</td></tr>`).join("")}</table>`;
+    }
+    $("dep-frase").addEventListener("change", pinta);
+    pinta();
+    const CE = { PER: "#F3E5F5", LOC: "#E0F2F1", ORG: "#E3F2FD", MISC: "#FFF3E0" }, CT = { PER: "#6A1B9A", LOC: "#00695C", ORG: "#0D47A1", MISC: "#E65100" };
+    $("ent-lista").innerHTML = D.entidades.map((e) => {
+      let h = "", k = 0;
+      e.ents.forEach(([a, b, l]) => { h += esc(e.frase.slice(k, a)) + `<span class="ent" style="background:${CE[l]};color:${CT[l]}">${esc(e.frase.slice(a, b))}<sup>${l}</sup></span>`; k = b; });
+      return `<p style="font-size:1.1rem;margin:.6rem 0">${h + esc(e.frase.slice(k))}</p>`;
+    }).join("");
+    $("ent-nota").textContent = `Modelo ${D.modelo_spacy.nombre} ${D.modelo_spacy.version}; etiquetas: ${D.modelo_spacy.etiquetas.join(", ")}. «Juan Pablo II visitó España» sale como una sola persona; la fecha no se marca porque el modelo español no tiene etiqueta de fecha; «El Hospital Clínico de Valdeluna» queda como lugar (LOC) y no como organización.`;
+  };
+
+  // ================================================================ 11 · huellas y firmas
+  INIT["p-huella"] = function () {
+    const Hh = D.huella, etq = D.quijote.etiquetas, tit = D.quijote.titulos, corte = D.quijote.partes.filter((p) => p === 1).length;
+    const RAS = [["dialogo", "Oraciones con diálogo", "#1565C0"], ["longitud_media_oracion", "Palabras por oración", "#E65100"],
+      ["riqueza_lexica_mattr500", "Riqueza léxica (MATTR 500)", "#6A1B9A"], ["ttr_bruto", "Riqueza léxica (TTR bruta)", "#C62828"]];
+    let ras = "dialogo";
+    function color(v, lo, hi, hex) {
+      const t = Math.max(0, Math.min(1, (v - lo) / (hi - lo || 1)));
+      const c = [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+      return `rgb(${c.map((x) => Math.round(255 - t * (255 - x))).join(",")})`;
+    }
+    function pinta() {
+      const r = RAS.find((x) => x[0] === ras), v = Hh[r[0]];
+      const s = v.slice().sort((a, b) => a - b), lo = s[Math.floor(0.02 * s.length)], hi = s[Math.floor(0.98 * s.length)];
+      const celda = (i) => `<div title="${etq[i]} · ${esc(tit[i].slice(0, 70))} · ${dec(v[i], 3)}" class="${["I-33", "I-34", "I-35"].includes(etq[i]) ? "sel" : ""}" style="background:${color(v[i], lo, hi, r[2])}"></div>`;
+      const bloque = (a, b, t) => `<h3>${t}</h3><div class="pix" style="grid-template-columns:repeat(13,22px)">${Array.from({ length: b - a }, (_, k) => celda(a + k)).join("")}</div>`;
+      $("hu-grid").innerHTML = bloque(0, corte, "Parte I · 52 capítulos") + bloque(corte, etq.length, "Parte II · 74 capítulos") +
+        `<p class="small">Color: del percentil 2 (claro) al 98 (oscuro). En rojo, I-33 a I-35 («El curioso impertinente»). Pasa el ratón por un cuadrado.</p>`;
+      const mp = D.huella_resumen.medias_por_parte[r[0]];
+      $("hu-info").innerHTML = `<div class="stats"><div><div class="big">${dec(mp[0], 3)}</div><div class="small">media Parte I</div></div><div><div class="big">${dec(mp[1], 3)}</div><div class="small">media Parte II</div></div></div>` +
+        (ras === "ttr_bruto" ? `<div class="badbox">La TTR baja con la longitud (correlación con las palabras del capítulo: ${dec(D.huella_resumen.correlacion_ttr_bruto_longitud)}). Los capítulos de la Parte II son más cortos y por eso <b>parecen</b> más ricos. Compara con la MATTR.</div>` :
+          ras === "riqueza_lexica_mattr500" ? `<div class="info">La MATTR promedia la TTR en ventanas de 500 palabras: apenas depende de la longitud (${dec(D.huella_resumen.correlacion_mattr_longitud)}) y las dos partes quedan iguales.</div>` :
+            `<div class="info">El Curioso impertinente: ${dec(D.huella_resumen.curioso_impertinente_I33_35.longitud_media_oracion, 0)} palabras por oración y ${pct(D.huella_resumen.curioso_impertinente_I33_35.dialogo)} de oraciones con diálogo.</div>`) +
+        `<p class="small">TTR de toda la obra según el tamaño del fragmento: ${Object.entries(D.ttr_por_tamano).map(([k, x]) => `${L.miles(k)} palabras → ${dec(x)}`).join(" · ")}.</p>`;
+    }
+    segs($("hu-rasgo"), RAS.map((r) => [r[0], r[1]]), ras, (v) => { ras = v; pinta(); });
+    pinta();
+    const M = D.firmas_muestras, nombres = Object.keys(M).filter((k) => k !== "Parte I (cap. 1-8)");
+    opciones($("fi-obj"), nombres.map((k) => [k, k]).concat([["__texto", "Texto pegado"]]), "Curioso impertinente (I-33 a I-35)");
+    const cachePerfil = {};
+    const perfilDe = (k, n) => { const c = `${k}|${n}`; if (!cachePerfil[c]) cachePerfil[c] = L.perfil(M[k], n); return cachePerfil[c]; };
+    function pintaFirma() {
+      const n = +$("fi-n").value, LL = +$("fi-L").value, o = $("fi-obj").value;
+      const base = perfilDe("Parte I (cap. 1-8)", n);
+      const totales = nombres.map((k) => [k, L.cng(base, perfilDe(k, n), LL).total]);
+      let objetivo, aviso = "";
+      if (o === "__texto") {
+        const t = L.limpio($("fi-texto").value || "");
+        if (t.length < 2000) aviso = "Pega un texto más largo: con menos de unos miles de caracteres la firma no es fiable.";
+        else if (t.length < 20000) aviso = `El texto tiene ${L.miles(t.length)} caracteres; las muestras de referencia tienen 20.000: compáralo con prudencia.`;
+        objetivo = L.perfil(t.slice(0, 20000), n);
+        totales.push(["Texto pegado", t.length ? L.cng(base, objetivo, LL).total : NaN]);
+      } else objetivo = perfilDe(o, n);
+      const firma = L.cng(base, objetivo, LL);
+      const svg = $("fi-svg"); limpiar(svg);
+      const lista = totales.slice().sort((a, b) => a[1] - b[1]);
+      const ancho = 500 / lista.length;
+      lista.forEach(([k, tot], j) => {
+        const f = k === "Texto pegado" ? (isNaN(tot) ? [] : firma.filas) : L.cng(base, perfilDe(k, n), LL).filas;
+        const hf = 280 / LL;
+        f.forEach(([, , , d, sg], i) => {
+          const val = sg * Math.min(d, 4) / 4;
+          const c = val > 0 ? `rgb(${Math.round(255 - val * 57)},${Math.round(255 - val * 215)},${Math.round(255 - val * 215)})` : `rgb(${Math.round(255 + val * 225)},${Math.round(255 + val * 119)},${Math.round(255 + val * 26)})`;
+          el("rect", { x: 10 + j * ancho, y: 40 + i * hf, width: ancho - 8, height: Math.max(hf, 0.6), fill: c }, svg);
+        });
+        texto(svg, 10 + j * ancho + (ancho - 8) / 2, 30, isNaN(tot) ? "—" : dec(tot, 0), { "text-anchor": "middle", "font-weight": 700, fill: k === o || (o === "__texto" && k === "Texto pegado") ? "#C62828" : "#1F2933" });
+        const CORTO = { "Parte I (cap. 15-22)": "I, 15-22", "Parte II (cap. 60-67)": "II, 60-67", "Parte II (cap. 1-8)": "II, 1-8",
+          "Curioso impertinente (I-33 a I-35)": "Curioso", "Reseñas ficticias (Tema 7)": "Reseñas", "Noticias ficticias (Tema 6)": "Noticias", "Texto pegado": "Tu texto" };
+        const lab = texto(svg, 10 + j * ancho + (ancho - 8) / 2, 340, CORTO[k] || k.slice(0, 10), { "text-anchor": "middle", "font-size": 11, fill: "#52606D" });
+        const ti = el("title", {}, lab); ti.textContent = k;
+      });
+      $("fi-stats").innerHTML = `<div><div class="big">${isNaN(firma.total) ? "—" : dec(firma.total, 1)}</div><div class="small">disimilitud dirigida desde la base (n = ${n}, L = ${LL})</div></div>`;
+      $("fi-tabla").innerHTML = (aviso ? `<div class="warnbox">${aviso}</div>` : "") + `<h3>n-gramas con más diferencia</h3><table><tr><th>n-grama</th><th class="num">base (‰)</th><th class="num">objetivo (‰)</th></tr>` +
+        firma.filas.slice().sort((a, b) => b[3] - a[3]).slice(0, 8).map(([g, fb, fo]) => `<tr><td class="mono">«${esc(g)}»</td><td class="num">${dec(1000 * fb, 2)}</td><td class="num">${dec(1000 * fo, 2)}</td></tr>`).join("") + "</table>" +
+        `<p class="small">Rojo: más frecuente en la base; azul: menos. Columnas ordenadas de más parecida a menos.</p>`;
+    }
+    ["fi-obj", "fi-n", "fi-L"].forEach((id) => $(id).addEventListener("change", pintaFirma));
+    $("fi-texto").addEventListener("input", () => { if ($("fi-obj").value === "__texto") pintaFirma(); });
+    $("fi-texto").addEventListener("focus", () => { $("fi-obj").value = "__texto"; pintaFirma(); });
+    pintaFirma();
+  };
+
+  // (El repaso del test está en repaso.html, fuera de la demo de clase.)
+
+  INIT["p-mapa"]();
+  iniciadas["p-mapa"] = true;
+  tabs.forEach((t, i) => { t.tabIndex = i === 0 ? 0 : -1; });
+})();
+</script>
+</body>
+</html>

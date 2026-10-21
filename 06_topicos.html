@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tema 6 · Análisis y modelado de tópicos — Procesamiento del Lenguaje Natural</title>
+<style>
+  :root {
+    --ink: #1F2933; --ink2: #52606D; --muted: #9AA5B1; --line: #E4E7EB; --soft: #F5F7FA;
+    --dark: #0F1B2D; --unir: #219BC3;
+    --texto: #1E88E5; --estad: #00897B; --neuronal: #8E24AA; --aplic: #F57C00; --gris: #9AA5B1;
+    --texto-l: #E3F2FD; --estad-l: #E0F2F1; --neuronal-l: #F3E5F5; --aplic-l: #FFF3E0;
+    --ok: #2E7D32; --ok-l: #E8F5E9; --bad: #C62828; --bad-l: #FFEBEE; --warn: #8D6E00; --warn-l: #FFF8E1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #F0F4F8; color: var(--ink); line-height: 1.5; }
+  a { color: #1565C0; }
+  .header { background: var(--dark); color: #fff; padding: 1.6rem 2rem 1.2rem; }
+  .header h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .header p { color: #B0BEC5; font-size: .95rem; }
+  .header a { color: #8AB4F8; }
+  .tabs { display: flex; flex-wrap: wrap; background: #1A2940; padding: 0 1.5rem; }
+  .tab { background: none; border: none; border-bottom: 3px solid transparent; color: #B0BEC5; padding: .8rem 1rem; font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+  .tab:hover, .tab:focus-visible { color: #fff; outline: none; }
+  .tab[aria-selected="true"] { color: #fff; border-bottom-color: #80CBC4; }
+  .content { max-width: 1120px; margin: 1.6rem auto 3rem; padding: 0 1.2rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: #fff; border-radius: 12px; padding: 1.4rem 1.5rem; margin-bottom: 1.3rem; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+  .card h2 { font-size: 1.25rem; margin-bottom: .6rem; }
+  .card h3 { font-size: 1.05rem; margin: .9rem 0 .4rem; }
+  .card p { color: #37474F; margin-bottom: .8rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: .9rem; }
+  .tag { display: inline-block; font-size: .78rem; font-weight: 700; padding: .15rem .55rem; border-radius: 999px; background: var(--soft); color: var(--ink2); border: 1px solid var(--line); }
+  .tag.real { background: var(--ok-l); color: #1B5E20; border-color: #A5D6A7; }
+  .tag.pre { background: var(--texto-l); color: #0D47A1; border-color: #90CAF9; }
+  .tag.illus { background: var(--warn-l); color: var(--warn); border-color: #F0D78C; }
+  .info { background: var(--estad-l); border-left: 4px solid var(--estad); padding: .8rem 1rem; border-radius: 0 8px 8px 0; margin: .8rem 0; color: #004D40; }
+  .warnbox { background: var(--warn-l); border-left: 4px solid #F0B400; padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #5D4600; font-size: .93rem; }
+  .badbox { background: var(--bad-l); border-left: 4px solid var(--bad); padding: .7rem 1rem; border-radius: 0 8px 8px 0; margin: .6rem 0; color: #8E1B1B; font-size: .93rem; }
+  .btn { font: inherit; font-weight: 600; font-size: .88rem; padding: .45rem 1rem; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+  .btn-main { background: var(--estad); color: #fff; }
+  .btn-main:hover { background: #00695C; }
+  .btn-gray { background: #ECEFF1; color: #37474F; border-color: #CFD8DC; }
+  .btn-gray:hover { background: #CFD8DC; }
+  .btn:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible, .seg:focus-visible, td.clic:focus-visible { outline: 3px solid #80CBC4; outline-offset: 2px; }
+  .row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; margin: .6rem 0; }
+  label.inline { display: inline-flex; gap: .4rem; align-items: center; cursor: pointer; }
+  select, textarea, input[type=text], input[type=number] { font: inherit; padding: .45rem .6rem; border: 1px solid #CFD8DC; border-radius: 6px; background: #fff; color: var(--ink); }
+  select { max-width: 100%; }
+  textarea { width: 100%; min-height: 5.2rem; resize: vertical; font-family: Menlo, Consolas, monospace; font-size: .92rem; }
+  input[type=text] { min-width: 18rem; }
+  input[type=range] { width: 12rem; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; }
+  .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .box { border: 1px solid var(--line); border-radius: 10px; padding: 1rem; background: var(--soft); }
+  .box h3 { margin-top: 0; }
+  .big { font-size: 1.8rem; font-weight: 800; color: var(--ink); }
+  .small { font-size: .85rem; color: var(--ink2); }
+  .stats { display: flex; flex-wrap: wrap; gap: 1.4rem; margin: .5rem 0; }
+  .stats div { min-width: 120px; }
+  .seggroup { display: flex; flex-wrap: wrap; gap: .4rem; margin: .4rem 0 .8rem; }
+  .seg { font: inherit; font-size: .9rem; padding: .35rem .85rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .seg[aria-pressed="true"] { background: var(--dark); color: #fff; border-color: var(--dark); }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .4rem .55rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--dark); color: #fff; font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.clic { cursor: pointer; }
+  td.clic:hover { background: var(--estad-l); }
+  td.sel { background: #FFE082 !important; font-weight: 700; }
+  tr.hl td { background: var(--warn-l); }
+  td.cero { color: var(--muted); }
+  td.malo { background: var(--bad-l); color: #8E1B1B; font-weight: 700; }
+  td.bueno { background: var(--ok-l); color: #1B5E20; font-weight: 700; }
+  .scroll { overflow-x: auto; max-height: 28rem; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+  code, .mono { font-family: Menlo, Consolas, monospace; font-size: .9em; }
+  .calc { font-family: Menlo, Consolas, monospace; font-size: .9rem; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: .7rem .9rem; white-space: pre-wrap; margin: .5rem 0; }
+  .feedback { margin-top: .5rem; padding: .6rem .8rem; border-radius: 8px; font-size: .92rem; display: none; }
+  .feedback.show { display: block; }
+  .feedback.ok { background: var(--ok-l); color: #1B5E20; border: 1px solid #A5D6A7; }
+  .feedback.bad { background: var(--bad-l); color: #8E1B1B; border: 1px solid #EF9A9A; }
+  .caso-intruso { border: 1px solid var(--line); border-radius: 10px; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
+  .caso-intruso .q { font-weight: 600; margin-bottom: .5rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .opt { font: inherit; font-size: .88rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; color: var(--ink); }
+  .opt:hover { background: var(--soft); }
+  .opt.sel-ok { background: var(--ok-l); border-color: var(--ok); }
+  .opt.sel-bad { background: var(--bad-l); border-color: var(--bad); }
+  .path { display: flex; flex-direction: column; gap: .3rem; margin: .6rem 0; }
+  .lvl { border: 2px solid var(--line); border-radius: 10px; padding: .6rem .9rem; background: #fff; }
+  .lvl.usado { border-color: var(--ok); background: var(--ok-l); }
+  .lvl.saltado { border-color: #EF9A9A; background: var(--bad-l); }
+  .lvl.no { opacity: .55; }
+  .arrow { text-align: center; color: var(--ink2); font-size: 1.2rem; line-height: 1; }
+  .pill { display: inline-block; padding: .05rem .45rem; border-radius: 6px; background: var(--estad-l); border: 1px solid #80CBC4; font-family: Menlo, Consolas, monospace; font-size: .88rem; margin: .1rem; }
+  .pill.unk { background: var(--warn-l); border-color: #F0D78C; }
+  svg text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .chart { width: 100%; height: auto; display: block; }
+  .pill.cont { background: var(--aplic-l); border-color: #FFB74D; }
+  .pill.esp { background: #ECEFF1; border-color: #B0BEC5; }
+  .pill.mask { background: #FFE082; border-color: #F0B400; font-weight: 700; }
+  .pill.azar { background: var(--bad-l); border-color: #EF9A9A; }
+  .pill.igual { background: var(--ok-l); border-color: #A5D6A7; }
+  .tokbtn { font: inherit; font-family: Menlo, Consolas, monospace; font-size: .9rem; padding: .2rem .6rem; border-radius: 6px; border: 1px solid #CFD8DC; background: #fff; cursor: pointer; margin: .15rem; }
+  .tokbtn.centro { background: var(--texto-l); border-color: var(--texto); font-weight: 700; }
+  .tokbtn.ctx { background: var(--estad-l); border-color: var(--estad); }
+  .mat { width: auto; min-width: 12rem; }
+  .mat td, .mat th { text-align: center; font-variant-numeric: tabular-nums; padding: .3rem .55rem; }
+  .heat td { text-align: center; font-variant-numeric: tabular-nums; font-size: .82rem; padding: .25rem .35rem; }
+  .bar { height: 1rem; background: var(--estad); border-radius: 3px; }
+  .barcell { width: 50%; }
+  .correcto td { background: var(--ok-l); font-weight: 700; }
+  textarea.mtx { min-height: 4.6rem; width: 100%; }
+  footer { max-width: 1120px; margin: 0 auto 2rem; padding: 0 1.2rem; font-size: .82rem; color: var(--ink2); }
+  @media (max-width: 640px) { .header { padding: 1.2rem; } .tab { padding: .7rem .6rem; font-size: .85rem; } input[type=text] { min-width: 0; width: 100%; } }
+
+  .ent { border-radius: 4px; padding: 0 .15rem; border-bottom: 3px solid; }
+  .ent.PER { background: #E3F2FD; border-color: #1E88E5; }
+  .ent.LOC { background: #E0F2F1; border-color: #00897B; }
+  .ent.ORG { background: #F3E5F5; border-color: #8E24AA; }
+  .ent.MISC { background: #FFF3E0; border-color: #F57C00; }
+  .ent.FARMACO { background: #F3E5F5; border-color: #8E24AA; }
+  .ent.DOSIS { background: #E3F2FD; border-color: #1E88E5; }
+  .ent.FRECUENCIA { background: #E0F2F1; border-color: #00897B; }
+  .ent.ENFERMEDAD, .ent.SINTOMA { background: #ECEFF1; border-color: #78909C; }
+  .ent sub { font-size: .68rem; font-weight: 700; color: var(--ink2); margin-left: .15rem; }
+  .doctext { line-height: 2.1; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .8rem 1rem; }
+  .tok { display: inline-block; padding: .1rem .4rem; margin: .12rem; border-radius: 6px; font-family: Menlo, Consolas, monospace; font-size: .88rem; border: 1px solid transparent; cursor: pointer; }
+  .tok.k0 { background: #E0F2F1; border-color: #00897B; }
+  .tok.k1 { background: #FFF3E0; border-color: #F57C00; }
+  .tok.k2 { background: #E3F2FD; border-color: #1E88E5; }
+  .tok.k3 { background: #F3E5F5; border-color: #8E24AA; }
+  .tok.sel { outline: 3px solid #1F2933; }
+  .neg { color: var(--bad); font-weight: 700; }
+  input.celda { width: 3.2rem; text-align: center; padding: .25rem; }
+  .intr { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0; }
+  /* modo clase */
+  .tablero3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: .6rem; }
+  .col3 { border-radius: 12px; padding: .7rem; background: var(--soft); border-top: 6px solid; min-height: 10rem; }
+  .col3 h3 { margin: 0 0 .5rem; font-size: 1.05rem; }
+  .caso3 { font: inherit; text-align: left; display: block; width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .7rem; margin-bottom: .45rem; cursor: pointer; font-size: .95rem; }
+  .caso3 small { display: block; color: var(--ink2); margin-top: .2rem; }
+  .bandeja3 { display: flex; flex-wrap: wrap; gap: .5rem; padding: .6rem; border: 2px dashed #F0D78C; border-radius: 10px; background: var(--warn-l); margin-top: .6rem; }
+  .bandeja3[hidden] { display: none; }
+  .bandeja3 .caso3 { width: auto; max-width: 26rem; margin: 0; }
+  .apilada { display: flex; height: 1.6rem; border-radius: 5px; overflow: hidden; min-width: 12rem; }
+  .apilada span { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .78rem; font-weight: 700; white-space: nowrap; overflow: hidden; }
+  .leyenda-sec { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .85rem; margin: .4rem 0; }
+  .leyenda-sec i { display: inline-block; width: .9rem; height: .9rem; border-radius: 3px; margin-right: .3rem; vertical-align: middle; }
+  .intruso-ok { background: var(--bad-l) !important; border: 2px solid var(--bad) !important; color: #8E1B1B; font-weight: 800; text-decoration: line-through; }
+  .oculto .intruso-ok { background: #fff !important; border: 1px solid #CFD8DC !important; color: inherit; font-weight: 400; text-decoration: none; }
+  .barrita { display: inline-block; height: .8rem; border-radius: 3px; background: var(--estad); vertical-align: middle; }
+  .plano { width: 100%; height: auto; display: block; }
+</style>
+<link rel="icon" href="comun/icono.svg" type="image/svg+xml">
+<link rel="stylesheet" href="comun/clase.css">
+</head>
+<body class="bloque-estad">
+<header class="header">
+  <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos" aria-current="page">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="05_modelado_neuronal.html">‹ Tema 5 · Modelado neuronal (I)</a><a class="sig" href="07_sentimientos.html">Tema 7 · Sentimientos ›</a></nav>
+  <h1><span class="num-tema">TEMA 6</span>Análisis y modelado de tópicos</h1>
+  <p>Clasificar, agrupar y descubrir temas: n-gramas, Naive Bayes, LSA, NMF y LDA con noticias y el Quijote, y entidades con spaCy. <span class="cuando">Clases 9, 10 y 11 y laboratorio · semanas 7 y 8</span></p>
+  <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="10" cy="12" r="3.6"/><circle cx="17" cy="9" r="3.6"/><circle cx="15" cy="17" r="3.6"/><circle cx="34" cy="13" r="3.6" fill-opacity=".55"/><circle cx="40" cy="18" r="3.6" fill-opacity=".55"/><circle cx="33" cy="21" r="3.6" fill-opacity=".55"/><circle cx="20" cy="35" r="3.6" fill-opacity=".3"/><circle cx="27" cy="39" r="3.6" fill-opacity=".3"/><circle cx="28" cy="31" r="3.6" fill-opacity=".3"/></g><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 3"><circle cx="14" cy="13" r="10"/><circle cx="36" cy="17" r="10"/><circle cx="25" cy="35" r="10"/></g></svg></div>
+</header>
+<div class="tabs" role="tablist" aria-label="Pestañas de la demo">
+  <button class="tab" role="tab" id="t-enf" aria-controls="p-enf" aria-selected="true"><span class="tab-n">1</span> Enfoques</button>
+  <button class="tab" role="tab" id="t-ng" aria-controls="p-ng" aria-selected="false"><span class="tab-n">2</span> N-gramas</button>
+  <button class="tab" role="tab" id="t-nb" aria-controls="p-nb" aria-selected="false"><span class="tab-n">3</span> Naive Bayes</button>
+  <button class="tab" role="tab" id="t-lsa" aria-controls="p-lsa" aria-selected="false"><span class="tab-n">4</span> LSA</button>
+  <button class="tab" role="tab" id="t-nmf" aria-controls="p-nmf" aria-selected="false"><span class="tab-n">5</span> NMF</button>
+  <button class="tab" role="tab" id="t-lda" aria-controls="p-lda" aria-selected="false"><span class="tab-n">6</span> LDA paso a paso</button>
+  <button class="tab" role="tab" id="t-top" aria-controls="p-top" aria-selected="false"><span class="tab-n">7</span> Tópicos reales</button>
+  <button class="tab" role="tab" id="t-int" aria-controls="p-int" aria-selected="false"><span class="tab-n">8</span> Intruso</button>
+  <button class="tab" role="tab" id="t-ent" aria-controls="p-ent" aria-selected="false"><span class="tab-n">9</span> Entidades</button>
+</div>
+
+<div class="content">
+
+<!-- 1 · Enfoques -->
+<section class="panel active" id="p-enf" role="tabpanel" aria-labelledby="t-enf">
+  <div class="card">
+    <h2>¿Clasificar, agrupar o modelar tópicos?</h2>
+    <div class="meta"><span class="tag illus">Ilustración: no ejecuta ningún modelo</span><span class="tag">Clase 9 · apartados 6.1-6.2</span></div>
+    <p>Cada situación, en su enfoque. La clave está en dos preguntas: <strong>¿hay etiquetas?</strong> y <strong>¿qué debe devolver el método?</strong> Pulsa un caso para ver por qué.</p>
+    <div class="row" id="enf-ctrl"></div>
+    <div class="bandeja3" id="enf-bandeja" hidden></div>
+    <div class="tablero3" id="enf-tablero"></div>
+  </div>
+  <div class="card">
+    <h2>Los tres enfoques (Figuras 1-3 del tema)</h2>
+    <div class="grid3">
+      <div class="box"><h3>Clasificación supervisada</h3><p class="small">Hay etiquetas previas. Aprende de textos etiquetados y asigna una (o varias) de las etiquetas conocidas. Clase 10.</p></div>
+      <div class="box"><h3>Clustering</h3><p class="small">No hay etiquetas. Agrupa documentos parecidos; cada uno en un grupo (duro) o con probabilidades (blando). Hay que ponerle nombre al grupo. Clase 11.</p></div>
+      <div class="box"><h3>Modelado de tópicos</h3><p class="small">No hay etiquetas. LSA usa componentes con pesos que pueden ser negativos; NMF, factores no negativos. En LDA, cada tópico sí es una distribución de palabras y cada documento, una mezcla probabilística de tópicos. Clase 11.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · N-gramas -->
+<section class="panel" id="p-ng" role="tabpanel" aria-labelledby="t-ng">
+  <div class="card">
+    <h2>Un texto en n-gramas</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador</span><span class="tag">Clase 9 · apartado 6.3</span></div>
+    <p>Misma tokenización que en las clases (palabras de letras, en minúsculas; los números desaparecen). Activa «quitar palabras vacías» y mira qué bigramas aparecen que <em>no</em> están en el texto.</p>
+    <input type="text" id="ng-texto" value="Los tipos de interés frenan la compra de vivienda" aria-label="Texto para dividir en n-gramas" style="width:100%">
+    <div class="row">
+      <label class="inline">n = <select id="ng-n"><option>1</option><option selected>2</option><option>3</option></select></label>
+      <label class="inline"><input type="checkbox" id="ng-vac"> quitar palabras vacías (NLTK, antes de formar los n-gramas)</label>
+    </div>
+    <div id="ng-pills"></div>
+  </div>
+  <div class="card">
+    <h2>¿Cuántas columnas? ¿Qué n-gramas distinguen cada sección?</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador con las 60 noticias de entrenamiento</span></div>
+    <div class="row">
+      <label class="inline">Sección <select id="ng-sec"><option>economía</option><option>deportes</option><option>salud</option><option>tecnología</option></select></label>
+      <label class="inline">n <select id="ng-n2"><option>1</option><option selected>2</option><option>3</option></select></label>
+      <label class="inline"><input type="checkbox" id="ng-cont" checked> solo n-gramas sin palabras vacías</label>
+    </div>
+    <div class="stats" id="ng-stats"></div>
+    <div class="scroll"><table id="ng-tabla"></table></div>
+    <p class="small">Chi-cuadrado de la tabla 2 × 2 de documentos (con o sin el n-grama, dentro o fuera de la sección), solo asociación positiva y al menos 2 documentos de la sección. Con 15 noticias por sección sirve para ordenar, no para concluir.</p>
+  </div>
+</section>
+
+<!-- 3 · Naive Bayes -->
+<section class="panel" id="p-nb" role="tabpanel" aria-labelledby="t-nb">
+  <div class="card">
+    <h2>Naive Bayes con las noticias</h2>
+    <div class="meta"><span class="tag real">Entrenado en el navegador con las 60 noticias de entrenamiento</span><span class="tag">Clase 10</span></div>
+    <div class="warnbox">La demo usa <strong>palabras</strong>, no lemas (el navegador no ejecuta spaCy). En la Clase 10, la variante elegida por validación cruzada fue la de lemas de contenido (15 de 20 en prueba); con palabras salen otras cifras.</div>
+    <div class="row">
+      <label class="inline">alfa <input type="range" id="nb-alfa" min="0.05" max="2" step="0.05" value="1"> <span id="nb-alfav">1,00</span></label>
+      <label class="inline"><input type="checkbox" id="nb-vac"> quitar palabras vacías</label>
+    </div>
+    <textarea id="nb-texto" aria-label="Texto para clasificar">El hospital reduce la lista de espera</textarea>
+    <div class="row"><button class="btn btn-main" id="nb-go">Clasificar</button>
+      <select id="nb-ej" aria-label="Ejemplos"><option value="">Ejemplos…</option></select></div>
+    <div id="nb-res"></div>
+  </div>
+  <div class="card">
+    <h2>Evaluación en las 20 noticias de prueba</h2>
+    <p class="small">Con los parámetros de arriba. Recuerda: en un trabajo real no se elige alfa mirando la prueba; aquí sirve para ver qué cambia.</p>
+    <div id="nb-eval"></div>
+  </div>
+  <div class="card">
+    <h2>El ejemplo a mano de la Clase 10</h2>
+    <div id="nb-mano"></div>
+  </div>
+</section>
+
+<!-- 4 · LSA -->
+<section class="panel" id="p-lsa" role="tabpanel" aria-labelledby="t-lsa">
+  <div class="card">
+    <h2>LSA: SVD de la matriz del tema</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (Jacobi), comprobado frente a numpy</span><span class="tag">Clase 11 · apartado 6.5 · Figura 8 (Aggarwal, 2018)</span></div>
+    <p>Edita los recuentos y elige cuántos tópicos conservar. El signo de cada tópico se fija como en scikit-learn (el mayor valor absoluto de cada fila de Pᵀ, positivo); puedes invertirlo para comprobar que la reconstrucción no cambia.</p>
+    <div id="mat-edit"></div>
+    <div class="row">
+      <label class="inline">k = <input type="range" id="lsa-k" min="1" max="5" value="2"> <span id="lsa-kv">2</span></label>
+      <button class="btn btn-gray" id="lsa-flip">Invertir el signo del tópico 1</button>
+      <button class="btn btn-gray" id="mat-reset">Restaurar la matriz del tema</button>
+    </div>
+    <div class="grid2"><div id="lsa-q"></div><div id="lsa-p"></div></div>
+    <div id="lsa-rec"></div>
+    <h3>Documentos y términos en el plano de los dos primeros tópicos</h3>
+    <svg id="lsa-plano" class="plano" viewBox="0 0 900 420" role="img" aria-label="Documentos y términos en el plano de los dos primeros tópicos de LSA"></svg>
+    <p class="small">Documentos (círculos) en QΣ y términos (rombos) en PᵀΣ: lo que queda cerca tiene que ver. Los felinos y los coches tiran en direcciones distintas; «jaguar» queda entre los dos.</p>
+  </div>
+</section>
+
+<!-- 5 · NMF -->
+<section class="panel" id="p-nmf" role="tabpanel" aria-labelledby="t-nmf">
+  <div class="card">
+    <h2>NMF: factorización no negativa de la misma matriz</h2>
+    <div class="meta"><span class="tag real">Calculado en el navegador (actualizaciones multiplicativas de Lee y Seung)</span><span class="tag">Clase 11</span></div>
+    <p>La matriz es la de la pestaña LSA (si la editas allí, cambia aquí). La demo usa actualizaciones multiplicativas con un inicio aleatorio; scikit-learn usa por defecto descenso por coordenadas con inicio NNDSVDA: con k = 2 llega al mismo error (<span id="nmf-skerr"></span>), con otra escala.</p>
+    <div class="row">
+      <label class="inline">k = <select id="nmf-k"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+      <label class="inline">semilla <input type="number" id="nmf-seed" value="1" min="0" max="9999" style="width:5rem"></label>
+      <label class="inline">iteraciones <select id="nmf-it"><option>10</option><option>100</option><option selected>2000</option></select></label>
+      <label class="inline"><input type="checkbox" id="nmf-norm"> normalizar (columnas de W y filas de H suman 1, como la Figura 12)</label>
+    </div>
+    <div class="grid2"><div id="nmf-w"></div><div id="nmf-h"></div></div>
+    <div id="nmf-err"></div>
+  </div>
+</section>
+
+<!-- 6 · LDA -->
+<section class="panel" id="p-lda" role="tabpanel" aria-labelledby="t-lda">
+  <div class="card">
+    <h2>LDA paso a paso: muestreo de Gibbs</h2>
+    <div class="meta"><span class="tag real">Algoritmo real ejecutado en el navegador, en un corpus diminuto</span><span class="tag">Clase 11</span></div>
+    <p>Cada documento de la matriz del tema se convierte en una lista de palabras (doc 1: león, león, tigre, tigre, guepardo, jaguar, jaguar). Cada palabra tiene un tópico (color). En cada barrido, cada palabra se quita y se reasigna con probabilidad proporcional a <span class="mono">(n<sub>k,w</sub> + β) / (n<sub>k</sub> + Wβ) · (n<sub>d,k</sub> + α)</span>: cuánto usa el tópico esa palabra y cuánto usa el documento ese tópico (Griffiths y Steyvers, 2004). Pulsa una palabra para ver sus probabilidades.</p>
+    <div class="warnbox">scikit-learn no usa Gibbs sino inferencia variacional: sus números no coinciden con los de esta pestaña, aunque el modelo es el mismo.</div>
+    <div class="row">
+      <label class="inline">K <select id="lda-k"><option selected>2</option><option>3</option></select></label>
+      <label class="inline">α <input type="number" id="lda-a" value="0.5" step="0.05" min="0.01" style="width:5rem"></label>
+      <label class="inline">β <input type="number" id="lda-b" value="0.1" step="0.01" min="0.001" style="width:5rem"></label>
+      <label class="inline">semilla <input type="number" id="lda-s" value="3" min="0" style="width:5rem"></label>
+      <button class="btn btn-gray" id="lda-ini">Asignación inicial al azar</button>
+      <button class="btn btn-main" id="lda-1">1 barrido</button>
+      <button class="btn btn-main" id="lda-20">20 barridos</button>
+    </div>
+    <div class="small" id="lda-estado"></div>
+    <div id="lda-docs"></div>
+    <div id="lda-prob"></div>
+    <div class="grid2"><div id="lda-phi"></div><div id="lda-theta"></div></div>
+  </div>
+</section>
+
+<!-- 7 · Tópicos reales -->
+<section class="panel" id="p-top" role="tabpanel" aria-labelledby="t-top">
+  <div class="card">
+    <h2>Tópicos de las noticias y del Quijote</h2>
+    <div class="meta"><span class="tag pre">Precalculado con scikit-learn 1.9.1 (analisis_topicos.py)</span><span class="tag">Clase 11</span></div>
+    <div class="seggroup" id="top-seg">
+      <button class="seg" aria-pressed="true" data-v="nmf">Noticias · NMF</button>
+      <button class="seg" aria-pressed="false" data-v="lsa">Noticias · LSA</button>
+      <button class="seg" aria-pressed="false" data-v="lda">Noticias · LDA</button>
+      <button class="seg" aria-pressed="false" data-v="km">Noticias · k-means</button>
+      <button class="seg" aria-pressed="false" data-v="qnmf">Quijote · NMF</button>
+      <button class="seg" aria-pressed="false" data-v="qlda">Quijote · LDA</button>
+    </div>
+    <div class="row" id="top-krow"><label class="inline">k = <input type="range" id="top-k" min="3" max="8" value="4"> <span id="top-kv">4</span></label></div>
+    <div id="top-res"></div>
+  </div>
+</section>
+
+<!-- 8 · Intruso -->
+<section class="panel" id="p-int" role="tabpanel" aria-labelledby="t-int">
+  <div class="card">
+    <h2>La prueba del intruso</h2>
+    <div class="meta"><span class="tag pre">Tópicos reales de NMF (noticias, k = 4; Quijote, k = 8)</span><span class="tag">Chang et al. (2009)</span></div>
+    <p>Cada lista tiene las cinco palabras principales de un tópico y una intrusa de otro tópico, tachada. Si a una persona le cuesta encontrar la intrusa, el tópico es poco coherente: así se evalúan los tópicos sin etiquetas.</p>
+    <div class="row" id="int-ctrl"></div>
+    <div id="int-lista"></div>
+  </div>
+</section>
+
+<!-- 9 · Entidades -->
+<section class="panel" id="p-ent" role="tabpanel" aria-labelledby="t-ent">
+  <div class="card">
+    <h2>Entidades: referencia, modelo y reglas</h2>
+    <div class="meta"><span class="tag pre">Entidades precalculadas con spaCy 3.8.16 (es_core_news_sm 3.8.0); medidas calculadas en el navegador</span><span class="tag">Laboratorio de la semana 8</span></div>
+    <div class="row">
+      <label class="inline">Noticia <select id="ent-doc"></select></label>
+      <div class="seggroup" id="ent-seg">
+        <button class="seg" aria-pressed="true" data-v="referencia">Referencia</button>
+        <button class="seg" aria-pressed="false" data-v="modelo">Modelo</button>
+        <button class="seg" aria-pressed="false" data-v="reglas_v1">Reglas v1</button>
+        <button class="seg" aria-pressed="false" data-v="reglas_v2">Reglas v2</button>
+      </div>
+    </div>
+    <div class="doctext" id="ent-texto"></div>
+    <div id="ent-errores"></div>
+    <div id="ent-anotar"></div>
+  </div>
+  <div class="card">
+    <h2>Medidas (F1 con coincidencia exacta)</h2>
+    <div id="ent-medidas"></div>
+  </div>
+  <div class="card">
+    <h2>Notas clínicas ficticias: medicación con reglas</h2>
+    <div class="meta"><span class="tag real">Expresiones regulares ejecutadas en el navegador (iguales que en Python)</span></div>
+    <div class="row"><label class="inline">Nota <select id="cl-nota"></select></label></div>
+    <textarea id="cl-texto" aria-label="Nota clínica"></textarea>
+    <div class="row"><button class="btn btn-main" id="cl-go">Extraer</button><span class="small">Diccionario de fármacos: los seis de las notas de desarrollo.</span></div>
+    <div class="doctext" id="cl-res"></div>
+    <div id="cl-med"></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  Cálculos: <code>06_topicos_lib.js</code>, comprobado frente a Python, numpy y scikit-learn (<code>Demos/fuentes/prueba_lib_06.json</code>). Datos precalculados con <code>Demos/fuentes/generar_datos_06.py</code> a partir de los análisis de las Clases 9, 10 y 11 y del laboratorio. Noticias y notas clínicas: textos <strong>ficticios</strong> redactados para la asignatura. Quijote: Project Gutenberg, ebook 2000 (dominio público). Matriz de ejemplo: Figura 8 del tema (Aggarwal, 2018). Referencias: Deerwester et al. (1990), Lee y Seung (1999), Blei, Ng y Jordan (2003), Griffiths y Steyvers (2004), Hoffman, Blei y Bach (2010), Chang et al. (2009), Manning, Raghavan y Schütze (2008). Funciona sin conexión y no envía datos.
+</footer>
+
+<script src="06_topicos_lib.js"></script>
+<script src="06_topicos_datos.js"></script>
+<script src="comun/clase.js"></script>
+<script>
+"use strict";
+const L = window.LIB06, D = window.DATOS06;
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => [...document.querySelectorAll(s)];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = (x, d = 2) => (Number.isFinite(x) ? x.toFixed(d).replace(".", ",").replace("-", "−") : "—");
+const SECC = ["economía", "deportes", "salud", "tecnología"];
+const VAC = new Set(D.vacias);
+const texto = (f) => f.titular + ". " + f.texto;
+const ENT = D.corpus.filter((f) => f.conjunto === "entrenamiento");
+const PRU = D.corpus.filter((f) => f.conjunto === "prueba");
+
+// ---------------------------------------------------------------- pestañas
+$$(".tab").forEach((t) => t.addEventListener("click", () => {
+  $$(".tab").forEach((x) => x.setAttribute("aria-selected", x === t ? "true" : "false"));
+  $$(".panel").forEach((p) => p.classList.toggle("active", p.id === t.getAttribute("aria-controls")));
+}));
+$$(".tab").forEach((t, i, arr) => t.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    const j = (i + (e.key === "ArrowRight" ? 1 : arr.length - 1)) % arr.length;
+    arr[j].focus(); arr[j].click();
+  }
+}));
+function segmentado(grupo, cb) {
+  $$(grupo + " .seg").forEach((b) => b.addEventListener("click", () => {
+    $$(grupo + " .seg").forEach((x) => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+    cb(b.dataset.v);
+  }));
+}
+// Colorea como mapa de calor las celdas numéricas de las tablas de un contenedor (positivo verde azulado, negativo naranja)
+function calor(sel, porFila) {
+  $$(sel).flatMap((e) => (e.tagName === "TABLE" ? [e] : [...e.querySelectorAll("table")])).forEach((t) => {
+    const filas = [...t.rows].map((r) => [...r.cells].filter((c) => c.tagName === "TD" && c.classList.contains("num")));
+    const val = (c) => parseFloat(c.textContent.replace("−", "-").replace(",", ".").replace(/[^0-9.\-e]/g, ""));
+    const todas = filas.flat().map(val).filter(Number.isFinite);
+    filas.forEach((f) => {
+      const vs = f.map(val).filter(Number.isFinite);
+      const lo = porFila ? Math.min(...vs) : 0, max = porFila ? Math.max(...vs) - lo : Math.max(...todas.map(Math.abs), 1e-12);
+      f.forEach((c) => { const v = val(c); if (!Number.isFinite(v)) return;
+        const a = porFila ? (max ? (v - lo) / max : 0) : Math.min(1, Math.abs(v) / max);
+        c.style.background = (porFila || v >= 0 ? "rgba(0,137,123," : "rgba(245,124,0,") + (0.06 + 0.7 * a).toFixed(3) + ")";
+        c.style.color = a > 0.6 ? "#fff" : ""; c.style.fontWeight = a > 0.6 ? "700" : ""; });
+    });
+  });
+}
+function tabla(cab, filas, clases) {
+  return `<table>${cab ? `<tr>${cab.map((c, j) => `<th class="${(clases && clases[j]) || ""}">${c}</th>`).join("")}</tr>` : ""}` +
+    filas.map((f) => `<tr>${f.map((c, j) => `<td class="${(clases && clases[j]) || ""}">${c}</td>`).join("")}</tr>`).join("") + "</table>";
+}
+
+// ================================================================ 1 · Enfoques
+const SITUACIONES = [
+  ["Un periódico tiene 10 000 noticias con su sección y quiere asignar la sección a las nuevas.", "clasificación", "Hay etiquetas (las secciones) y se quiere asignar una de ellas: clasificación supervisada."],
+  ["Una empresa quiere saber de qué hablan 50 000 correos de clientes, sin categorías previas, y ver qué mezcla de temas tiene cada uno.", "modelado", "Sin etiquetas y con mezclas por documento: modelado de tópicos."],
+  ["Se quiere repartir 3 000 reseñas en grupos de reseñas parecidas para que un analista revise un grupo cada día.", "clustering", "Sin etiquetas y cada reseña en un grupo: clustering (duro)."],
+  ["Un filtro debe decidir si cada correo es spam o no, y hay miles de correos ya marcados.", "clasificación", "Etiquetas binarias conocidas: clasificación supervisada binaria."],
+  ["Un historiador quiere descubrir los grandes temas de 126 capítulos de una novela y cuánto pesa cada uno en cada capítulo.", "modelado", "Sin etiquetas y con proporciones por capítulo: modelado de tópicos (como el Quijote en la Clase 11)."],
+  ["Un foro quiere detectar temas nuevos que aparecen este mes y que no estaban en sus categorías.", "modelado", "Temas nuevos sin etiquetas: modelado de tópicos (o clustering). Un clasificador solo conoce sus categorías."],
+  ["Hay que etiquetar cada consulta de clientes como envío, facturación, producto o servicio, con un histórico etiquetado.", "clasificación", "Multiclase con etiquetas conocidas (Tabla 1 del tema)."],
+  ["Se quiere agrupar 200 artículos científicos en 5 bloques para repartirlos entre 5 revisores, sin solapamientos.", "clustering", "Un artículo, un bloque y sin etiquetas: clustering duro."]];
+const ENF = [["clasificación", "Clasificación supervisada", "#1E88E5", "hay etiquetas · devuelve una de ellas"],
+  ["clustering", "Clustering", "#00897B", "sin etiquetas · cada documento en un grupo"],
+  ["modelado", "Modelado de tópicos", "#8E24AA", "sin etiquetas · cada documento es una mezcla"]];
+let enfOculto = false;
+const enfColocados = new Set(SITUACIONES.map((_, i) => i));
+function pintarEnfoques(sel) {
+  const tarjeta = (i) => { const b = document.createElement("button"); b.type = "button"; b.className = "caso3";
+    b.innerHTML = esc(SITUACIONES[i][0]) + (enfColocados.has(i) && sel === i ? `<small>${esc(SITUACIONES[i][2])}</small>` : "");
+    b.addEventListener("click", () => { enfColocados.add(i); pintarEnfoques(i); }); return b; };
+  const t = $("#enf-tablero"); t.innerHTML = "";
+  ENF.forEach(([k, n, c, sub]) => {
+    const col = document.createElement("div"); col.className = "col3"; col.style.borderTopColor = c;
+    col.innerHTML = `<h3 style="color:${c}">${n}</h3><p class="small" style="margin-bottom:.5rem">${sub}</p>`;
+    SITUACIONES.forEach((x, i) => { if (x[1] === k && enfColocados.has(i)) col.append(tarjeta(i)); });
+    t.append(col);
+  });
+  const b = $("#enf-bandeja"); b.innerHTML = "";
+  const pend = SITUACIONES.map((_, i) => i).filter((i) => !enfColocados.has(i));
+  b.hidden = !pend.length; pend.forEach((i) => b.append(tarjeta(i)));
+}
+Clase.botonPregunta($("#enf-ctrl"), (oc) => { enfColocados.clear(); if (!oc) SITUACIONES.forEach((_, i) => enfColocados.add(i)); pintarEnfoques(); });
+pintarEnfoques();
+
+// ================================================================ 2 · N-gramas
+const DOCS_ENT = ENT.map(texto), ETQ_ENT = ENT.map((f) => f.seccion);
+function pintarNgPills() {
+  const n = +$("#ng-n").value, vac = $("#ng-vac").checked ? VAC : null;
+  const toks = L.tokens($("#ng-texto").value);
+  const orig = new Set(L.ngramas(toks, n, null));
+  const g = L.ngramas(toks, n, vac);
+  $("#ng-pills").innerHTML = g.length ? g.map((x) => `<span class="pill ${orig.has(x) ? "" : "azar"}" title="${orig.has(x) ? "" : "no aparece en el texto original"}">${esc(x)}</span>`).join(" ") +
+    (g.some((x) => !orig.has(x)) ? '<div class="badbox">En rojo, n-gramas que no están en el texto: se han quitado palabras (vacías o números) que había en medio.</div>' : "")
+    : '<div class="warnbox">No hay suficientes palabras para formar n-gramas de ese tamaño.</div>';
+}
+const cacheStats = {};
+function pintarNgTabla() {
+  const n = +$("#ng-n2").value, sec = $("#ng-sec").value, cont = $("#ng-cont").checked;
+  const k = n + "";
+  if (!cacheStats[k]) cacheStats[k] = L.estadisticasMatriz(DOCS_ENT, n, null);
+  const st = cacheStats[k];
+  $("#ng-stats").innerHTML = `<div><div class="big">${st.columnas.toLocaleString("es-ES")}</div><div class="small">columnas (n = ${n})</div></div>` +
+    `<div><div class="big">${fmt(st.ceros_pct, 2)} %</div><div class="small">de ceros en la matriz</div></div>` +
+    `<div><div class="big">${fmt(st.en_un_solo_documento_pct, 1)} %</div><div class="small">aparece en un solo documento</div></div>`;
+  const filas = L.distintivos(DOCS_ENT, ETQ_ENT, n, sec, { top: 10, contenido: cont, vacias: VAC })
+    .map((x, _, arr) => [`<b>${esc(x.ngrama)}</b>`, `<span class="barrita" style="width:${(8 * x.chi2 / Math.max(...arr.map((y) => y.chi2))).toFixed(2)}rem"></span>`, fmt(x.chi2, 2), `${x.docs_seccion} de 15`, `${x.docs_resto} de 45`]);
+  $("#ng-tabla").innerHTML = filas.length ? tabla(["n-grama", "", "chi-cuadrado", "noticias de la sección", "noticias del resto"], filas, ["", "", "num", "num", "num"])
+    : "<tr><td>Ningún n-grama aparece en 2 o más noticias de la sección.</td></tr>";
+}
+["#ng-texto", "#ng-n", "#ng-vac"].forEach((s) => $(s).addEventListener("input", pintarNgPills));
+["#ng-n2", "#ng-sec", "#ng-cont"].forEach((s) => $(s).addEventListener("input", pintarNgTabla));
+pintarNgPills(); pintarNgTabla();
+
+// ================================================================ 3 · Naive Bayes
+let modeloNB = null;
+const EJEMPLOS_NB = ["El hospital reduce la lista de espera", "El equipo médico gana", "La bolsa sube tras el gol",
+  "Una aplicación detecta el cáncer con inteligencia artificial", "La ópera vuelve al Teatro Principal",
+  "Una novela sobre la Guerra de la Independencia gana el premio de la crítica"];
+$("#nb-ej").innerHTML += EJEMPLOS_NB.map((t) => `<option>${esc(t)}</option>`).join("");
+$("#nb-ej").addEventListener("change", () => { if ($("#nb-ej").value) { $("#nb-texto").value = $("#nb-ej").value; clasificarNB(); } });
+function entrenarNB() {
+  const alfa = +$("#nb-alfa").value;
+  $("#nb-alfav").textContent = fmt(alfa, 2);
+  modeloNB = L.nbEntrenar(DOCS_ENT, ETQ_ENT, { alfa, vacias: $("#nb-vac").checked ? VAC : null });
+}
+function clasificarNB() {
+  const r = L.nbPuntuar(modeloNB, $("#nb-texto").value);
+  const cl = modeloNB.clases;
+  const max = Math.max(...cl.map((c) => r.puntuaciones[c]));
+  const post = {}; let z = 0;
+  cl.forEach((c) => { post[c] = Math.exp(r.puntuaciones[c] - max); z += post[c]; });
+  let html = tabla(["sección", "ln P(c)", "suma de ln P(w | c)", "puntuación", "prob. a posteriori"],
+    cl.map((c, k) => [c === r.prediccion ? `<strong>${c}</strong>` : c, fmt(modeloNB.logPrior[k], 3), fmt(r.puntuaciones[c] - modeloNB.logPrior[k], 3),
+      fmt(r.puntuaciones[c], 3), fmt(post[c] / z, 3)]), ["", "num", "num", "num", "num"]);
+  if (r.contribuciones.length) {
+    html += "<h3>Qué aporta cada palabra (recuento × ln P(w | c))</h3>" + `<div class="scroll">${tabla(["palabra"].concat(cl), r.contribuciones.map((x) => {
+      const best = cl.reduce((a, b) => (x.aportes[b] > x.aportes[a] ? b : a));
+      return [esc(x.palabra) + (x.recuento > 1 ? ` ×${x.recuento}` : "")].concat(cl.map((c) => (c === best ? `<strong>${fmt(x.aportes[c], 2)}</strong>` : fmt(x.aportes[c], 2))));
+    }), ["", "num", "num", "num", "num"])}</div>`;
+  }
+  if (r.fuera_de_vocabulario.length) html += `<div class="warnbox">Fuera del vocabulario de entrenamiento (se ignoran): ${r.fuera_de_vocabulario.map(esc).join(", ")}</div>`;
+  html += `<div class="info">Predicción: <strong>${r.prediccion}</strong>. Las probabilidades de Naive Bayes suelen ser extremas: no son una medida calibrada de seguridad.</div>`;
+  $("#nb-res").innerHTML = html;
+  calor("#nb-res .scroll", true);
+}
+function evaluarNB() {
+  const cl = modeloNB.clases;
+  const M = cl.map(() => cl.map(() => 0));
+  let ok = 0;
+  const err = [];
+  PRU.forEach((f) => {
+    const p = L.nbPuntuar(modeloNB, texto(f)).prediccion;
+    M[cl.indexOf(f.seccion)][cl.indexOf(p)]++;
+    if (p === f.seccion) ok++; else err.push(`${f.id} «${esc(f.titular)}»: ${f.seccion} → ${p}${f.mezcla ? " (mixta)" : ""}`);
+  });
+  const nuevas = {};
+  D.corpus.filter((f) => f.conjunto === "nuevo").forEach((f) => { const p = L.nbPuntuar(modeloNB, texto(f)).prediccion; nuevas[p] = (nuevas[p] || 0) + 1; });
+  $("#nb-eval").innerHTML = `<div class="stats"><div><div class="big">${ok} de ${PRU.length}</div><div class="small">aciertos en prueba</div></div></div>` +
+    "<h3>Matriz de confusión (filas: real; columnas: predicha)</h3>" + tabla([""].concat(cl), M.map((f, i) => [`<strong>${cl[i]}</strong>`].concat(f.map((v, j) => (i === j ? `<strong>${v}</strong>` : v)))), ["", "num", "num", "num", "num"]) +
+    "" + (err.length ? `<h3>Errores</h3><ul class="small">${err.map((e) => `<li>${e}</li>`).join("")}</ul>` : "") +
+    `<p class="small">Las 12 noticias de cultura (que no estaban en el entrenamiento) van a: ${Object.entries(nuevas).map(([k, v]) => `${k} ${v}`).join(", ")}. El clasificador siempre elige una de sus cuatro secciones.</p>`;
+}
+function calorConfusion() {
+  const t = $$("#nb-eval table")[0]; if (!t) return;
+  const max = Math.max(...[...t.querySelectorAll("td.num")].map((c) => +c.textContent || 0), 1);
+  [...t.rows].forEach((r, i) => [...r.cells].forEach((c, j) => { if (!c.classList.contains("num")) return; const v = +c.textContent || 0;
+    c.style.background = v ? (i === j ? `rgba(46,125,50,${(0.15 + 0.7 * v / max).toFixed(3)})` : `rgba(198,40,40,${(0.15 + 0.7 * v / max).toFixed(3)})`) : "";
+    c.style.color = v / max > 0.55 ? "#fff" : ""; c.style.fontSize = "1.15rem"; c.style.textAlign = "center"; }));
+}
+function pintarManoNB() {
+  const m = D.nb_mano;
+  const mod = L.nbEntrenar(m.textos.map((t) => t.texto), m.textos.map((t) => t.clase), { alfa: 1 });
+  const r = L.nbPuntuar(mod, m.frase);
+  $("#nb-mano").innerHTML = `<p>${m.textos.map((t) => `<span class="pill">${t.clase}</span> «${esc(t.texto)}»`).join("<br>")}</p>` +
+    `<p>Frase: <strong>«${esc(m.frase)}»</strong> · |V| = ${mod.V}</p>` +
+    tabla(["clase", "puntuación (ln)"], mod.clases.map((c) => [c, fmt(r.puntuaciones[c], 4)]), ["", "num"]) +
+    `<p class="small">Gana <strong>${r.prediccion}</strong>, como en la diapositiva (−8,5058 frente a −8,8519).</p>`;
+}
+$("#nb-alfa").addEventListener("input", () => { entrenarNB(); clasificarNB(); evaluarNB(); calorConfusion(); });
+$("#nb-vac").addEventListener("change", () => { entrenarNB(); clasificarNB(); evaluarNB(); calorConfusion(); });
+$("#nb-go").addEventListener("click", clasificarNB);
+entrenarNB(); clasificarNB(); evaluarNB(); calorConfusion(); pintarManoNB();
+
+// ================================================================ 4 · LSA
+const TERM = D.matriz.terminos;
+let MAT = D.matriz.D.map((f) => f.slice());
+let signo1 = 1;
+function pintarEditor() {
+  $("#mat-edit").innerHTML = `<table class="mat"><tr><th></th>${TERM.map((t) => `<th>${t}</th>`).join("")}</tr>` +
+    MAT.map((f, i) => `<tr><th>doc ${i + 1}</th>${f.map((v, j) => `<td><input class="celda" type="number" min="0" max="20" value="${v}" data-i="${i}" data-j="${j}" aria-label="doc ${i + 1}, ${TERM[j]}"></td>`).join("")}</tr>`).join("") + "</table>";
+  $$("#mat-edit input").forEach((inp) => inp.addEventListener("input", () => {
+    const v = Math.max(0, Math.min(20, Math.round(+inp.value || 0)));
+    MAT[+inp.dataset.i][+inp.dataset.j] = v;
+    pintarLSA(); pintarNMF(); reiniciarLDA();
+  }));
+}
+function pintarLSA() {
+  const k = +$("#lsa-k").value;
+  $("#lsa-kv").textContent = k;
+  const r = L.svd(MAT);
+  if (signo1 < 0) { r.Vt[0] = r.Vt[0].map((x) => -x); r.U.forEach((u) => { u[0] = -u[0]; }); }
+  const cls = (x) => (x < -1e-9 ? "neg" : "");
+  $("#lsa-q").innerHTML = "<h3>Q (documentos × tópicos)</h3>" + tabla(["", ...Array.from({ length: k }, (_, t) => `tópico ${t + 1}`)],
+    r.U.map((u, i) => [`doc ${i + 1}`].concat(u.slice(0, k).map((x) => `<span class="${cls(x)}">${fmt(x, 3)}</span>`))), ["", "num", "num", "num", "num", "num"]) +
+    `<p class="small">Σ = ${r.sigma.slice(0, k).map((x) => fmt(x, 3)).join(" · ")} (descartados: ${r.sigma.slice(k).map((x) => fmt(x, 3)).join(" · ") || "ninguno"})</p>`;
+  $("#lsa-p").innerHTML = "<h3>Pᵀ (tópicos × términos)</h3>" + tabla(["", ...TERM], r.Vt.slice(0, k).map((v, t) => [`tópico ${t + 1}`].concat(v.map((x) => `<span class="${cls(x)}">${fmt(x, 3)}</span>`))), ["", "num", "num", "num", "num", "num", "num"]);
+  const R = L.reconstruir(r, k);
+  const neg = R.flat().filter((x) => x < -1e-9).length;
+  const err = L.frobenius(MAT, R);
+  const teo = Math.sqrt(r.sigma.slice(k).reduce((a, s) => a + s * s, 0));
+  const tot = r.sigma.reduce((a, s) => a + s * s, 0), ret = r.sigma.slice(0, k).reduce((a, s) => a + s * s, 0);
+  $("#lsa-rec").innerHTML = "<h3>Reconstrucción con k = " + k + "</h3>" + tabla(["", ...TERM], R.map((f, i) => [`doc ${i + 1}`].concat(f.map((x) => `<span class="${cls(x)}">${fmt(x, 2)}</span>`))), ["", "num", "num", "num", "num", "num", "num"]) +
+    `<div class="info">Error ‖D − QΣPᵀ‖ = <strong>${fmt(err, 4)}</strong> = raíz de la suma de los σ² descartados (${fmt(teo, 4)}). Retiene el ${fmt(100 * ret / (tot || 1), 1)} % de la suma de cuadrados. Celdas negativas: <strong>${neg}</strong>.</div>` +
+    `<p class="small">Prueba a mover k: los tópicos anteriores no cambian (están anidados). Invertir el signo del tópico 1 cambia Q y Pᵀ, pero no la reconstrucción.</p>`;
+  calor("#lsa-q"); calor("#lsa-p"); calor("#lsa-rec");
+  // Plano de los dos primeros tópicos: documentos en UΣ y términos en VΣ
+  const sx = r.sigma[0], sy = r.sigma[1] || 0;
+  const docs = r.U.map((u) => [u[0] * sx, (u[1] || 0) * sy]), terms = TERM.map((_, j) => [r.Vt[0][j] * sx, (r.Vt[1] ? r.Vt[1][j] : 0) * sy]);
+  const all = docs.concat(terms), mx = Math.max(...all.map((p) => Math.abs(p[0])), 1e-9), my = Math.max(...all.map((p) => Math.abs(p[1])), 1e-9);
+  const X = (x) => 450 + 380 * x / mx, Y = (y) => 210 - 175 * y / my;
+  // Etiquetas sin solapes: se prueba desplazarlas en vertical
+  const cajas = [];
+  const sitio = (x, y, ancho, izq) => { for (const dy of [0, -20, 20, -40, 40, -60, 60]) { const b = [izq ? x - ancho : x, y + dy - 14, izq ? x : x + ancho, y + dy + 4];
+      if (!cajas.some((c) => b[0] < c[2] && b[2] > c[0] && b[1] < c[3] && b[3] > c[1])) { cajas.push(b); return dy; } } return 0; };
+  let g = `<line x1="40" x2="860" y1="210" y2="210" stroke="#E4E7EB"/><line x1="450" x2="450" y1="20" y2="400" stroke="#E4E7EB"/><text x="855" y="200" text-anchor="end" font-size="13" fill="#52606D">tópico 1</text><text x="458" y="30" font-size="13" fill="#52606D">tópico 2</text>`;
+  terms.forEach(([x, y]) => cajas.push([X(x) - 9, Y(y) - 9, X(x) + 9, Y(y) + 9]));
+  docs.forEach(([x, y]) => cajas.push([X(x) - 9, Y(y) - 9, X(x) + 9, Y(y) + 9]));
+  terms.forEach(([x, y], j) => { const dy = sitio(X(x) + 13, Y(y) + 5, TERM[j].length * 9.5, false);
+    g += `<path d="M${X(x)} ${Y(y) - 9}L${X(x) + 9} ${Y(y)}L${X(x)} ${Y(y) + 9}L${X(x) - 9} ${Y(y)}Z" fill="#F57C00"/><text x="${X(x) + 13}" y="${Y(y) + 5 + dy}" font-size="16" font-weight="700" fill="#E65100">${TERM[j]}</text>`; });
+  docs.forEach(([x, y], i) => { const dy = sitio(X(x) - 13, Y(y) + 5, 52, true);
+    g += `<circle cx="${X(x)}" cy="${Y(y)}" r="9" fill="#00897B"/><text x="${X(x) - 13}" y="${Y(y) + 5 + dy}" text-anchor="end" font-size="15" font-weight="700" fill="#004D40">doc ${i + 1}</text>`; });
+  $("#lsa-plano").innerHTML = g;
+}
+$("#lsa-k").addEventListener("input", pintarLSA);
+$("#lsa-flip").addEventListener("click", () => { signo1 = -signo1; pintarLSA(); });
+$("#mat-reset").addEventListener("click", () => { MAT = D.matriz.D.map((f) => f.slice()); signo1 = 1; pintarEditor(); pintarLSA(); pintarNMF(); reiniciarLDA(); });
+
+// ================================================================ 5 · NMF
+$("#nmf-skerr").textContent = fmt(D.matriz.nmf_sklearn.error, 4);
+function pintarNMF() {
+  const k = +$("#nmf-k").value, sd = +$("#nmf-seed").value || 0, it = +$("#nmf-it").value;
+  const o = L.nmfMU(MAT, k, sd, it);
+  let W = o.W, H = o.H;
+  if ($("#nmf-norm").checked) {
+    const sw = Array.from({ length: k }, (_, t) => W.reduce((a, f) => a + f[t], 0));
+    const sh = H.map((f) => f.reduce((a, b) => a + b, 0));
+    W = W.map((f) => f.map((x, t) => (sw[t] ? x / sw[t] : 0)));
+    H = H.map((f, t) => f.map((x) => (sh[t] ? x / sh[t] : 0)));
+    $("#nmf-err").dataset.sigma = sw.map((s, t) => fmt(s * sh[t], 2)).join(" · ");
+  } else delete $("#nmf-err").dataset.sigma;
+  const mx = Math.max(...H.flat());
+  $("#nmf-w").innerHTML = "<h3>W (documentos × tópicos)</h3>" + tabla(["", ...Array.from({ length: k }, (_, t) => `tópico ${t + 1}`)], W.map((f, i) => [`doc ${i + 1}`].concat(f.map((x) => fmt(x, 3)))), ["", "num", "num", "num", "num"]);
+  $("#nmf-h").innerHTML = "<h3>H (tópicos × términos)</h3>" + tabla(["", ...TERM], H.map((f, t) => [`tópico ${t + 1}`].concat(f.map((x) => (x > 0.5 * mx ? `<strong>${fmt(x, 3)}</strong>` : fmt(x, 3))))), ["", "num", "num", "num", "num", "num", "num"]);
+  const sv = L.svd(MAT), errSVD = L.frobenius(MAT, L.reconstruir(sv, Math.min(k, MAT[0].length)));
+  $("#nmf-err").innerHTML = `<div class="info">Error de NMF: <strong>${fmt(o.error, 4)}</strong> · SVD con el mismo k: ${fmt(errSVD, 4)} · Figura 10 del tema (aproximación entera ilustrativa): ${fmt(D.matriz.figura10_error, 4)}` +
+    ($("#nmf-err").dataset.sigma ? ` · Σ (producto de las sumas, Figura 12): ${$("#nmf-err").dataset.sigma}` : "") + "</div>" +
+    '<p class="small">Todo es no negativo. Cambia la semilla: la escala de W y H cambia, pero el producto y el error apenas. Con 10 iteraciones aún no ha convergido.</p>';
+  calor("#nmf-w"); calor("#nmf-h");
+}
+["#nmf-k", "#nmf-seed", "#nmf-it", "#nmf-norm"].forEach((s) => $(s).addEventListener("change", pintarNMF));
+
+// ================================================================ 6 · LDA (Gibbs)
+let estadoLDA = null, selLDA = null;
+function docsLDA() { return MAT.map((f) => { const o = []; f.forEach((c, t) => { for (let i = 0; i < c; i++) o.push(t); }); return o; }); }
+function reiniciarLDA() {
+  estadoLDA = L.gibbsNuevo(docsLDA(), +$("#lda-k").value, TERM.length, +$("#lda-a").value, +$("#lda-b").value, +$("#lda-s").value || 0);
+  selLDA = null;
+  pintarLDA();
+}
+function pintarLDA() {
+  const e = estadoLDA;
+  $("#lda-estado").textContent = `Barridos realizados: ${e.barridos}. K = ${e.K}, α = ${String(e.alfa).replace(".", ",")}; β = ${String(e.beta).replace(".", ",")}.`;
+  $("#lda-docs").innerHTML = e.docs.map((doc, d) => `<div><strong>doc ${d + 1}</strong> ` + doc.map((w, i) => `<button class="tok k${e.z[d][i]} ${selLDA && selLDA[0] === d && selLDA[1] === i ? "sel" : ""}" data-d="${d}" data-i="${i}" title="tópico ${e.z[d][i] + 1}">${TERM[w]}</button>`).join("") + "</div>").join("");
+  $$("#lda-docs .tok").forEach((b) => b.addEventListener("click", () => { selLDA = [+b.dataset.d, +b.dataset.i]; pintarLDA(); }));
+  if (selLDA) {
+    const [d, i] = selLDA, w = e.docs[d][i], p = L.gibbsProbabilidades(e, d, i), s = p.reduce((a, b) => a + b, 0), kAct = e.z[d][i];
+    $("#lda-prob").innerHTML = `<h3>«${TERM[w]}» en el doc ${d + 1} (ahora en el tópico ${kAct + 1})</h3>` +
+      tabla(["tópico", "n(k,w) + β", "n(k) + Wβ", "n(d,k) + α", "producto", "probabilidad"], p.map((x, k) => {
+        const nkw = e.nkw[k][w] - (k === kAct ? 1 : 0), nk = e.nk[k] - (k === kAct ? 1 : 0), ndk = e.ndk[d][k] - (k === kAct ? 1 : 0);
+        return [`<span class="tok k${k}">${k + 1}</span>`, fmt(nkw + e.beta, 2), fmt(nk + e.Wn * e.beta, 2), fmt(ndk + e.alfa, 2), fmt(x, 4), fmt(x / s, 3)];
+      }), ["", "num", "num", "num", "num", "num"]) + '<p class="small">Recuentos sin la asignación actual de esta palabra. El primer factor es P(w | k) suavizado; el segundo, proporcional a P(k | d).</p>';
+  } else $("#lda-prob").innerHTML = '<p class="small">Pulsa una palabra para ver con qué probabilidad se reasignaría a cada tópico.</p>';
+  const est = L.gibbsEstimar(e);
+  $("#lda-phi").innerHTML = "<h3>φ = P(w | k)</h3>" + tabla(["", ...TERM], est.phi.map((f, k) => [`<span class="tok k${k}">${k + 1}</span>`].concat(f.map((x) => fmt(x, 2)))), ["", "num", "num", "num", "num", "num", "num"]);
+  setTimeout(() => { calor("#lda-phi"); calor("#lda-theta"); });
+  $("#lda-theta").innerHTML = "<h3>θ = P(k | d)</h3>" + tabla(["", ...Array.from({ length: e.K }, (_, k) => `tópico ${k + 1}`)], est.theta.map((f, d) => [`doc ${d + 1}`].concat(f.map((x) => fmt(x, 2)))), ["", "num", "num", "num"]);
+}
+$("#lda-ini").addEventListener("click", reiniciarLDA);
+["#lda-k", "#lda-a", "#lda-b", "#lda-s"].forEach((s) => $(s).addEventListener("change", reiniciarLDA));
+$("#lda-1").addEventListener("click", () => { L.gibbsBarrido(estadoLDA); pintarLDA(); });
+$("#lda-20").addEventListener("click", () => { for (let i = 0; i < 20; i++) L.gibbsBarrido(estadoLDA); pintarLDA(); });
+
+// ================================================================ 7 · Tópicos reales
+const T = D.topicos;
+let vistaTop = "nmf";
+const abrev = { "economía": "eco", "deportes": "dep", "salud": "sal", "tecnología": "tec", "cultura": "cul" };
+const sres = (d) => Object.entries(d).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${abrev[k] || k} ${v}`).join(" · ");
+const COLSEC = { "economía": "#1E88E5", "deportes": "#00897B", "salud": "#8E24AA", "tecnología": "#F57C00", "cultura": "#52606D" };
+const apilada = (d) => { const tot = Object.values(d).reduce((a, b) => a + b, 0) || 1;
+  return `<div class="apilada">${Object.entries(d).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span style="width:${100 * v / tot}%;background:${COLSEC[k] || "#9AA5B1"}" title="${k}: ${v}">${v / tot > 0.12 ? abrev[k] + " " + v : ""}</span>`).join("")}</div>`; };
+const leyendaSec = `<div class="leyenda-sec">${Object.entries(COLSEC).map(([k, c]) => `<span><i style="background:${c}"></i>${k}</span>`).join("")}</div>`;
+function pintarTop() {
+  const k = +$("#top-k").value;
+  $("#top-kv").textContent = k;
+  $("#top-krow").style.display = vistaTop === "nmf" ? "" : "none";
+  const N = T.noticias, Q = T.quijote;
+  let html = "";
+  if (vistaTop === "nmf") {
+    const m = N.nmf[k];
+    html = leyendaSec + tabla(["tópico", "palabras principales", "noticias con ese tópico mayoritario"], m.temas.map((t, j) => [j + 1, `<b>${esc(t.join(" "))}</b>`, apilada(m.secciones_por_tema[j])]), ["num", "", ""]) +
+      `<div class="info">Acuerdo con las secciones (ARI): <strong>${fmt(m.ari, 2)}</strong>. Noticias de cultura por tópico: ${Object.entries(m.cultura_por_tema).map(([t, v]) => `tópico ${+t + 1}: ${v}`).join(", ")}.</div>` +
+      (k === 4 ? "<h3>Noticias mixtas: proporciones de cada tópico (k = 4)</h3>" + tabla(["noticia", "secciones", ...m.temas.map((t, j) => `${j + 1}: ${t[0]}`)], m.mixtas.map((x) => [`${x.id} · ${esc(x.titular)}`, `${x.seccion} + ${x.mezcla_con}`].concat(x.proporciones.map((v) => (v >= 0.2 ? `<strong>${fmt(v, 2)}</strong>` : fmt(v, 2))))), ["", "", "num", "num", "num", "num"]) : "") +
+      `<p class="small">Estabilidad con 5 inicios aleatorios: ${fmt(N.estabilidad.nmf_inicio_aleatorio_5_semillas, 2)} (1 = mismos tópicos).</p>`;
+  } else if (vistaTop === "lsa") {
+    html = tabla(["componente", "varianza explicada", "lado positivo", "lado negativo"], N.lsa_k4.positivos.map((p, j) => [j + 1, fmt(N.lsa_k4.varianza_explicada_pct[j], 1) + " %", esc(p.join(" ")), esc(N.lsa_k4.negativos[j].join(" "))]), ["num", "num", "", ""]) +
+      '<div class="info">El primer componente es todo no negativo: es el peso general de cada documento, no un tema. Los demás son contrastes entre dos polos: hay que leer los dos lados.</div>';
+  } else if (vistaTop === "lda") {
+    html = `<div class="badbox">LDA con 92 noticias de unas 21 palabras de contenido no recupera las secciones (ARI por semilla: ${N.lda_k4.ari_por_semilla.map((x) => fmt(x, 3)).join(" · ")}) y cambia de una semilla a otra (estabilidad ${fmt(N.estabilidad.lda_5_semillas, 2)}).</div>` +
+      "<h3>Semilla 0</h3>" + tabla(["tópico", "palabras principales"], N.lda_k4.temas_semilla_0.map((t, j) => [j + 1, esc(t.join(" "))]), ["num", ""]) +
+      "<h3>Semilla 1</h3>" + tabla(["tópico", "palabras principales"], N.lda_k4.temas_semilla_1.map((t, j) => [j + 1, esc(t.join(" "))]), ["num", ""]);
+  } else if (vistaTop === "km") {
+    const km = N.kmeans;
+    html = `<p>k-means agrupa las 92 noticias en 4 grupos sin mirar las secciones. Cada barra muestra de qué secciones son las noticias de cada grupo (apartado 6.4): si el agrupamiento recuperase las secciones, cada barra sería de un solo color.</p>` + leyendaSec +
+      tabla(["grupo", "noticias", "de qué secciones son", "centroide", "título más cercano"], Object.entries(km.k4).map(([j, g]) => [+j + 1, g.tamano, apilada(g.secciones), esc(g.centroide.join(" ")), esc(g.titulo_mas_cercano)]), ["num", "num", "", "", ""]) +
+      `<div class="info">Silueta (coseno) para k = 2 a 8: ${Object.entries(km.silueta_coseno_por_k).map(([kk, v]) => `${kk}: ${fmt(v, 3)}`).join(" · ")}. Valores tan cercanos a 0 dicen que las noticias no forman grupos separados. ARI con las secciones (k = 4): ${fmt(km.ari_k4, 2)}.</div>`;
+  } else if (vistaTop === "qnmf") {
+    html = tabla(["tópico", "palabras principales", "capítulos con más peso"], Q.nmf_k8.map((t, j) => [j + 1, esc(t.palabras.join(" ")), t.capitulos.map((c) => `<strong>${c.cap}</strong> ${esc(c.titulo)}`).join("<br>")]), ["num", "", ""]) +
+      `<p class="small">${Q.capitulos} capítulos, ${Q.palabras.toLocaleString("es-ES")} palabras. Sin palabras vacías ni términos presentes en más de la mitad de los capítulos («don», «quijote», «sancho»…).</p>`;
+  } else if (vistaTop === "qlda") {
+    html = `<div class="warnbox">Tres semillas de LDA: cada una da tópicos interpretables, pero no los mismos (estabilidad ${fmt(Q.estabilidad, 2)}).</div>` +
+      Q.lda_k8.map((x) => `<h3>Semilla ${x.semilla}</h3>` + tabla(["tópico", "palabras principales", "capítulos"], x.temas.map((t, j) => [j + 1, esc(t.palabras.join(" ")), t.capitulos.map((c) => c.cap).join(", ")]), ["num", "", ""])).join("");
+  }
+  $("#top-res").innerHTML = html;
+  if (vistaTop === "nmf") { const t = $$("#top-res table")[1]; if (t) { t.id = "tabla-mixtas"; calor("#tabla-mixtas"); } }
+}
+segmentado("#top-seg", (v) => { vistaTop = v; pintarTop(); });
+$("#top-k").addEventListener("input", pintarTop);
+pintarTop();
+
+// ================================================================ 8 · Intruso
+function pintarIntruso() {
+  $("#int-lista").innerHTML = D.intruso.map((it, n) => `<div class="caso-intruso" data-n="${n}"><div class="q">${it.corpus === "noticias" ? "Noticias" : "Quijote"} · tópico ${it.tema + 1}</div><div class="intr">` +
+    it.palabras.map((w) => `<span class="opt${w === it.intruso ? " intruso-ok" : ""}" style="cursor:default">${esc(w)}</span>`).join(" ") + `</div></div>`).join("");
+  $$("#int-lista .caso-intruso").forEach((x) => x.addEventListener("click", () => x.classList.remove("oculto")));
+}
+pintarIntruso();
+Clase.botonPregunta($("#int-ctrl"), (oc) => $$("#int-lista .caso-intruso").forEach((x) => x.classList.toggle("oculto", oc)), { ver: "Ocultar las intrusas para preguntar", ocultas: "Mostrar todas las intrusas" });
+
+// ================================================================ 9 · Entidades
+const TR = D.entidades.tramos;
+let vistaEnt = "referencia", mias = {};
+const idsEnt = Object.keys(TR);
+$("#ent-doc").innerHTML = ["desarrollo", "evaluacion", "sin_referencia"].map((p) => `<optgroup label="${p === "desarrollo" ? "Desarrollo" : p === "evaluacion" ? "Evaluación" : "Sin referencia (anotar en directo)"}">` +
+  idsEnt.filter((i) => TR[i].particion === p).map((i) => `<option value="${i}">${i} · ${esc(TR[i].texto.slice(0, 60))}…</option>`).join("") + "</optgroup>").join("");
+function marcar(txt, tramos) {
+  const t = tramos.slice().sort((a, b) => a[0] - b[0]);
+  let out = "", pos = 0;
+  for (const [a, b, l] of t) {
+    if (a < pos) continue;
+    out += esc(txt.slice(pos, a)) + `<span class="ent ${l}">${esc(txt.slice(a, b))}<sub>${l}</sub></span>`;
+    pos = b;
+  }
+  return out + esc(txt.slice(pos));
+}
+function pintarEnt() {
+  const i = $("#ent-doc").value, d = TR[i];
+  const tramos = vistaEnt === "referencia" ? (d.particion === "sin_referencia" ? (mias[i] || []) : d.referencia) : d[vistaEnt];
+  $("#ent-texto").innerHTML = marcar(d.texto, tramos);
+  let html = "";
+  const ref = d.particion === "sin_referencia" ? (mias[i] || []) : d.referencia;
+  if (vistaEnt !== "referencia" && ref.length) {
+    const e = L.evaluarTramos({ [i]: d[vistaEnt] }, { [i]: ref }, [i]);
+    html = `<h3>Errores en esta noticia (${vistaEnt === "modelo" ? "modelo" : vistaEnt.replace("_", " ")} frente a ${d.particion === "sin_referencia" ? "tu referencia" : "la referencia"})</h3>` +
+      (e.errores.length ? tabla(["clase", "predicho", "referencia"], e.errores.map((x) => [x.clase, x.predicho ? `${esc(d.texto.slice(x.predicho[0], x.predicho[1]))} (${x.predicho[2]})` : "—",
+        x.referencia.map((r) => `${esc(d.texto.slice(r[0], r[1]))} (${r[2]})`).join("; ") || "—"])) : '<div class="info">Sin errores en esta noticia.</div>') +
+      `<p class="small">F1 exacta en esta noticia: ${fmt(e.medidas.exacta.f1, 2)} (${e.medidas.exacta.aciertos} aciertos, ${e.medidas.exacta.predichas} predichas, ${e.medidas.exacta.referencia} en la referencia).</p>`;
+  }
+  $("#ent-errores").innerHTML = html;
+  $("#ent-anotar").innerHTML = d.particion === "sin_referencia" ? `<h3>Anotar en directo: así se construye una referencia</h3><p class="small">Selecciona con el ratón un fragmento del texto de arriba (en la vista «Referencia») y pulsa el tipo.</p>
+    <div class="row">${["PER", "LOC", "ORG", "MISC"].map((t) => `<button class="btn btn-gray anot" data-t="${t}">${t}</button>`).join("")}<button class="btn btn-gray" id="anot-borrar">Borrar mis anotaciones</button></div>
+    <p class="small" id="anot-aviso" role="status"></p>
+    <p class="small">${(mias[i] || []).map((r) => `«${esc(d.texto.slice(r[0], r[1]))}» ${r[2]}`).join(" · ") || "Aún no hay anotaciones: esta noticia no tiene referencia."}</p>` : "";
+  $$(".anot").forEach((b) => b.addEventListener("click", () => anotar(b.dataset.t)));
+  if ($("#anot-borrar")) $("#anot-borrar").addEventListener("click", () => { mias[i] = []; pintarEnt(); });
+}
+function offsetEn(contenedor, nodo, off) {
+  const w = document.createTreeWalker(contenedor, NodeFilter.SHOW_TEXT);
+  let total = 0, n;
+  while ((n = w.nextNode())) {
+    if (n.parentElement && n.parentElement.tagName === "SUB") continue;
+    if (n === nodo) return total + off;
+    total += n.textContent.length;
+  }
+  return -1;
+}
+function anotar(tipo) {
+  const i = $("#ent-doc").value, sel = window.getSelection(), cont = $("#ent-texto");
+  const aviso = (m) => { const a = $("#anot-aviso"); if (a) a.textContent = m; };
+  if (vistaEnt !== "referencia") { aviso("Cambia a la vista «Referencia» para anotar."); return; }
+  if (!sel.rangeCount || sel.isCollapsed) { aviso("Selecciona primero un fragmento del texto."); return; }
+  const r = sel.getRangeAt(0);
+  if (!cont.contains(r.startContainer) || !cont.contains(r.endContainer)) { aviso("Selecciona dentro del texto de la noticia."); return; }
+  let a = offsetEn(cont, r.startContainer, r.startOffset), b = offsetEn(cont, r.endContainer, r.endOffset);
+  const txt = TR[i].texto;
+  while (a < b && /\s/.test(txt[a])) a++;
+  while (b > a && /\s/.test(txt[b - 1])) b--;
+  if (a < 0 || b <= a) return;
+  mias[i] = (mias[i] || []).filter((x) => x[1] <= a || x[0] >= b).concat([[a, b, tipo]]);
+  sel.removeAllRanges();
+  pintarEnt();
+}
+function pintarMedidas() {
+  const ids = { desarrollo: idsEnt.filter((i) => TR[i].particion === "desarrollo"), evaluacion: idsEnt.filter((i) => TR[i].particion === "evaluacion") };
+  const ref = {}; idsEnt.forEach((i) => { ref[i] = TR[i].referencia; });
+  const filas = [];
+  for (const [nom, clave] of [["Modelo", "modelo"], ["Reglas v1", "reglas_v1"], ["Reglas v2", "reglas_v2"]]) {
+    const pred = {}; idsEnt.forEach((i) => { pred[i] = TR[i][clave]; });
+    const dv = L.evaluarTramos(pred, ref, ids.desarrollo).medidas, ev = L.evaluarTramos(pred, ref, ids.evaluacion).medidas;
+    filas.push([nom, fmt(dv.exacta.f1, 2), fmt(ev.exacta.precision, 2), fmt(ev.exacta.exhaustividad, 2), `<strong>${fmt(ev.exacta.f1, 2)}</strong>`, fmt(ev.solo_limites.f1, 2)]);
+  }
+  $("#ent-medidas").innerHTML = tabla(["sistema", "F1 desarrollo", "precisión eval.", "exhaustividad eval.", "F1 evaluación", "F1 solo límites (eval.)"], filas, ["", "num", "num", "num", "num", "num"]) +
+    '<p class="small">8 noticias de desarrollo (29 entidades) y 16 de evaluación (53). Las reglas se escribieron mirando solo desarrollo: la subida en desarrollo es optimista.</p>';
+}
+segmentado("#ent-seg", (v) => { vistaEnt = v; pintarEnt(); });
+$("#ent-doc").addEventListener("change", pintarEnt);
+pintarEnt(); pintarMedidas();
+
+const CLN = D.clinico;
+$("#cl-nota").innerHTML = CLN.notas.map((n) => `<option value="${n.id}">${n.id} (${n.particion})</option>`).join("") + '<option value="propia">Escribe la tuya</option>';
+function cargarNota() {
+  const v = $("#cl-nota").value;
+  if (v !== "propia") $("#cl-texto").value = CLN.notas.find((n) => n.id === v).texto;
+  extraerClin();
+}
+function extraerClin() {
+  const t = $("#cl-texto").value, pred = L.reglasClinicas(t, CLN.farmacos, CLN.regex_dosis, CLN.regex_frecuencia);
+  $("#cl-res").innerHTML = marcar(t, pred) || "<span class='small'>Sin texto.</span>";
+  const nota = CLN.notas.find((n) => n.id === $("#cl-nota").value && n.texto === t);
+  let html = "";
+  if (nota) {
+    const ref = nota.referencia.filter((x) => ["FARMACO", "DOSIS", "FRECUENCIA"].includes(x[2]));
+    const e = L.evaluarTramos({ x: pred }, { x: ref }, ["x"]);
+    html = `<p class="small">Referencia de esta nota (medicación): ${ref.map((r) => `«${esc(t.slice(r[0], r[1]))}» ${r[2]}`).join(" · ")}. F1 exacta: ${fmt(e.medidas.exacta.f1, 2)}. También anota ${nota.referencia.filter((x) => !["FARMACO", "DOSIS", "FRECUENCIA"].includes(x[2])).map((r) => `«${esc(t.slice(r[0], r[1]))}» (${r[2]})`).join(", ")}, que estas reglas no intentan extraer.</p>`;
+  }
+  const idsE = CLN.notas.filter((n) => n.particion === "evaluacion").map((n) => n.id);
+  const filas = ["DOSIS", "FRECUENCIA", "FARMACO"].map((tp) => {
+    const r2 = {}, p2 = {};
+    idsE.forEach((id) => { const n = CLN.notas.find((x) => x.id === id); r2[id] = n.referencia.filter((x) => x[2] === tp); p2[id] = L.reglasClinicas(n.texto, CLN.farmacos, CLN.regex_dosis, CLN.regex_frecuencia).filter((x) => x[2] === tp); });
+    const m = L.evaluarTramos(p2, r2, idsE).medidas.exacta;
+    return [tp, fmt(m.precision, 2), fmt(m.exhaustividad, 2), fmt(m.f1, 2), `${m.aciertos} de ${m.referencia}`];
+  });
+  $("#cl-med").innerHTML = html + "<h3>Las 4 notas de evaluación</h3>" + tabla(["tipo", "precisión", "exhaustividad", "F1", "aciertos"], filas, ["", "num", "num", "num", "num"]) +
+    `<p class="small">Fármacos de evaluación que el diccionario no conoce: ${CLN.no_vistos.join(", ")}. Prueba a escribir una nota con «metformina 850 mg cada 12 horas».</p>`;
+}
+$("#cl-nota").addEventListener("change", cargarNota);
+$("#cl-go").addEventListener("click", extraerClin);
+cargarNota();
+
+// (El repaso del test está en repaso.html, fuera de la demo de clase.)
+pintarEditor(); pintarLSA(); pintarNMF(); reiniciarLDA();
+</script>
+</body>
+</html>

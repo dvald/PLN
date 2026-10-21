@@ -1,0 +1,40 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/09_aplicaciones.html (+ 09_aplicaciones_lib.js, 09_aplicaciones_datos.js y 09_aplicaciones_audio/)",
+ "navegador": "Navegador integrado de la aplicación Claude (Chromium) con servidor local temporal http://127.0.0.1:8799, ventana de 1280 × 900; y Google Chrome sin interfaz (--headless=new --virtual-time-budget=6000 --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Filtros de partición y fenómeno (prueba + modismo → 4 frases); M03: palabra a palabra 26,3, voraz y haz 100,0 (chrF2 del navegador = sacrebleu); tabla de prueba 47,7 / 75,7 / 74,7 recalculada en el navegador; desarrollo 81,0 / 81,7 ×3; forzado del profesor «a cántaros» (paso 5: 0,8 % frente a «gatos» 29,7 %; pérdida 1,456); OPUS Books solo «train», 93.470 pares, 74.776 / 9.347 / 9.347",
+  "pestaña_2": "«The red car…»: máximos coche→car, rojo→red, padres→parents y resto en «</s>»; al ocultar «</s>» y renormalizar, mis→my y pertenece→belongs; cambio de capa",
+  "pestaña_3": "«la casa» / «las casas»: 83,9 (n ≤ 2), chrP 0,661, chrR 0,900; n = 6 → 40,5; ejemplo «Llueve muchísimo» → 6,2; «la» → 31,3 con precisión 1",
+  "pestaña_4": "Predicción de B01 (masculino, acierto); «Mostrar todas»: 10 de 14 sin pista en masculino y 4 de 6 con pronombre; fallos marcados en B15 y B16; reinicio",
+  "pestaña_5": "d08: ROUGE-1 titular 0,429, primera frase 0,667, central 0,412, Qwen 0,400 con cifra ajena «13.500»; resumen propio con «15.000» → cifra ajena marcada; medias 0,432 / 0,717 / 0,654 / 0,404",
+  "pestaña_6": "Conversación de 6 turnos igual a Python (rechazo de las 21:00, 17:30, confirmación y reserva); evaluación 12/12 y 18/20; con la regla «no puedo ir», 19/20 y cancelación del martes",
+  "pestaña_7": "Q20: índice invertido sin «islas» ni «visitantes», 7 candidatos; TF-IDF pone e08 cuarta (s14, c06, s17 delante); puntuación del tema 3, spaCy 53, BETO 1; Q02: TF-IDF 1, BETO 5; calculadora de MRR 14, 53, 13 → 0,056",
+  "pestaña_8": "Q03: tramo «el Observatorio Económico del Ebro» (P = 0,960), margen 42,3, contesta; Q24: «un penalti decisivo», margen 14,3, contesta; gráfica de 110 barras; umbral 0,81 → prueba 17/17 y 1/3; umbral 26 → 15/17 y 3/3",
+  "pestaña_9": "7 audios decodificados (3,92; 5,50; 2,06; 4,06; 2,99; 3,65 y 6,24 s); figura de rasgos cargada (1300 px); normalizador «En 1910… es 1910» → «mil novecientos diez… uno nueve uno cero»; WER 38,5 % (2 S, 3 D) → 0 % verbalizando; tabla de corpus tiny/base",
+  "pestaña_10": "Pregunta 4: respuesta B marcada como incorrecta con explicación; A correcta; contador de aciertos",
+  "consola": "Sin errores tras corregir la falta de la función de formato de miles (error detectado y corregido durante la prueba)"
+ },
+ "prueba_file": {
+  "resultado": "OK",
+  "comprobaciones": [
+   "chrF 83,9",
+   "tabla de prueba 74,7",
+   "mapa de atención",
+   "agente 18 de 20",
+   "índice 1.566 términos",
+   "tramo del lector",
+   "normalizador",
+   "WER 38,5 %",
+   "repaso"
+  ]
+ },
+ "biblioteca": "Demos/fuentes/prueba_lib_09.json (node v22.22.0): chrF 600 + 3, TF-IDF 92 documentos y 22 consultas, 12 resúmenes, 39 enunciados y 10 turnos del agente, 17 frases y 29 cardinales del normalizador, 96 alineamientos de WER; todo igual a Python",
+ "correcciones_durante_la_prueba": [
+  "función de formato de miles no definida (rompía las pestañas 2-10)",
+  "tramo del lector resaltado carácter a carácter (letras espaciadas) y por primera aparición del texto; ahora por posiciones reales",
+  "contador del sesgo tras «Mostrar todas»",
+  "frase repetida en la explicación de la pregunta 4"
+ ],
+ "limites": "No probado en Safari, Firefox ni en móvil; los audios se reprodujeron como metadatos (duración), no se escucharon en esta sesión"
+}

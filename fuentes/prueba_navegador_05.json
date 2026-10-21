@@ -1,0 +1,28 @@
+{
+ "fecha": "2026-10-12",
+ "pagina": "Demos/05_modelado_neuronal.html",
+ "navegador": "Google Chrome (extensión Claude in Chrome) con servidor local temporal http://127.0.0.1:8795; y Chrome sin interfaz (--headless=new --dump-dom) abriendo el archivo con file://",
+ "pruebas_servidor_local": {
+  "pestaña_1": "Frase del tema: 7 palabras, ventana 2 → 22 pares de skip-gram y 7 ejemplos de CBOW; al pulsar «coche» con ventana 1 → (coche, un) y (coche, rojo) y 12 pares; una sola palabra → 0 pares (plural corregido); frase sin letras → aviso",
+  "pestaña_2": "67 palabras en el selector; «molinos»: 11 apariciones en 6 capítulos, aviso de pocos contextos, TF-IDF con cinco vecinos empatados a 0,937 (benito, aspas, forzadas, machuca, vizcaína) y skip-gram gobiernan 0,875; analogías rucio 3.º y reina 9.º; PCA con 24 palabras, leyenda y varianza 19,7 + 15,9 = 35,6 %",
+  "pestaña_3": "Resumen calculado en el navegador igual a las diapositivas (3,4 / 0,580 / 9 de 12; 27,3 / 0,052 / 0; 23,3 / 0,123 / 2; 18,1 / 0,092 / 1); consulta del testamento: puestos 1, 38, 10 y 11 con el capítulo correcto resaltado; consulta de los galeotes marca «libera» y «remar» como ausentes",
+  "pestaña_4": "«rocín»: 14 n-gramas; «quijotesco»: 34; n mínimo > n máximo → aviso; «rocinantes» y «rocinante» comparten 26 n-gramas; tabla de palabras fuera del vocabulario (dulcinea 0,961…)",
+  "pestaña_5": "Matrices del tema: salida (0,4289; 0,5711), (0,4708; 0,5292), (0,4208; 0,5792); paso a paso de la palabra 1 con exp y suma 4,6280; comprobación correcta para la palabra 2 (0,471; 0,529) y causal (0,310; 0,690), incorrecta con aviso; escala + máscara: (0,1; 0,9), (0,3071; 0,6929), (0,4245; 0,5755) = numpy; matriz mal escrita → mensaje; otras matrices 2×3 recalculan; botón de volver a las matrices del tema; pasos numerados de forma consecutiva",
+  "pestaña_6": "Semilla 7 y 3 enmascaran con [MASK], al azar y sin cambio; 2000 repeticiones: 14,9 % elegidos, 79,6 / 10,0 / 10,4 %; colador real precalculado (después, a, mientras; 15,11 %, 79,3 / 10,2 / 10,5 %)",
+  "pestaña_7": "Ficha de BETO (12, 12, 768, 31 002, 512, 109,3 M); 3 tokenizaciones; relleno de la frase de las herramientas (dinero 0,383…); matriz de «banco» y de «gato» con colores por sentido; curva por capas (máximo en la capa 4: 0,753 frente a 0,566); atención capa 9 media de cabezas: «gato» → [SEP] 0,77; cabeza 3 recalcula",
+  "pestaña_8": "8 preguntas; respuesta correcta en posición alterna; retroalimentación y recuento «8 de 8»",
+  "teclado": "Flechas izquierda y derecha cambian de pestaña (con vuelta al principio)",
+  "indice": "Demos/index.html enlaza la demo (clic probado) y la demo enlaza el índice; los archivos del Tema 5 y las demos de los Temas 1-4 responden 200",
+  "consola": "Sin errores tras recargar y recorrer las ocho pestañas",
+  "defectos_corregidos": [
+   "«1 palabras» / «0 pares» sin concordancia en la pestaña 1",
+   "Punto tras los puntos suspensivos del título de capítulo en la pestaña 3",
+   "Pasos de la atención numerados 1, 4, 5 sin escala ni máscara; ahora consecutivos",
+   "Etiquetas solapadas en la proyección PCA (aldea, venta, barcelona; duque, teresa; asno, jumento)",
+   "Miles con espacio en 9399 (ahora como en las diapositivas)"
+  ]
+ },
+ "prueba_file": "DOM volcado con file:// tras ejecutar los scripts: 7 botones de palabra, 67 palabras con vecinos, 4 filas del resumen de búsqueda, 14 n-gramas de «rocín», 3 matrices de atención, 8 preguntas, 2 curvas del gráfico por capas y la matriz de atención de BETO con 10 filas",
+ "biblioteca": "node Demos/fuentes/probar_lib_05.js: 36 casos de n-gramas iguales a gensim, 12 de pares de skip-gram, 20 de atención iguales a numpy (con y sin escala y máscara), lectura de matrices, resumen de búsqueda igual a Python y simulación del enmascarado con proporciones 15/80/10/10 (Demos/fuentes/prueba_lib_05.json)",
+ "limites": "No probado en Safari ni Firefox. Vecinos, búsquedas, analogías, PCA y todas las salidas de BETO están precalculados en Python; la página no entrena Word2Vec ni ejecuta BETO. La pestaña de máscaras es una simulación con palabras."
+}
