@@ -63,3 +63,9 @@ Funciona sin conexión y no envía datos. Fuentes de los datos: noticias y rese�
 repaso.html
 -----------
 Preguntas recogidas de las demos de los Temas 5 a 10 preparadas el 12/10/2026. Cuando una pregunta es del test del tema, la clave es la deducida del texto del tema; si la del aula virtual difiere, prevalece la del aula. Funciona sin conexión y no envía datos.
+
+
+TEMA 3 · ampliación docente · 01/11/2026
+Caso guiado de Ana Ruiz / NovaLab / Salamanca: texto ficticio original y anotaciones gramaticales, grupos nominales, entidades y dos relaciones elegidos a mano para explicar las tareas. No son predicciones de spaCy ni resultados experimentales. La omisión de una entidad y la dependencia de las relaciones se ilustran mediante una cadena diseñada para el caso.
+Práctica: seis textos ficticios originales; referencia binaria manual sobre trabaja_en; tres reglas de coincidencia ejecutadas en el navegador. Precisión y exhaustividad calculadas respecto de esos seis casos. No constituyen un benchmark, un modelo entrenado ni un detector general de negación.
+Base conceptual: Temas/Tema03/FICHA_TEMA.md, Clase04_Tema3_Stemming_Extraccion/PLAN_CLASE.md y apartados 3.2-3.6 del Tema 3 conservado en el proyecto docente. Datos y bibliotecas históricas de spaCy/NLTK sin regenerar.

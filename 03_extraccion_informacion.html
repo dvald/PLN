@@ -166,29 +166,68 @@
 </style>
 <link rel="icon" href="comun/icono.svg" type="image/svg+xml">
 <link rel="stylesheet" href="comun/clase.css">
+<link rel="stylesheet" href="03_extraccion_informacion_clase.css">
 </head>
 <body class="bloque-texto">
 
 <header class="header">
   <nav class="migas" aria-label="Navegación entre temas"><a class="inicio" href="index.html">⌂ Índice</a><span class="chips"><a href="01_introduccion.html" style="--c:#1E88E5" title="Tema 1 · Introducción">1</a><a href="02_texto_como_dato.html" style="--c:#1E88E5" title="Tema 2 · El texto como dato">2</a><a href="03_extraccion_informacion.html" style="--c:#1E88E5" title="Tema 3 · Extracción de información" aria-current="page">3</a><a href="04_modelado_lenguaje.html" style="--c:#00897B" title="Tema 4 · Modelado del lenguaje">4</a><a href="05_modelado_neuronal.html" style="--c:#8E24AA" title="Tema 5 · Modelado neuronal (I)">5</a><a href="06_topicos.html" style="--c:#00897B" title="Tema 6 · Tópicos">6</a><a href="07_sentimientos.html" style="--c:#E65100" title="Tema 7 · Sentimientos">7</a><a href="08_modelado_neuronal_ii.html" style="--c:#8E24AA" title="Tema 8 · Modelado neuronal (II)">8</a><a href="09_aplicaciones.html" style="--c:#E65100" title="Tema 9 · Aplicaciones">9</a><a href="10_visualizacion.html" style="--c:#E65100" title="Tema 10 · Visualización">10</a></span><a class="ant" href="02_texto_como_dato.html">‹ Tema 2 · El texto como dato</a><a class="sig" href="04_modelado_lenguaje.html">Tema 4 · Modelado del lenguaje ›</a></nav>
   <h1><span class="num-tema">TEMA 3</span>Extracción de información de textos</h1>
-  <p>De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema.</p>
+  <p>Una noticia, varias capas: caso guiado para descubrir categorías, grupos, entidades y relaciones; comparación raíz/lema y una práctica breve con reglas.</p>
   <div class="header-glifo"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M4 12h13M4 19h9M4 26h13M4 33h7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 22.5h7m-3-3 3 3-3 3" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="29" y="8" width="15" height="30" rx="2.5" fill="currentColor" fill-opacity=".14" stroke="currentColor" stroke-width="2.2"/><path d="M29 18h15M29 28h15M36.5 8v30" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
 </header>
 
 <div class="tabs" role="tablist" aria-label="Secciones de la demo">
-  <button class="tab" role="tab" id="t-flujo" aria-controls="p-flujo" aria-selected="true"><span class="tab-n">1</span> Del texto a la tabla</button>
-  <button class="tab" role="tab" id="t-pos" aria-controls="p-pos" aria-selected="false" tabindex="-1"><span class="tab-n">2</span> Etiquetado gramatical</button>
-  <button class="tab" role="tab" id="t-chunk" aria-controls="p-chunk" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Chunking</button>
-  <button class="tab" role="tab" id="t-ner" aria-controls="p-ner" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Entidades</button>
-  <button class="tab" role="tab" id="t-rel" aria-controls="p-rel" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Relaciones</button>
-  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Raíz o lema</button>
+  <button class="tab" role="tab" id="t-caso" aria-controls="p-caso" aria-selected="true"><span class="tab-n">1</span> Caso guiado</button>
+  <button class="tab" role="tab" id="t-flujo" aria-controls="p-flujo" aria-selected="false" tabindex="-1"><span class="tab-n">2</span> Texto a tabla</button>
+  <button class="tab" role="tab" id="t-pos" aria-controls="p-pos" aria-selected="false" tabindex="-1"><span class="tab-n">3</span> Categorías</button>
+  <button class="tab" role="tab" id="t-chunk" aria-controls="p-chunk" aria-selected="false" tabindex="-1"><span class="tab-n">4</span> Chunking</button>
+  <button class="tab" role="tab" id="t-ner" aria-controls="p-ner" aria-selected="false" tabindex="-1"><span class="tab-n">5</span> Entidades</button>
+  <button class="tab" role="tab" id="t-rel" aria-controls="p-rel" aria-selected="false" tabindex="-1"><span class="tab-n">6</span> Relaciones</button>
+  <button class="tab" role="tab" id="t-raiz" aria-controls="p-raiz" aria-selected="false" tabindex="-1"><span class="tab-n">7</span> Raíz o lema</button>
+  <button class="tab" role="tab" id="t-practica" aria-controls="p-practica" aria-selected="false" tabindex="-1"><span class="tab-n">8</span> Tu turno</button>
 </div>
 
 <div class="content">
 
+<section class="panel active" id="p-caso" role="tabpanel" aria-labelledby="t-caso">
+  <div class="aula-portada">
+    <div>
+      <div class="aula-ceja">El caso de la clase · una noticia, varias capas</div>
+      <h2>¿Cómo convertimos una noticia en una ficha fiable?</h2>
+      <p>Una redacción quiere consultar quién trabaja en cada organización y en qué ciudad. Vamos a construir la respuesta, capa a capa.</p>
+    </div>
+    <div class="aula-sello" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="5" y="10" width="22" height="37" rx="3"/><path d="M10 18h12M10 25h12M10 32h7M31 29h9m-4-5 5 5-5 5"/><rect x="44" y="14" width="16" height="34" rx="3"/><path d="M44 25h16M44 36h16M52 14v34"/></svg></div>
+  </div>
+  <div class="aula-ruta" id="casoRuta" role="group" aria-label="Capas del caso guiado"></div>
+  <div class="aula-pasos"><div id="casoPasos"></div><button type="button" class="btn btn-gray" id="casoReiniciar">Volver al encargo</button></div>
+  <div class="aula-escena">
+    <article class="aula-fuente">
+      <div class="aula-documento"><span>Documento 01 · Ciencia local</span><span>Noticia ficticia</span></div>
+      <div id="casoNoticia" class="aula-noticia"></div>
+      <div class="aula-pie-fuente">Mismo texto, distintas preguntas: palabras → grupos → nombres → hechos.</div>
+    </article>
+    <article class="aula-salida">
+      <div class="aula-ceja">Lo que aporta esta capa</div>
+      <h3 id="casoTit"></h3>
+      <div class="aula-dibujo" id="casoDibujo" aria-live="polite"></div>
+      <div id="casoFalloZona" hidden><label class="aula-toggle"><input type="checkbox" id="casoFallo"> Provocar un fallo: el NER omite NovaLab</label></div>
+    </article>
+  </div>
+  <div class="aula-idea"><strong>Qué nos llevamos</strong><span id="casoIdea"></span></div>
+  <div class="aula-pregunta"><b>Antes de avanzar, piensa</b><span id="casoPregunta"></span>
+    <details class="aula-respuesta" id="casoDetalle"><summary>Ver la explicación</summary><p id="casoRespuesta"></p></details>
+  </div>
+  <p class="aula-nota" style="margin-top:.7rem">Caso ilustrativo con anotaciones manuales. No ejecuta spaCy. Las exploraciones siguientes sí muestran salidas reales precalculadas y reglas calculadas en el navegador. Avanza con los botones o con ← →.</p>
+  <div class="aula-objetivos" aria-label="Continúa la clase">
+    <a href="#raiz" data-aula-tab="raiz"><b>01</b><span>Comparar raíz y lema<br><strong>¿Qué formas conviene agrupar?</strong></span></a>
+    <a href="#pos" data-aula-tab="pos"><b>02</b><span>Explorar las técnicas<br><strong>¿Qué devuelve cada una?</strong></span></a>
+    <a href="#practica" data-aula-tab="practica"><b>03</b><span>Probar una regla<br><strong>¿Qué errores introduce?</strong></span></a>
+  </div>
+</section>
+
 <!-- =============================================================== 1 -->
-<section class="panel active" id="p-flujo" role="tabpanel" aria-labelledby="t-flujo">
+<section class="panel" id="p-flujo" role="tabpanel" aria-labelledby="t-flujo" hidden>
   <div class="card">
     <h2>De un texto a información estructurada, paso a paso</h2>
     <div class="meta"><span class="tag pre">Salidas reales de spaCy, precalculadas</span><span class="tag real">Relaciones con patrones: en el navegador</span></div>
@@ -332,6 +371,17 @@
 <!-- =============================================================== 6 -->
 <section class="panel" id="p-raiz" role="tabpanel" aria-labelledby="t-raiz" hidden>
   <div class="card">
+    <div class="aula-ceja">El problema práctico de la clase</div>
+    <h2>Antes de medir: ¿qué significa agrupar bien?</h2>
+    <p>Queremos que una búsqueda reúna las formas de un verbo sin mezclar palabras distintas. Una clave breve no tiene por qué ser una palabra del diccionario.</p>
+    <div class="aula-intuicion">
+      <div><h3>Raíz · recortar con reglas</h3><div class="aula-formas">comer · comiendo → <strong>com</strong></div><p>Snowball aplica reglas de sufijos. La clave sirve para agrupar; no representa necesariamente una raíz lingüística exacta.</p></div>
+      <div><h3>Lema · recuperar la forma de diccionario</h3><div class="aula-formas">fui al médico → <strong>ir</strong><br>fui feliz → <strong>ser</strong></div><p>El análisis necesita contexto. Estas son las referencias correctas; un lematizador puede equivocarse.</p></div>
+    </div>
+    <div class="aula-pregunta"><b>Predice antes de cambiar el método</b>Si mezclamos dos lemas distintos en un grupo, ¿qué baja? Si separamos formas del mismo lema, ¿qué perdemos?</div>
+    <p class="small" style="margin-top:.7rem">La tabla siguiente compara pares de formas con una referencia manual. Unir pares incorrectos reduce la precisión; dejar pares correctos sin unir reduce la exhaustividad.</p>
+  </div>
+  <div class="card">
     <h2>¿Agrupa bien? Precisión y exhaustividad por pares</h2>
     <div class="meta"><span class="tag real">Cálculo en el navegador</span><span class="tag pre">Raíces de NLTK y lemas de spaCy precalculados</span></div>
     <p>Dos formas forman un <b>par</b> si un método les da la misma clave. Comparamos los pares de cada método con los de la referencia (lema correcto).</p>
@@ -346,6 +396,25 @@
     <div class="meta"><span class="tag pre">Resultados precalculados</span></div>
     <svg id="raizChart" class="chart" viewBox="0 0 900 330" role="img" aria-label="Raíz frente a lema en cinco medidas"></svg>
     <details><summary class="small">Ver las cifras en una tabla</summary><div id="raizRes"></div></details>
+  </div>
+</section>
+
+<section class="panel" id="p-practica" role="tabpanel" aria-labelledby="t-practica" hidden>
+  <div class="aula-portada"><div><div class="aula-ceja">Tu turno · práctica breve, sin calificación</div><h2>¿La regla encuentra un hecho o se lo inventa?</h2><p>Predice la salida, cambia una regla y contrástala con la referencia. No hace falta programar para discutir qué ha fallado.</p></div></div>
+  <div class="card aula-practica">
+    <div class="row"><label for="practicaCaso">Texto de prueba</label><select id="practicaCaso"></select><label for="practicaRegla">Regla de extracción</label><select id="practicaRegla"><option value="juntas">1 · Solo coocurrencia</option><option value="literal">2 · Patrón literal</option><option value="negacion">3 · Patrón + negación</option></select></div>
+    <div class="aula-caso-mini" id="practicaTexto"></div>
+    <div class="aula-escena">
+      <div class="aula-salida"><div class="aula-ceja">Regla que sí se ejecuta</div><h3>¿Qué añadirá a la base de datos?</h3><p class="aula-regla" id="practicaReglaTexto"></p><div class="aula-celda" id="practicaSalida" aria-live="polite"></div></div>
+      <div class="aula-salida"><div class="aula-ceja">Discusión en clase</div><h3>Antes de ver la referencia</h3><p>1. ¿El texto afirma una relación laboral?<br>2. ¿La regla tiene en cuenta la negación?<br>3. ¿Reconoce otras formas de decirlo?</p><button type="button" class="btn-pregunta" id="practicaSolucion" aria-pressed="false">Mostrar referencia y evaluación</button></div>
+    </div>
+    <div id="practicaReferencia" hidden>
+      <h3 style="margin-top:1.2rem">La referencia de este caso</h3><div class="aula-celda"><span class="aula-estado" id="practicaEstado"></span><p id="practicaGold" style="margin:.6rem 0"></p><p class="small" id="practicaMotivo"></p></div>
+      <h3>Qué pasa con la misma regla en los seis textos</h3><div class="aula-mini-metricas" id="practicaMetricas" aria-live="polite"></div>
+      <details class="aula-bateria"><summary>Ver los seis casos y sus errores</summary><div id="practicaBateria"></div></details>
+      <div class="aula-idea"><strong>Para discutir</strong><span>Evitar falsos positivos puede dejar hechos sin recuperar. Mejorar una regla exige revisar precisión y cobertura con más ejemplos.</span></div>
+    </div>
+    <p class="aula-nota" style="margin-top:1rem">Seis textos ficticios con entidades y referencia anotadas a mano. Reglas de coincidencia calculadas en el navegador. Es una comparación didáctica; no es la evaluación de un modelo ni un sistema general de negación.</p>
   </div>
 </section>
 </div>
@@ -533,7 +602,7 @@ function dibujarArbol(svg, tokens, spans, etiqueta) {
       t.append(tb);
       const t2 = el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "X"), el("th", {}, "Relación"), el("th", {}, "Y"))));
       const tb2 = el("tbody"); rels.forEach(r => tb2.append(el("tr", {}, ...r.map(x => el("td", {}, x)))));
-      if (!rels.length) tb2.append(el("tr", {}, el("td", {colspan: 3}, "Ninguna relación encaja con los patrones de la pestaña 5.")));
+      if (!rels.length) tb2.append(el("tr", {}, el("td", {colspan: 3}, "Ninguna relación encaja con los patrones de la pestaña Relaciones.")));
       t2.append(tb2);
       out.append(el("div", {class: "grid2"}, el("div", {}, el("h3", {}, "Tabla de entidades"), t), el("div", {}, el("h3", {}, "Tabla de relaciones"), t2)));
     }
@@ -803,5 +872,6 @@ function dibujarArbol(svg, tokens, spans, etiqueta) {
   document.getElementById("raizRes").append(t, el("p", {class: "small", style: "margin-top:.6rem"}, `Lemas de spaCy correctos en CESS-ESP: ${pct(c.exactitud_lema_spacy)} de ${c.tokens_evaluados} palabras de contenido. Cifra optimista: CESS-ESP y AnCora (con el que se entrenó el modelo) proceden del mismo treebank.`));
 })();
 </script>
+<script src="03_extraccion_informacion_clase.js"></script>
 </body>
 </html>

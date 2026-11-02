@@ -1,0 +1,99 @@
+/* Recorrido docente del Tema 3. Aislado para no alterar las otras demos. */
+.aula-portada { display:flex; justify-content:space-between; align-items:center; gap:1.5rem; margin-bottom:1rem; }
+.aula-ceja { color:#1565C0; font-size:.72rem; text-transform:uppercase; font-weight:800; letter-spacing:.1em; }
+.aula-portada h2 { font-size:clamp(1.5rem,2.1vw,1.85rem); line-height:1.15; margin:.3rem 0 .5rem; max-width:48ch; letter-spacing:-.03em; }
+.aula-portada p { color:var(--ink2); max-width:90ch; margin:0; font-size:.9rem; }
+.aula-sello { flex:none; width:5rem; height:5rem; border-radius:1.3rem; background:#DBEAFE; color:#1565C0; display:grid; place-items:center; }
+.aula-sello svg { width:3.5rem; height:3.5rem; }
+.aula-ruta { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:.4rem; margin-bottom:1rem; }
+.aula-ruta button { text-align:left; color:#52606D; border:1px solid #D5DEE8; background:#fff; border-radius:.6rem; padding:.55rem .6rem; font:inherit; font-size:.72rem; cursor:pointer; }
+.aula-ruta b { display:block; font-size:.65rem; margin-bottom:.15rem; color:#64748B; }
+.aula-ruta [aria-current="step"] { background:#14385E; border-color:#14385E; color:#fff; box-shadow:0 3px 10px #14385E22; }
+.aula-ruta [aria-current="step"] b { color:#A9D7FF; }
+.aula-escena { display:grid; grid-template-columns:minmax(0,.93fr) minmax(0,1.07fr); gap:1rem; align-items:stretch; }
+.aula-fuente { padding:1.35rem; background:#13273F; color:#fff; border-radius:1rem; position:relative; overflow:hidden; }
+.aula-fuente::before { content:""; position:absolute; right:-3rem; top:-4rem; width:11rem; height:11rem; border:1px solid #34506F; border-radius:50%; pointer-events:none; }
+.aula-documento { display:flex; align-items:center; justify-content:space-between; gap:.8rem; color:#B9CCDD; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; margin-bottom:1.2rem; }
+.aula-noticia { font-size:clamp(1.15rem,1.65vw,1.6rem); line-height:2.1; min-height:9rem; position:relative; }
+.aula-noticia mark { color:#13273F; background:#DDEBFF; border-radius:.25rem; padding:.12rem .18rem; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+.aula-noticia mark[data-tipo="ORG"] { background:#E9D5FF; }
+.aula-noticia mark[data-tipo="LOC"] { background:#A7F3D0; }
+.aula-noticia mark[data-tipo="SN"] { background:#B8F2DF; border-bottom:3px solid #3DD5AE; }
+.aula-noticia mark[data-tipo="VERB"] { background:#FDE68A; }
+.aula-noticia mark small { display:inline-block; font-size:.53em; font-weight:800; margin-left:.25rem; vertical-align:super; line-height:1; }
+.aula-pie-fuente { border-top:1px solid #36506B; margin-top:1rem; padding-top:.7rem; color:#C5D6E5; font-size:.77rem; }
+.aula-salida { background:#fff; border:1px solid #DBE4EE; border-radius:1rem; padding:1.2rem; min-width:0; display:flex; flex-direction:column; }
+.aula-salida h3 { font-size:1.1rem; margin:.1rem 0 .8rem; }
+.aula-salida p { color:#52606D; }
+.aula-dibujo { flex:1; min-height:12rem; display:flex; flex-direction:column; justify-content:center; gap:.7rem; }
+.aula-pregunta { border-left:4px solid #E3AA20; background:#FFF8E7; color:#654A0A; padding:.7rem .9rem; border-radius:.2rem .7rem .7rem .2rem; margin-top:1rem; font-size:.88rem; }
+.aula-pregunta b { display:block; font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; margin-bottom:.2rem; }
+.aula-idea { margin-top:.9rem; display:flex; align-items:baseline; gap:.7rem; background:#E8F2FE; padding:.8rem 1rem; border-radius:.7rem; color:#14385E; font-size:.9rem; }
+.aula-idea strong { white-space:nowrap; }
+.aula-pasos { display:flex; justify-content:space-between; align-items:center; gap:.7rem; flex-wrap:wrap; margin:.8rem 0; }
+.aula-pasos .pasos-ctrl { margin:0; }
+.aula-roto { border:1px dashed #B96026; border-radius:.6rem; padding:.6rem .8rem; background:#FFF4E9; color:#86441A; font-size:.8rem; }
+.aula-nota { color:#52606D; font-size:.75rem; }
+.aula-respuesta { color:#26496B; font-size:.85rem; margin-top:.6rem; }
+.aula-respuesta summary { cursor:pointer; font-weight:700; }
+.aula-respuesta p { padding:.5rem 0; }
+.aula-nodos { display:flex; justify-content:center; align-items:center; gap:.65rem; flex-wrap:wrap; }
+.aula-nodo { border:2px solid #1E88E5; background:#EAF3FF; border-radius:.75rem; padding:.7rem 1rem; text-align:center; }
+.aula-nodo small { display:block; color:#1565C0; font-size:.65rem; text-transform:uppercase; font-weight:800; letter-spacing:.06em; }
+.aula-nodo.org { border-color:#9354B9; background:#F5ECFC; }
+.aula-nodo.org small { color:#7434A0; }
+.aula-nodo.loc { border-color:#008269; background:#E4F8F1; }
+.aula-nodo.loc small { color:#006B55; }
+.aula-flecha { color:#475569; text-align:center; font-size:.73rem; }
+.aula-flecha span { display:block; font-size:1.7rem; line-height:1; color:#1E88E5; }
+.aula-hueco { border:2px dashed #BECAD6; padding:.6rem 1rem; border-radius:.7rem; color:#65758A; font-size:.85rem; text-align:center; }
+.aula-fichas { display:flex; flex-wrap:wrap; gap:.45rem; }
+.aula-ficha { border:1px solid #CCD9E5; background:#F7FAFD; padding:.5rem .7rem; border-radius:.55rem; font-size:1rem; }
+.aula-ficha small { display:block; color:#52606D; font-size:.65rem; font-weight:800; }
+.aula-ficha.verbo { background:#FFF8DE; border-color:#DDBF52; }
+.aula-grupo { border:2px solid #008269; background:#E4F8F1; padding:.7rem; border-radius:.6rem; font-size:1rem; }
+.aula-grupo small { display:block; font-size:.65rem; color:#006B55; font-weight:800; }
+.aula-tabla { overflow-x:auto; }
+.aula-tabla th { background:#EAF1F8; color:#24405E; font-size:.7rem; letter-spacing:.02em; }
+.aula-tabla td { font-size:.82rem; }
+.aula-tabla tbody tr { background:#fff; }
+.aula-controles { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; margin-top:.6rem; }
+.aula-toggle { cursor:pointer; display:flex; align-items:center; gap:.5rem; font-size:.82rem; border:1px solid #D4A25C; background:#FFF6E9; padding:.6rem .75rem; border-radius:.5rem; }
+.aula-toggle input { width:1.1rem; height:1.1rem; accent-color:#A75C0C; }
+.aula-mini-metricas { display:flex; flex-wrap:wrap; gap:1rem; margin-top:.8rem; }
+.aula-mini-metricas b { display:block; font-size:1.55rem; color:#14385E; line-height:1.2; }
+.aula-mini-metricas span { display:block; font-size:.7rem; color:#52606D; }
+.aula-objetivos { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.65rem; margin:1rem 0 1.5rem; }
+.aula-objetivos a { display:flex; align-items:center; gap:.65rem; text-decoration:none; color:#34516D; background:#E5ECF3; border-radius:.7rem; padding:.7rem .9rem; font-size:.77rem; }
+.aula-objetivos b { font-size:1.4rem; color:#5680A6; }
+.aula-objetivos a:hover { background:#D6E8F9; }
+.aula-intuicion { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin:1rem 0; }
+.aula-intuicion > div { background:#F2F6FA; border:1px solid #D8E3EE; padding:1rem; border-radius:.7rem; }
+.aula-intuicion h3 { font-size:.8rem; text-transform:uppercase; color:#52606D; }
+.aula-intuicion .aula-formas { font-size:1.3rem; padding:.4rem 0; color:#14385E; }
+.aula-intuicion p { font-size:.85rem; margin:.2rem 0; }
+.aula-practica { padding:1.3rem; }
+.aula-caso-mini { background:#F3F7FC; border-left:4px solid #1E88E5; border-radius:.4rem; padding:1.1rem; margin:.8rem 0; font-size:1.3rem; color:#14385E; }
+.aula-practica label { font-size:.85rem; font-weight:600; }
+.aula-practica .aula-salida { min-height:10rem; }
+.aula-celda { background:#F5F8FC; border:1px solid #DCE5EF; padding:.8rem; border-radius:.6rem; }
+.aula-celda b { display:block; font-size:.72rem; text-transform:uppercase; color:#52606D; margin-bottom:.3rem; }
+.aula-estado { border-radius:999px; padding:.2rem .65rem; background:#E8F5E9; color:#1B5E20; font-weight:700; font-size:.75rem; display:inline-block; }
+.aula-estado.fallo { background:#FFF0D9; color:#81510A; }
+.aula-regla { color:#34516D; font-size:.83rem; background:#F3F7FC; padding:.7rem; border-radius:.6rem; }
+.aula-bateria { margin-top:1rem; }
+.aula-bateria summary { font-size:.82rem; cursor:pointer; font-weight:700; color:#245A8B; }
+.aula-bateria .aula-tabla { margin-top:.6rem; }
+#p-caso :focus-visible, #p-practica :focus-visible { outline:3px solid #1E88E5; outline-offset:3px; }
+@media (max-width:1100px) { .aula-ruta { grid-template-columns:repeat(4,minmax(0,1fr)); } .aula-noticia { font-size:1.15rem; } }
+@media (max-width:760px) {
+  .aula-escena, .aula-intuicion { grid-template-columns:1fr; }
+  .aula-portada { align-items:flex-start; } .aula-sello { display:none; }
+  .aula-ruta { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .aula-objetivos { grid-template-columns:1fr; }
+  .aula-fuente, .aula-salida { padding:1rem; }
+  .aula-idea { display:block; } .aula-idea strong { display:block; margin-bottom:.2rem; }
+  .aula-noticia { min-height:0; font-size:1.2rem; }
+  .aula-pasos .pasos-ctrl { gap:.3rem; } .aula-pasos .pasos-ctrl button { padding:.4rem .55rem; }
+  .aula-practica { padding:1rem; }
+}

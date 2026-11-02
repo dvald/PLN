@@ -49,7 +49,7 @@ Las etiquetas de cada tarjeta lo indican: verde es *calculado en el navegador*, 
 |---|---|---|
 | 1 | — (ilustración sin modelos) | — |
 | 2 | Tokenizadores propios, raíz Snowball | Resultados de NLTK y spaCy de los ejemplos |
-| 3 | Raíz Snowball, reglas de chunking, entidades clínicas, relaciones con patrones | NLTK y spaCy; cadena de etiquetadores de CESS-ESP (`03_extraccion_informacion_cadena.js`) |
+| 3 | Reglas de chunking, entidades clínicas, relaciones con patrones y evaluación de seis textos ficticios | NLTK y spaCy; cadena de etiquetadores de CESS-ESP (`03_extraccion_informacion_cadena.js`) |
 | 4 | Bolsa de palabras, TF-IDF, búsqueda en el Quijote, todos los modelos de n-gramas | Perplejidades y frases generadas con el Quijote |
 | 5 | Pares de entrenamiento, n-gramas de FastText, atención, simulación del enmascarado (también frente a numpy y gensim) | Vecinos, búsquedas y salidas de BETO |
 | 6 | N-gramas, Naive Bayes, SVD, NMF, muestreo de Gibbs de LDA, reglas clínicas, medidas de entidades (también frente a numpy y scikit-learn) | Tópicos de las noticias y del Quijote (scikit-learn), entidades de spaCy |
@@ -68,3 +68,7 @@ Las fuentes, atribuciones, licencias y notas de validación se conservan en [fue
 - `probar_lib_NN.js` comprueba las bibliotecas de cada tema contra las referencias de Python (`node fuentes/probar_lib_NN.js` devuelve `"resultado": "OK"`).
 - `capturar_demo.mjs` abre una página en Chrome sin interfaz, recorre sus pestañas, recoge los errores de la consola y la captura (`VENTANA=390x844` simula un móvil).
 - `generar_navegacion.mjs` y `temas_demos.mjs` generan la navegación descrita arriba.
+
+## Caso guiado del Tema 3 (01/11/2026)
+
+La primera pestaña añade un caso guiado en siete capas, con noticia ficticia y anotación manual, para explicar la cadena de extracción. `03_extraccion_informacion_clase.css` y `03_extraccion_informacion_clase.js` contienen esta ampliación. Las seis exploraciones anteriores se conservan; «Tu turno» compara tres reglas sobre seis textos ficticios con referencia manual. Las métricas se recalculan en el navegador. No se ejecuta spaCy en el caso guiado.

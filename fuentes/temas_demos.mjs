@@ -22,7 +22,7 @@ export const TEMAS = [
     desc: "Cómo se convierte un texto en datos: frecuencias, morfología, tokenización, normalización, raíces y lemas, y los recursos en español.",
     clases: "Clases 3 y 4", semanas: [2], extra: "semanas 2 y 3" },
   { n: 3, f: "03_extraccion_informacion.html", bloque: "texto", titulo: "Extracción de información de textos", corto: "Extracción de información",
-    desc: "De la frase a la tabla: categorías gramaticales, grupos nominales, entidades y relaciones, y la comparación entre raíz y lema.",
+    desc: "Una noticia, varias capas: caso guiado para descubrir categorías, grupos, entidades y relaciones; comparación raíz/lema y una práctica breve con reglas.",
     clases: "Clase 4", semanas: [3] },
   { n: 4, f: "04_modelado_lenguaje.html", bloque: "estad", titulo: "Modelado del lenguaje", corto: "Modelado del lenguaje",
     desc: "Contar para representar y para predecir: bolsa de palabras, TF-IDF, n-gramas, suavizado, perplejidad y generación con el Quijote.",
